@@ -103,48 +103,53 @@ class HomeScreen extends StatelessWidget {
                           ],
                         ),
                         const Spacer(),
-                        CircleAvatar(
-                          radius: 20.r,
-                          backgroundColor: Colors.grey.shade800,
-                          child: ClipOval(
-                            child: Builder(
-                              builder: (context) {
-                                final profileModel =
-                                    profileProvider.profileModel;
-                                final avatar = profileModel?.data?.avatar;
-
-                                if (profileModel == null) {
-                                  // Still loading the profile
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                }
-
-                                if (avatar != null && avatar.isNotEmpty) {
-                                  print("profile image ${avatar}");
-                                  // Avatar available
-                                  return Image.network(
-                                    AppUrls.imageUrlNgrok + avatar,
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                    height: double.infinity,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Image.network(
-                                        'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
-                                        fit: BoxFit.cover,
-                                      );
-                                    },
-                                  );
-                                } else {
-                                  // Avatar not available — show fallback asset
-                                  return Image.asset(
-                                    'lib/assets/images/dummy_profile.jpg',
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                    height: double.infinity,
-                                  );
-                                }
-                              },
+                        GestureDetector(
+                          onTap: () {
+                            context.push('/view-profile');
+                          },
+                          child: CircleAvatar(
+                            radius: 20.r,
+                            backgroundColor: Colors.grey.shade800,
+                            child: ClipOval(
+                              child: Builder(
+                                builder: (context) {
+                                  final profileModel =
+                                      profileProvider.profileModel;
+                                  final avatar = profileModel?.data?.avatar;
+                          
+                                  if (profileModel == null) {
+                                    // Still loading the profile
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  }
+                          
+                                  if (avatar != null && avatar.isNotEmpty) {
+                                    print("profile image ${avatar}");
+                                    // Avatar available
+                                    return Image.network(
+                                      AppUrls.imageUrlNgrok + avatar,
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return Image.network(
+                                          'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
+                                    );
+                                  } else {
+                                    // Avatar not available — show fallback asset
+                                    return Image.asset(
+                                      'lib/assets/images/dummy_profile.jpg',
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                    );
+                                  }
+                                },
+                              ),
                             ),
                           ),
                         ),
@@ -416,6 +421,9 @@ class HomeScreen extends StatelessWidget {
                     const SizedBox(height: 32),
                   ],
                 ),
+              ),
+              SliverToBoxAdapter(
+                child: SizedBox(height: kBottomNavigationBarHeight * 2),
               ),
             ],
           ),

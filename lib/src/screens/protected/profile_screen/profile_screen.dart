@@ -43,23 +43,28 @@ class ProfileScreen extends StatelessWidget {
                       ),
 
                       child: ListTile(
-                        leading: CircleAvatar(
-                          radius: 28,
-                          backgroundImage:
-                              profileProvider.profileModel.data!.avatar == null
-                              ? const AssetImage("lib/assets/images/pp.png")
-                              : NetworkImage(
-                                      AppUrls.imageUrlNgrok +
-                                          profileProvider
-                                              .profileModel
-                                              .data!
-                                              .avatar
-                                              .toString(),
-                                    )
-                                    as ImageProvider,
+                        leading: InkWell(
+                          onTap: () {
+                            context.push('/view-profile');
+                          },
+                          child: CircleAvatar(
+                            radius: 28,
+                            backgroundImage:
+                                profileProvider.profileModel.data!.avatar == null
+                                ? const AssetImage("lib/assets/images/pp.png")
+                                : NetworkImage(
+                                        AppUrls.imageUrlNgrok +
+                                            profileProvider
+                                                .profileModel
+                                                .data!
+                                                .avatar
+                                                .toString(),
+                                      )
+                                      as ImageProvider,
+                          ),
                         ),
                         title: Text(
-                          profileProvider.profileModel.data!.fullName ?? "N/A",
+                          profileProvider.profileModel.data?.fullName ?? "",
                           style: TextStyle(
                             color: const Color(0xFFFFFAE5),
                             fontSize: 16,
@@ -69,7 +74,7 @@ class ProfileScreen extends StatelessWidget {
                           ),
                         ),
                         subtitle: Text(
-                          profileProvider.profileModel.data!.mobile ?? "N/A",
+                          profileProvider.profileModel.data?.mobile ?? "",
                           style: TextStyle(
                             color: const Color(0xFFFAE7E7),
                             fontSize: 14,
@@ -80,16 +85,22 @@ class ProfileScreen extends StatelessWidget {
                         ),
                         trailing: InkWell(
                           onTap: () => context.push("/edit-profile"),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: const [
-                              Text(
-                                'Edit Profile',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              SizedBox(width: 10),
-                              Icon(Icons.edit, color: Colors.white, size: 18),
-                            ],
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 22,
+                              vertical: 12,
+                            ).copyWith(right: 0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: const [
+                                Text(
+                                  'Edit Profile',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                SizedBox(width: 10),
+                                Icon(Icons.edit, color: Colors.white, size: 18),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -216,7 +227,7 @@ class ProfileScreen extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Container(height: 1, color: Colors.white),
+                child: Container(height: 1, color: Colors.white24),
               ),
               _ProfileMenuItem(
                 icon: Icons.leaderboard,
@@ -227,13 +238,13 @@ class ProfileScreen extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Container(height: 1, color: Colors.white),
+                child: Container(height: 1, color: Colors.white24),
               ),
 
               _ProfileMenuItem(icon: Icons.payment, title: 'Payment Method'),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Container(height: 1, color: Colors.white),
+                child: Container(height: 1, color: Colors.white24),
               ),
               _ProfileMenuItem(
                 icon: Icons.book_online,
@@ -245,7 +256,7 @@ class ProfileScreen extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Container(height: 1, color: Colors.white),
+                child: Container(height: 1, color: Colors.white24),
               ),
               _ProfileMenuItem(
                 icon: Icons.history,
@@ -254,7 +265,7 @@ class ProfileScreen extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Container(height: 1, color: Colors.white),
+                child: Container(height: 1, color: Colors.white24),
               ),
               _ProfileMenuItem(
                 icon: Icons.card_giftcard,
@@ -263,7 +274,7 @@ class ProfileScreen extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Container(height: 1, color: Colors.white),
+                child: Container(height: 1, color: Colors.white24),
               ),
               _ProfileMenuItem(
                 icon: Icons.card_giftcard,
@@ -272,7 +283,7 @@ class ProfileScreen extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Container(height: 1, color: Colors.white),
+                child: Container(height: 1, color: Colors.white24),
               ),
               _ProfileMenuItem(
                 icon: Icons.logout,
@@ -325,7 +336,6 @@ class _ProfileMenuItem extends StatelessWidget {
     return Card(
       color: Theme.of(context).colorScheme.surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-
       child: ListTile(
         leading: Icon(icon, color: Colors.white),
         title: Text(

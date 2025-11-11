@@ -1,24 +1,26 @@
+
 class EventsModel {
   int? id;
   String? eventName;
   String? about;
   String? description;
   String? currency;
-  String? picture;
   List<Images>? images;
   String? venueName;
   String? venueCity;
+  int? venueCapacity;
 
-  EventsModel(
-      {this.id,
-      this.eventName,
-      this.about,
-      this.description,
-      this.currency,
-      this.picture,
-      this.images,
-      this.venueName,
-      this.venueCity});
+  EventsModel({
+    this.id,
+    this.eventName,
+    this.about,
+    this.description,
+    this.currency,
+    this.images,
+    this.venueName,
+    this.venueCity,
+    this.venueCapacity,
+  });
 
   EventsModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -26,63 +28,64 @@ class EventsModel {
     about = json['about'];
     description = json['description'];
     currency = json['currency'];
-    picture = json['picture'];
     if (json['images'] != null) {
       images = <Images>[];
       json['images'].forEach((v) {
-        images!.add(new Images.fromJson(v));
+        images!.add(Images.fromJson(v));
       });
     }
     venueName = json['venue_name'];
     venueCity = json['venue_city'];
+    venueCapacity = json['venue_capacity'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['event_name'] = this.eventName;
-    data['about'] = this.about;
-    data['description'] = this.description;
-    data['currency'] = this.currency;
-    data['picture'] = this.picture;
-    if (this.images != null) {
-      data['images'] = this.images!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['event_name'] = eventName;
+    data['about'] = about;
+    data['description'] = description;
+    data['currency'] = currency;
+    if (images != null) {
+      data['images'] = images!.map((v) => v.toJson()).toList();
     }
-    data['venue_name'] = this.venueName;
-    data['venue_city'] = this.venueCity;
+    data['venue_name'] = venueName;
+    data['venue_city'] = venueCity;
+    data['venue_capacity'] = venueCapacity;
     return data;
   }
 }
 
 class Images {
   int? id;
-  String? thumbnailImage;
-  String? bgImage;
-  String? imageGl;
-  String? seatingPlan;
+  String? imageUrl;
+  String? altText;
+  String? caption;
+  int? isFeatured;
 
-  Images(
-      {this.id,
-      this.thumbnailImage,
-      this.bgImage,
-      this.imageGl,
-      this.seatingPlan});
+  Images({
+    this.id,
+    this.imageUrl,
+    this.altText,
+    this.caption,
+    this.isFeatured,
+  });
 
   Images.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    thumbnailImage = json['thumbnail_image'];
-    bgImage = json['bg_image'];
-    imageGl = json['image_gl'];
-    seatingPlan = json['seating_plan'];
+    imageUrl = json['image_url'];
+    altText = json['alt_text'];
+    caption = json['caption'];
+    isFeatured = json['is_featured'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['thumbnail_image'] = this.thumbnailImage;
-    data['bg_image'] = this.bgImage;
-    data['image_gl'] = this.imageGl;
-    data['seating_plan'] = this.seatingPlan;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['image_url'] = imageUrl;
+    data['alt_text'] = altText;
+    data['caption'] = caption;
+    data['is_featured'] = isFeatured;
     return data;
   }
 }

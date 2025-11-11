@@ -207,7 +207,7 @@ class _EventListScreenState extends State<EventListScreen> {
                         date: "",
                         image: event.images!.isEmpty
                             ? ''
-                            : event.images!.first.thumbnailImage!,
+                            : event.images!.first.imageUrl!,
                         title: event.eventName ?? "",
                         location: event.venueName ?? "",
                         country: event.currency ?? "",

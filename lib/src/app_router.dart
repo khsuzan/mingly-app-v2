@@ -36,6 +36,7 @@ import 'package:mingly/src/screens/protected/profile_screen/order_history_detail
 import 'package:mingly/src/screens/protected/profile_screen/point_history.dart';
 import 'package:mingly/src/screens/protected/profile_screen/profile_screen.dart';
 import 'package:mingly/src/screens/protected/profile_screen/promo_code_screen.dart';
+import 'package:mingly/src/screens/protected/profile_screen/view_profile_screen.dart';
 import 'package:mingly/src/screens/protected/profile_screen/voucher_list.dart';
 import 'package:mingly/src/screens/protected/select_country_screen/select_country_screen.dart';
 import 'package:mingly/src/screens/protected/select_payment_screen/select_payment_screen.dart';
@@ -169,6 +170,10 @@ class AppRouter {
         GoRoute(
           path: '/booking-summary',
           builder: (context, state) => BookingSummary(),
+        ),
+        GoRoute(
+          path: '/view-profile',
+          builder: (context, state) => ViewProfileScreen(),
         ),
         GoRoute(
           path: '/edit-profile',

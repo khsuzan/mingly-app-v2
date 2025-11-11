@@ -47,7 +47,7 @@ class Layout extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: List.generate(
-                      provider.notificationModel.notifications!.length,
+                      provider.notificationModel.notifications?.length ?? 0,
                       (index) => _NotificationItem(
                         icon: Icons.calendar_today,
                         title: provider
