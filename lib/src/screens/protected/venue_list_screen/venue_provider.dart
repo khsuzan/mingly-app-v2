@@ -51,15 +51,15 @@ class VenueProvider extends ChangeNotifier {
     try {
       final venue = venuesList.firstWhere(
         (venue) => venue.name == name,
-        orElse: () => VenuesModel(),
+        orElse: () => VenuesModel(id: 0),
       );
-      return venue.id != null ? venue.id.toString() : '';
+      return venue.id.toString();
     } catch (e) {
       return '';
     }
   }
 
-  VenuesModel selectedVenueData = VenuesModel();
+  VenuesModel selectedVenueData = VenuesModel(id: 0);
 
   var isMenuList = false;
   void toggleMenuList() {
@@ -68,7 +68,7 @@ class VenueProvider extends ChangeNotifier {
   }
 
   void selectedVenue(int? id) {
-    selectedVenueData = VenuesModel();
+    selectedVenueData = VenuesModel(id: 0);
     selectedVenueData = venuesList.firstWhere((venue) => venue.id == id);
     notifyListeners();
   }

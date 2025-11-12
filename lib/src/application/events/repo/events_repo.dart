@@ -98,6 +98,14 @@ class EventsRepo {
     );
     return reseponse;
   }
+  Future<List<EventsModel>> getEventsById(int venueId) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final reseponse = await ApiService().getList(
+      AppUrls.getEventsById.replaceFirst(":venue_id", venueId.toString()),
+      authToken: preferences.getString("authToken"),
+    );
+    return reseponse.map((e) => EventsModel.fromJson(e)).toList();
+  }
 
   Future<Map<String, dynamic>> getEventCategories(int id) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();

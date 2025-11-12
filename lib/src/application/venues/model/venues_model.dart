@@ -1,5 +1,5 @@
 class VenuesModel {
-  int? id;
+  int id = 0;
   List<Images>? images;
   String? name;
   String? description;
@@ -11,51 +11,50 @@ class VenuesModel {
   String? latitude;
   String? longitude;
   int? capacity;
-  String? seatingLayout;
-  String? facilities;
-  String? contactPerson;
   String? contactEmail;
   String? contactPhone;
   String? websiteUrl;
   String? status;
+  bool? isFeatured;
+  String? directionUrl;
   String? picture;
   String? createdAt;
   String? updatedAt;
   int? createdBy;
-  List<OpeningHours>? openingHours;
+  OpeningHours? openingHours;
 
-  VenuesModel(
-      {this.id,
-      this.images,
-      this.name,
-      this.description,
-      this.address,
-      this.city,
-      this.state,
-      this.country,
-      this.postalCode,
-      this.latitude,
-      this.longitude,
-      this.capacity,
-      this.seatingLayout,
-      this.facilities,
-      this.contactPerson,
-      this.contactEmail,
-      this.contactPhone,
-      this.websiteUrl,
-      this.status,
-      this.picture,
-      this.createdAt,
-      this.updatedAt,
-      this.createdBy,
-      this.openingHours});
+  VenuesModel({
+    required this.id,
+    this.images,
+    this.name,
+    this.description,
+    this.address,
+    this.city,
+    this.state,
+    this.country,
+    this.postalCode,
+    this.latitude,
+    this.longitude,
+    this.capacity,
+    this.contactEmail,
+    this.contactPhone,
+    this.websiteUrl,
+    this.status,
+    this.isFeatured,
+    this.directionUrl,
+    this.picture,
+    this.createdAt,
+    this.updatedAt,
+    this.createdBy,
+    this.openingHours,
+  });
 
   VenuesModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+    id = json['id']!;
     if (json['images'] != null) {
       images = <Images>[];
       json['images'].forEach((v) {
-        images!.add(new Images.fromJson(v));
+        images!.add(Images.fromJson(v));
       });
     }
     name = json['name'];
@@ -68,55 +67,51 @@ class VenuesModel {
     latitude = json['latitude'];
     longitude = json['longitude'];
     capacity = json['capacity'];
-    seatingLayout = json['seating_layout'];
-    facilities = json['facilities'];
-    contactPerson = json['contact_person'];
     contactEmail = json['contact_email'];
     contactPhone = json['contact_phone'];
     websiteUrl = json['website_url'];
     status = json['status'];
+    isFeatured = json['is_featured'] is bool
+        ? json['is_featured']
+        : json['is_featured'] == 1;
+    directionUrl = json['direction_url'];
     picture = json['picture'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     createdBy = json['created_by'];
-    if (json['opening_hours'] != null) {
-      openingHours = <OpeningHours>[];
-      json['opening_hours'].forEach((v) {
-        openingHours!.add(new OpeningHours.fromJson(v));
-      });
+    if (json['meta'] != null) {
+      openingHours = OpeningHours.fromJson(json['meta']);
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    if (this.images != null) {
-      data['images'] = this.images!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    if (images != null) {
+      data['images'] = images!.map((v) => v.toJson()).toList();
     }
-    data['name'] = this.name;
-    data['description'] = this.description;
-    data['address'] = this.address;
-    data['city'] = this.city;
-    data['state'] = this.state;
-    data['country'] = this.country;
-    data['postal_code'] = this.postalCode;
-    data['latitude'] = this.latitude;
-    data['longitude'] = this.longitude;
-    data['capacity'] = this.capacity;
-    data['seating_layout'] = this.seatingLayout;
-    data['facilities'] = this.facilities;
-    data['contact_person'] = this.contactPerson;
-    data['contact_email'] = this.contactEmail;
-    data['contact_phone'] = this.contactPhone;
-    data['website_url'] = this.websiteUrl;
-    data['status'] = this.status;
-    data['picture'] = this.picture;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    data['created_by'] = this.createdBy;
-    if (this.openingHours != null) {
-      data['opening_hours'] =
-          this.openingHours!.map((v) => v.toJson()).toList();
+    data['name'] = name;
+    data['description'] = description;
+    data['address'] = address;
+    data['city'] = city;
+    data['state'] = state;
+    data['country'] = country;
+    data['postal_code'] = postalCode;
+    data['latitude'] = latitude;
+    data['longitude'] = longitude;
+    data['capacity'] = capacity;
+    data['contact_email'] = contactEmail;
+    data['contact_phone'] = contactPhone;
+    data['website_url'] = websiteUrl;
+    data['status'] = status;
+    data['is_featured'] = isFeatured;
+    data['direction_url'] = directionUrl;
+    data['picture'] = picture;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    data['created_by'] = createdBy;
+    if (openingHours != null) {
+      data['meta'] = openingHours!.toJson();
     }
     return data;
   }
@@ -125,8 +120,8 @@ class VenuesModel {
 class Images {
   int? id;
   String? imageUrl;
-  Null? altText;
-  Null? caption;
+  String? altText;
+  String? caption;
   int? isFeatured;
 
   Images({this.id, this.imageUrl, this.altText, this.caption, this.isFeatured});
@@ -140,34 +135,31 @@ class Images {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['image_url'] = this.imageUrl;
-    data['alt_text'] = this.altText;
-    data['caption'] = this.caption;
-    data['is_featured'] = this.isFeatured;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['image_url'] = imageUrl;
+    data['alt_text'] = altText;
+    data['caption'] = caption;
+    data['is_featured'] = isFeatured;
     return data;
   }
 }
 
 class OpeningHours {
-  String? day;
   String? open;
   String? close;
 
-  OpeningHours({this.day, this.open, this.close});
+  OpeningHours({this.open, this.close});
 
   OpeningHours.fromJson(Map<String, dynamic> json) {
-    day = json['day'];
-    open = json['open'];
-    close = json['close'];
+    open = json['opening_hour'];
+    close = json['closing_hour'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['day'] = this.day;
-    data['open'] = this.open;
-    data['close'] = this.close;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['opening_hour'] = open;
+    data['closing_hour'] = close;
     return data;
   }
 }

@@ -7,7 +7,9 @@ import 'package:mingly/src/constant/app_urls.dart';
 
 class ApiService {
   // Constructor no longer needs to pass baseUrl because it's now in AppUrls
-  ApiService();
+  ApiService._();
+  static final ApiService _instance = ApiService._();
+  factory ApiService() => _instance;
 
   Future<Map<String, dynamic>> postDataRegular(
     String endpoint,

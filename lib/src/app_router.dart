@@ -42,9 +42,11 @@ import 'package:mingly/src/screens/protected/select_country_screen/select_countr
 import 'package:mingly/src/screens/protected/select_payment_screen/select_payment_screen.dart';
 import 'package:mingly/src/screens/protected/table_booking_screen/table_booking_screen.dart';
 import 'package:mingly/src/screens/protected/ticket_booking_screen/ticket_booking_screen.dart';
-import 'package:mingly/src/screens/protected/venue_detail_screen/venue_detail_screen.dart';
-import 'package:mingly/src/screens/protected/venue_list_screen/venue_list_screen.dart';
+import 'package:mingly/src/screens/protected/venue_detail_screen/view/venue_detail_screen.dart';
+import 'package:mingly/src/screens/protected/venue_list_screen/view/venue_list_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'application/venues/model/venues_model.dart';
 
 class AppRouter {
   static Future<GoRouter> createRouter() async {
@@ -100,7 +102,11 @@ class AppRouter {
         ),
         GoRoute(
           path: '/venue-detail',
-          builder: (context, state) => const VenueDetailScreen(),
+          builder: (context, state) {
+            final venue =
+                state.extra as VenuesModel;
+            return VenueDetailScreen(venue: venue);
+          },
         ),
         GoRoute(
           path: '/table-booking',

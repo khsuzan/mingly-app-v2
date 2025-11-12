@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CountryCityDropdown extends StatefulWidget {
   final Function(String?, String?) onChanged;
@@ -25,7 +26,9 @@ class _CountryCityDropdownState extends State<CountryCityDropdown> {
   }
 
   Future<void> loadCountryCityData() async {
-    final jsonString = await rootBundle.loadString('lib/assets/country_city.json');
+    final jsonString = await rootBundle.loadString(
+      'lib/assets/country_city.json',
+    );
     final data = json.decode(jsonString) as Map<String, dynamic>;
     setState(() {
       countryCityData = data;
@@ -44,20 +47,25 @@ class _CountryCityDropdownState extends State<CountryCityDropdown> {
         Expanded(
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xFFF7D99A), width: 0.2),
-              borderRadius: BorderRadius.circular(6),
-            ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
+                menuWidth: 0.8.sw,
                 dropdownColor: Colors.grey.shade900,
                 value: selectedCountry,
-                hint: const Text("Select Country", style: TextStyle(color: Colors.white)),
+                hint: const Text(
+                  "Country",
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: Colors.white),
+                ),
                 isExpanded: true,
                 items: countryCityData.keys.map((country) {
                   return DropdownMenuItem<String>(
                     value: country,
-                    child: Text(country, style: const TextStyle(color: Colors.white)),
+                    child: Text(
+                      country,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   );
                 }).toList(),
                 onChanged: (value) {
@@ -78,20 +86,25 @@ class _CountryCityDropdownState extends State<CountryCityDropdown> {
         Expanded(
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xFFF7D99A), width: 0.2),
-              borderRadius: BorderRadius.circular(6),
-            ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
+                menuWidth: 0.8.sw,
                 dropdownColor: Colors.grey.shade900,
                 value: selectedCity,
-                hint: const Text("Select City", style: TextStyle(color: Colors.white)),
+                hint: const Text(
+                  "City",
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: Colors.white),
+                ),
                 isExpanded: true,
                 items: cities.map((city) {
                   return DropdownMenuItem<String>(
                     value: city,
-                    child: Text(city, style: const TextStyle(color: Colors.white)),
+                    child: Text(
+                      city,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   );
                 }).toList(),
                 onChanged: (value) {

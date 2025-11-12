@@ -41,6 +41,8 @@ class AppUrls {
 
   static String getPopularEvent = "/popular-events/";
 
+  static String getEventsById = "/venue/:venue_id/events/";
+
   static String notification = "/get-notifications/";
 
   static String getVoucher = "/my-vouchers/";
