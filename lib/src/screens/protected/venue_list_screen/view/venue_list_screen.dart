@@ -112,7 +112,6 @@ class _VenueListScreenState extends State<VenueListScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 16),
-
             DefaultTextStyle(
               style: TextStyle(fontSize: 14.sp, color: Colors.white),
               child: Container(
@@ -215,44 +214,39 @@ class _VenueListScreenState extends State<VenueListScreen> {
               }
               return Expanded(
                 child: controller.venuesList.isEmpty
-                    ? const Center(
+                    ? Center(
                         child: Text(
                           "No venues found",
                           style: TextStyle(color: Colors.white54),
                         ),
                       )
-                    : RefreshIndicator(
-                        onRefresh: () async {
-                          //await venuesProvider.getVenuesList();
+                    : ListView.builder(
+                        itemCount: controller.venuesList.length,
+                        itemBuilder: (context, index) {
+                          final venue = controller.venuesList[index];
+                          return _VenueCard(
+                            onTap: () {
+                              // venuesProvider.selectedVenue(venue.id);
+                              // await eventProvider.getEvetListVuneWise(
+                              //   venue.id!.toInt(),
+                              // );
+                              // await venuesProvider.getVenueMenuList(
+                              //   venue.id!.toInt(),
+                              // );
+                              context.push("/venue-detail", extra: venue);
+                            },
+                            image:
+                                venue.images!.isEmpty ||
+                                    venue.images!.first.imageUrl == null
+                                ? "https://www.directmobilityonline.co.uk/assets/img/noimage.png"
+                                : "${AppUrls.imageUrl}${venue.images!.first.imageUrl!}",
+                            title: venue.name ?? '',
+                            location: venue.city ?? '',
+                            time: venue.openingHours == null
+                                ? ""
+                                : "${venue.openingHours!.open} - ${venue.openingHours!.close}",
+                          );
                         },
-                        child: ListView.builder(
-                          itemCount: controller.venuesList.length,
-                          itemBuilder: (context, index) {
-                            final venue = controller.venuesList[index];
-                            return _VenueCard(
-                              onTap: () {
-                                // venuesProvider.selectedVenue(venue.id);
-                                // await eventProvider.getEvetListVuneWise(
-                                //   venue.id!.toInt(),
-                                // );
-                                // await venuesProvider.getVenueMenuList(
-                                //   venue.id!.toInt(),
-                                // );
-                                context.push("/venue-detail", extra: venue);
-                              },
-                              image:
-                                  venue.images!.isEmpty ||
-                                      venue.images!.first.imageUrl == null
-                                  ? "https://www.directmobilityonline.co.uk/assets/img/noimage.png"
-                                  : "${AppUrls.imageUrl}${venue.images!.first.imageUrl!}",
-                              title: venue.name ?? '',
-                              location: venue.city ?? '',
-                              time: venue.openingHours == null
-                                  ? ""
-                                  : "${venue.openingHours!.open} - ${venue.openingHours!.close}",
-                            );
-                          },
-                        ),
                       ),
               );
             }),

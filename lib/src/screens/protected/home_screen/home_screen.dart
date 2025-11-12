@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart' show Get, Inst, Obx;
 import 'package:go_router/go_router.dart';
 import 'package:mingly/src/components/custom_loading_dialog.dart';
 import 'package:mingly/src/components/custom_snackbar.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 import 'package:mingly/src/screens/protected/event_list_screen/events_provider.dart';
+import 'package:mingly/src/screens/protected/home_screen/controller/home_controller.dart';
 import 'package:mingly/src/screens/protected/home_screen/home_proivder.dart';
 import 'package:mingly/src/screens/protected/profile_screen/profile_provider.dart';
 import 'package:mingly/src/screens/protected/venue_list_screen/venue_provider.dart';
@@ -21,6 +23,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final controller = Get.put(HomeController());
     final profileProvider = context.watch<ProfileProvider>();
     final homeProvider = context.watch<HomeProivder>();
     final eventsProvider = context.watch<EventsProvider>();
@@ -116,14 +119,14 @@ class HomeScreen extends StatelessWidget {
                                   final profileModel =
                                       profileProvider.profileModel;
                                   final avatar = profileModel?.data?.avatar;
-                          
+
                                   if (profileModel == null) {
                                     // Still loading the profile
                                     return const Center(
                                       child: CircularProgressIndicator(),
                                     );
                                   }
-                          
+
                                   if (avatar != null && avatar.isNotEmpty) {
                                     print("profile image ${avatar}");
                                     // Avatar available
@@ -159,268 +162,287 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               SliverToBoxAdapter(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Top image
-                    CarouselSlider.builder(
-                      itemCount: homeProvider.addImageList.length,
-                      options: CarouselOptions(
-                        height: 0.3.sh, // requires flutter_screenutil
-                        enlargeCenterPage: true,
-                        autoPlay: true,
-                        autoPlayInterval: Duration(seconds: 3),
-                        viewportFraction: 0.8,
-                      ),
-                      itemBuilder: (context, index, realIndex) {
-                        return Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 4),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            image: DecorationImage(
-                              image: NetworkImage(
-                                AppUrls.imageUrl +
-                                    homeProvider.addImageList[index].imageUrl
-                                        .toString(),
-                              ),
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                    // Referral code
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 20.w,
-                        vertical: 8,
-                      ),
-                      child: Row(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Your Referral Code',
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: theme.colorScheme.primary,
+                child: Obx(() {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Top image
+                      CarouselSlider.builder(
+                        itemCount: controller.featuredItems.length,
+                        options: CarouselOptions(
+                          height: 0.26.sh,
+                          enlargeCenterPage: true,
+                          autoPlay: true,
+                          autoPlayInterval: Duration(seconds: 5),
+                          viewportFraction: 0.8,
+                          enlargeFactor: 0.2
+                        ),
+                        itemBuilder: (context, index, realIndex) {
+                          return Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              image: DecorationImage(
+                                image: NetworkImage(
+                                  AppUrls.imageUrl +
+                                      controller.featuredItems[index].imageUrl
+                                          .toString(),
                                 ),
+                                fit: BoxFit.fill,
                               ),
-                              SizedBox(height: 4.h),
-                              Text(
-                                profileProvider.profileModel.data == null
-                                    ? "N/A"
-                                    : profileProvider
-                                              .profileModel
-                                              .data!
-                                              .referralCode ??
-                                          "N/A",
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        },
+                      ),
+                      // Referral code
+                      Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 20.w,
+                            vertical: 8,
+                          ).copyWith(top: 16),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primaryContainer,
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 20.w,
+                            vertical: 8,
+                          ),
+                          child: Row(
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Your Referral Code',
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: theme.colorScheme.primary,
+                                    ),
+                                  ),
+                                  SizedBox(height: 4.h),
+                                  Text(
+                                    profileProvider.profileModel.data == null
+                                        ? "N/A"
+                                        : profileProvider
+                                                  .profileModel
+                                                  .data!
+                                                  .referralCode ??
+                                              "N/A",
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const Spacer(),
+                              InkWell(
+                                onTap: () {
+                                  Clipboard.setData(
+                                    ClipboardData(text: 'XUYB895EW'),
+                                  );
+                                  CustomSnackbar.show(
+                                    context,
+                                    message: "Code copied: 'XUYB895EW'",
+                                  );
+                                },
+                                child: SvgPicture.asset(
+                                  'lib/assets/icons/copy.svg',
+                                  colorFilter: const ColorFilter.mode(
+                                    Color(0xFFD1B26F),
+                                    BlendMode.srcIn,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                          const Spacer(),
-                          InkWell(
-                            onTap: () {
-                              Clipboard.setData(
-                                ClipboardData(text: 'XUYB895EW'),
-                              );
-                              CustomSnackbar.show(
-                                context,
-                                message: "Code copied: 'XUYB895EW'",
-                              );
-                            },
-                            child: SvgPicture.asset(
-                              'lib/assets/icons/copy.svg',
-                              colorFilter: const ColorFilter.mode(
-                                Color(0xFFD1B26F),
-                                BlendMode.srcIn,
-                              ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      // Menu icons
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.w),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _MenuIcon(
+                              svgAsset: 'lib/assets/icons/calendar.svg',
+                              label: 'Events',
+                              onTap: () {
+                                context.push('/event-list');
+                              },
                             ),
-                          ),
-                        ],
+                            _MenuIcon(
+                              svgAsset: 'lib/assets/icons/map.svg',
+                              label: 'Venues',
+                              onTap: () {
+                                context.push('/venue-list');
+                              },
+                            ),
+                            _MenuIcon(
+                              svgAsset: 'lib/assets/icons/coupon.svg',
+                              label: 'Membership',
+                              onTap: () => context.push('/membership'),
+                            ),
+                            _MenuIcon(
+                              onTap: () => context.push('/my-bottles'),
+                              svgAsset: 'lib/assets/icons/bottle.svg',
+                              label: 'My Menu',
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    // Menu icons
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.w),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _MenuIcon(
-                            svgAsset: 'lib/assets/icons/calendar.svg',
-                            label: 'Events',
-                            onTap: () {
-                              context.push('/event-list');
-                            },
-                          ),
-                          _MenuIcon(
-                            svgAsset: 'lib/assets/icons/map.svg',
-                            label: 'Venues',
-                            onTap: () {
-                              context.push('/venue-list');
-                            },
-                          ),
-                          _MenuIcon(
-                            svgAsset: 'lib/assets/icons/coupon.svg',
-                            label: 'Membership',
-                            onTap: () => context.push('/membership'),
-                          ),
-                          _MenuIcon(
-                            onTap: () => context.push('/my-bottles'),
-                            svgAsset: 'lib/assets/icons/bottle.svg',
-                            label: 'My Menu',
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    // Featured Venues
-                    _SectionHeader(title: 'Featured Venues'),
+                      const SizedBox(height: 24),
+                      // Featured Venues
+                      _SectionHeader(title: 'Featured Venues'),
 
-                    venueProvider.venuesFeaturedList.isEmpty
-                        ? SizedBox()
-                        : Column(
-                            children: List.generate(
-                              venueProvider.venuesFeaturedList.length,
-                              (index) => InkWell(
-                                onTap: () async {
-                                  LoadingDialog.show(context);
-                                  venueProvider.selectedVenue(
-                                    venueProvider.venuesFeaturedList[index].id,
-                                  );
-                                  await eventsProvider.getEvetListVuneWise(
-                                    venueProvider.venuesFeaturedList[index].id!
-                                        .toInt(),
-                                  );
-                                  await venueProvider.getVenueMenuList(
-                                    venueProvider.venuesFeaturedList[index].id!
-                                        .toInt(),
-                                  );
-                                  LoadingDialog.hide(context);
-                                  context.push("/venue-detail");
-                                },
-                                child: _VenueCard(
-                                  image:
+                      venueProvider.venuesFeaturedList.isEmpty
+                          ? SizedBox()
+                          : Column(
+                              children: List.generate(
+                                venueProvider.venuesFeaturedList.length,
+                                (index) => InkWell(
+                                  onTap: () async {
+                                    LoadingDialog.show(context);
+                                    venueProvider.selectedVenue(
                                       venueProvider
-                                              .venuesFeaturedList[index]
-                                              .images!
-                                              .isEmpty ||
-                                          venueProvider
-                                                  .venuesFeaturedList[index]
-                                                  .images!
-                                                  .first
-                                                  .imageUrl ==
-                                              null
-                                      ? "https://www.directmobilityonline.co.uk/assets/img/noimage.png"
-                                      : "${AppUrls.imageUrl}${venueProvider.venuesFeaturedList[index].images!.first.imageUrl!}",
-                                  title: venueProvider
-                                      .venuesFeaturedList[index]
-                                      .name!,
-                                  location:
-                                      '${venueProvider.venuesFeaturedList[index].address}\n${venueProvider.venuesFeaturedList[index].city}, ${venueProvider.venuesFeaturedList[index].country}',
+                                          .venuesFeaturedList[index]
+                                          .id,
+                                    );
+                                    await eventsProvider.getEvetListVuneWise(
+                                      venueProvider
+                                          .venuesFeaturedList[index]
+                                          .id!
+                                          .toInt(),
+                                    );
+                                    await venueProvider.getVenueMenuList(
+                                      venueProvider
+                                          .venuesFeaturedList[index]
+                                          .id!
+                                          .toInt(),
+                                    );
+                                    LoadingDialog.hide(context);
+                                    context.push("/venue-detail");
+                                  },
+                                  child: _VenueCard(
+                                    image:
+                                        venueProvider
+                                                .venuesFeaturedList[index]
+                                                .images!
+                                                .isEmpty ||
+                                            venueProvider
+                                                    .venuesFeaturedList[index]
+                                                    .images!
+                                                    .first
+                                                    .imageUrl ==
+                                                null
+                                        ? "https://www.directmobilityonline.co.uk/assets/img/noimage.png"
+                                        : "${AppUrls.imageUrl}${venueProvider.venuesFeaturedList[index].images!.first.imageUrl!}",
+                                    title: venueProvider
+                                        .venuesFeaturedList[index]
+                                        .name!,
+                                    location:
+                                        '${venueProvider.venuesFeaturedList[index].address}\n${venueProvider.venuesFeaturedList[index].city}, ${venueProvider.venuesFeaturedList[index].country}',
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                    SizedBox(height: 12.h),
-                    // Popular Events
-                    _SectionHeader(title: 'Popular Events'),
-                    _EventCard(),
-                    const SizedBox(height: 24),
-                    // Top 10 spenders
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            'Leaderboard',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.colorScheme.primary,
-                              fontSize: 13.sp,
+                      SizedBox(height: 12.h),
+                      // Popular Events
+                      _SectionHeader(title: 'Popular Events'),
+                      _EventCard(),
+                      const SizedBox(height: 24),
+                      // Top 10 spenders
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              'Leaderboard',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.colorScheme.primary,
+                                fontSize: 13.sp,
+                              ),
                             ),
-                          ),
-                          Text(
-                            'Top 10 spenders',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15.sp,
+                            Text(
+                              'Top 10 spenders',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15.sp,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    _Leaderboard(),
-                    const SizedBox(height: 24),
-                    // Recommendations
-                    _SectionHeader(title: 'Recommendations for you'),
-                    eventsProvider.recomendedEventModel.recommended == null ||
-                            eventsProvider
-                                .recomendedEventModel
-                                .recommended!
-                                .isEmpty
-                        ? SizedBox()
-                        : Column(
-                            children: List.generate(
+                      const SizedBox(height: 8),
+                      _Leaderboard(),
+                      const SizedBox(height: 24),
+                      // Recommendations
+                      _SectionHeader(title: 'Recommendations for you'),
+                      eventsProvider.recomendedEventModel.recommended == null ||
                               eventsProvider
                                   .recomendedEventModel
                                   .recommended!
-                                  .length,
-                              (index) => InkWell(
-                                onTap: () => context.push('/venue-detail'),
-                                child: _RecommendationCard(
-                                  image:
-                                      (eventsProvider
-                                                  .recomendedEventModel
-                                                  .recommended?[index]
-                                                  .images !=
-                                              null &&
-                                          eventsProvider
+                                  .isEmpty
+                          ? SizedBox()
+                          : Column(
+                              children: List.generate(
+                                eventsProvider
+                                    .recomendedEventModel
+                                    .recommended!
+                                    .length,
+                                (index) => InkWell(
+                                  onTap: () => context.push('/venue-detail'),
+                                  child: _RecommendationCard(
+                                    image:
+                                        (eventsProvider
+                                                    .recomendedEventModel
+                                                    .recommended?[index]
+                                                    .images !=
+                                                null &&
+                                            eventsProvider
+                                                .recomendedEventModel
+                                                .recommended![index]
+                                                .images!
+                                                .isNotEmpty &&
+                                            eventsProvider
+                                                    .recomendedEventModel
+                                                    .recommended![index]
+                                                    .images!
+                                                    .first
+                                                    .thumbnailImage !=
+                                                null)
+                                        ? eventsProvider
                                               .recomendedEventModel
                                               .recommended![index]
                                               .images!
-                                              .isNotEmpty &&
-                                          eventsProvider
-                                                  .recomendedEventModel
-                                                  .recommended![index]
-                                                  .images!
-                                                  .first
-                                                  .thumbnailImage !=
-                                              null)
-                                      ? eventsProvider
-                                            .recomendedEventModel
-                                            .recommended![index]
-                                            .images!
-                                            .first
-                                            .thumbnailImage!
-                                      : 'https://via.placeholder.com/150', // fallback image
-                                  title: 'Sky High Soirée- MU;IN',
-                                  location: 'New York',
-                                  tag: 'Gold member',
+                                              .first
+                                              .thumbnailImage!
+                                        : 'https://via.placeholder.com/150', // fallback image
+                                    title: 'Sky High Soirée- MU;IN',
+                                    location: 'New York',
+                                    tag: 'Gold member',
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
 
-                    // InkWell(
-                    //   onTap: () => context.push('/event-detail'),
-                    //   child: _RecommendationCard(
-                    //     image: 'lib/assets/images/dummy_muin.png',
-                    //     title: '[Waves & Raves ] - Celvaie',
-                    //     location: 'California',
-                    //     tag: 'Free',
-                    //   ),
-                    // ),
-                    const SizedBox(height: 32),
-                  ],
-                ),
+                      // InkWell(
+                      //   onTap: () => context.push('/event-detail'),
+                      //   child: _RecommendationCard(
+                      //     image: 'lib/assets/images/dummy_muin.png',
+                      //     title: '[Waves & Raves ] - Celvaie',
+                      //     location: 'California',
+                      //     tag: 'Free',
+                      //   ),
+                      // ),
+                      const SizedBox(height: 32),
+                    ],
+                  );
+                }),
               ),
               SliverToBoxAdapter(
                 child: SizedBox(height: kBottomNavigationBarHeight * 2),

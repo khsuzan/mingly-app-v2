@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mingly/src/components/custom_loading_dialog.dart';
 import 'package:mingly/src/constant/app_urls.dart';
+import 'package:mingly/src/screens/protected/event_list_screen/controller/event_list_controller.dart';
 import 'package:mingly/src/screens/protected/event_list_screen/events_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -24,8 +27,8 @@ class _EventListScreenState extends State<EventListScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final controller = Get.put(EventListController());
     final eventProvider = context.watch<EventsProvider>();
-
     // Apply filters
     final filteredEvents = eventProvider.eventsList.where((event) {
       final matchesSearch =
@@ -109,9 +112,14 @@ class _EventListScreenState extends State<EventListScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(
-                            Icons.calendar_today,
-                            color: Color(0xFFD1B26F),
+                          SvgPicture.asset(
+                            'lib/assets/icons/calendar.svg',
+                            colorFilter: const ColorFilter.mode(
+                              Colors.white,
+                              BlendMode.srcIn,
+                            ),
+                            width: 20,
+                            height: 20,
                           ),
                           const SizedBox(width: 4),
                           Text(

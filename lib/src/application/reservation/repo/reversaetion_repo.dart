@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:mingly/src/api_service/api_service.dart';
-import 'package:mingly/src/application/favourite/model/favourite_model.dart';
 import 'package:mingly/src/application/reservation/model/reservation_model.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';

@@ -15,7 +15,7 @@ import 'package:mingly/src/screens/protected/booking_confirmation_screen/table_b
 import 'package:mingly/src/screens/protected/booking_summary/booking_summary.dart';
 import 'package:mingly/src/screens/protected/event_detail_screen/event_detail_screen.dart';
 import 'package:mingly/src/screens/protected/event_detail_screen/event_details_screen_one.dart';
-import 'package:mingly/src/screens/protected/event_list_screen/event_list_screen.dart';
+import 'package:mingly/src/screens/protected/event_list_screen/view/event_list_screen.dart';
 import 'package:mingly/src/screens/protected/favourite/favourite_screen.dart';
 import 'package:mingly/src/screens/protected/food_menu_screen/food_menu_screen.dart';
 import 'package:mingly/src/screens/protected/home_screen/ai_chat.dart';
