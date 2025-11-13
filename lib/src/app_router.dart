@@ -34,7 +34,7 @@ import 'package:mingly/src/screens/protected/profile_screen/leader_board.dart';
 import 'package:mingly/src/screens/protected/profile_screen/order_history.dart';
 import 'package:mingly/src/screens/protected/profile_screen/order_history_details.dart';
 import 'package:mingly/src/screens/protected/profile_screen/point_history.dart';
-import 'package:mingly/src/screens/protected/profile_screen/profile_screen.dart';
+import 'package:mingly/src/screens/protected/profile_screen/view/profile_screen.dart';
 import 'package:mingly/src/screens/protected/profile_screen/promo_code_screen.dart';
 import 'package:mingly/src/screens/protected/profile_screen/view_profile_screen.dart';
 import 'package:mingly/src/screens/protected/profile_screen/voucher_list.dart';
@@ -47,6 +47,7 @@ import 'package:mingly/src/screens/protected/venue_list_screen/view/venue_list_s
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'application/venues/model/venues_model.dart';
+import 'screens/protected/reserve_venue/view/venue_reserve_screen.dart';
 
 class AppRouter {
   static Future<GoRouter> createRouter() async {
@@ -106,6 +107,14 @@ class AppRouter {
             final venue =
                 state.extra as VenuesModel;
             return VenueDetailScreen(venue: venue);
+          },
+        ),
+        GoRoute(
+          path: '/venue-reserve',
+          builder: (context, state) {
+            final venue =
+                state.extra as VenuesModel;
+            return VenueReserveScreen(venue: venue);
           },
         ),
         GoRoute(

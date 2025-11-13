@@ -1,12 +1,12 @@
 class ProfileModel {
   String? message;
-  Data? data;
+  PersonalInformation? data;
 
   ProfileModel({this.message, this.data});
 
   ProfileModel.fromJson(Map<String, dynamic> json) {
     message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? new PersonalInformation.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -19,7 +19,7 @@ class ProfileModel {
   }
 }
 
-class Data {
+class PersonalInformation {
   String? fullName;
   String? mobile;
   String? firstName;
@@ -34,7 +34,7 @@ class Data {
   String  ? referralCode ;
   
 
-  Data(
+  PersonalInformation(
       {this.fullName,
       this.mobile,
       this.firstName,
@@ -47,7 +47,7 @@ class Data {
       this.targetPoints,
       this.progress});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  PersonalInformation.fromJson(Map<String, dynamic> json) {
     fullName = json['full_name'];
     mobile = json['mobile'];
     firstName = json['first_name'];

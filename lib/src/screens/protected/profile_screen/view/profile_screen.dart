@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mingly/src/components/custom_dialog.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 import 'package:mingly/src/screens/protected/my_reservation_screen/my_reservation_screen.dart';
+import 'package:mingly/src/screens/protected/profile_screen/controller/profile_controller.dart';
 import 'package:mingly/src/screens/protected/profile_screen/profile_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -13,13 +15,14 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final profileProvider = context.watch<ProfileProvider>();
+    final controller = Get.put(ProfileController());
+
     return Scaffold(
-      backgroundColor: theme.colorScheme.background,
+      backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         elevation: 0,
-        backgroundColor: theme.colorScheme.background,
+        backgroundColor: theme.colorScheme.surface,
         title: const Text(
           'Edit Profile',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -32,79 +35,84 @@ class ProfileScreen extends StatelessWidget {
           child: Column(
             children: [
               // Profile Card
-              profileProvider.profileModel == null ||
-                      profileProvider.profileModel.data == null
-                  ? Center(child: CircularProgressIndicator())
-                  : Card(
-                      color: Color(0xFF2E2D2C),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        side: BorderSide(color: Color(0xFFFFFAE5), width: 0.5),
-                      ),
+              Obx(() {
+                return controller.isProfileInfoLoading.value
+                    ? Center(child: CircularProgressIndicator())
+                    : Card(
+                        color: Color(0xFF2E2D2C),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          side: BorderSide(
+                            color: Color(0xFFFFFAE5),
+                            width: 0.5,
+                          ),
+                        ),
 
-                      child: ListTile(
-                        leading: InkWell(
-                          onTap: () {
-                            context.push('/view-profile');
-                          },
-                          child: CircleAvatar(
-                            radius: 28,
-                            backgroundImage:
-                                profileProvider.profileModel.data!.avatar == null
-                                ? const AssetImage("lib/assets/images/pp.png")
-                                : NetworkImage(
-                                        AppUrls.imageUrlNgrok +
-                                            profileProvider
-                                                .profileModel
-                                                .data!
-                                                .avatar
-                                                .toString(),
-                                      )
-                                      as ImageProvider,
+                        child: ListTile(
+                          leading: InkWell(
+                            onTap: () {
+                              context.push('/view-profile');
+                            },
+                            child: CircleAvatar(
+                              radius: 28,
+                              backgroundImage:
+                                  controller.profile.value.avatar == null
+                                  ? const AssetImage("lib/assets/images/pp.png")
+                                  : NetworkImage(
+                                          AppUrls.imageUrlNgrok +
+                                              controller.profile.value.avatar
+                                                  .toString(),
+                                        )
+                                        as ImageProvider,
+                            ),
                           ),
-                        ),
-                        title: Text(
-                          profileProvider.profileModel.data?.fullName ?? "",
-                          style: TextStyle(
-                            color: const Color(0xFFFFFAE5),
-                            fontSize: 16,
-                            fontFamily: 'Lato',
-                            fontWeight: FontWeight.w500,
-                            height: 1.75,
+                          title: Text(
+                            controller.profile.value.fullName ?? "",
+                            style: TextStyle(
+                              color: const Color(0xFFFFFAE5),
+                              fontSize: 16,
+                              fontFamily: 'Lato',
+                              fontWeight: FontWeight.w500,
+                              height: 1.75,
+                            ),
                           ),
-                        ),
-                        subtitle: Text(
-                          profileProvider.profileModel.data?.mobile ?? "",
-                          style: TextStyle(
-                            color: const Color(0xFFFAE7E7),
-                            fontSize: 14,
-                            fontFamily: 'Lato',
-                            fontWeight: FontWeight.w500,
-                            height: 1.43,
+                          subtitle: Text(
+                            controller.profile.value.mobile ?? "",
+                            style: TextStyle(
+                              color: const Color(0xFFFAE7E7),
+                              fontSize: 14,
+                              fontFamily: 'Lato',
+                              fontWeight: FontWeight.w500,
+                              height: 1.43,
+                            ),
                           ),
-                        ),
-                        trailing: InkWell(
-                          onTap: () => context.push("/edit-profile"),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 22,
-                              vertical: 12,
-                            ).copyWith(right: 0),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: const [
-                                Text(
-                                  'Edit Profile',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                SizedBox(width: 10),
-                                Icon(Icons.edit, color: Colors.white, size: 18),
-                              ],
+                          trailing: InkWell(
+                            onTap: () => context.push("/edit-profile"),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 22,
+                                vertical: 12,
+                              ).copyWith(right: 0),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: const [
+                                  Text(
+                                    'Edit Profile',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Icon(
+                                    Icons.edit,
+                                    color: Colors.white,
+                                    size: 18,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
+                      );
+              }),
               const SizedBox(height: 16),
               // Membership Status Card
               Card(
@@ -127,10 +135,7 @@ class ProfileScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            profileProvider
-                                    .profileModel
-                                    .data!
-                                    .membershipStatus ??
+                            controller.profile.value.membershipStatus ??
                                 "N/A",
                             style: TextStyle(
                               color: Colors.white,
@@ -139,9 +144,8 @@ class ProfileScreen extends StatelessWidget {
                           ),
 
                           Text(
-                            profileProvider.profileModel.data!.points
-                                    .toString() ??
-                                "0",
+                            controller.profile.value.points
+                                    .toString(),
                             style: TextStyle(color: Colors.white70),
                           ),
                         ],
@@ -155,7 +159,7 @@ class ProfileScreen extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            '${profileProvider.profileModel.data!.currentPoints} /',
+                            '${controller.profile.value.currentPoints} /',
                             style: TextStyle(
                               color: const Color(0xFFFFFAE5),
                               fontSize: 24,
@@ -165,7 +169,7 @@ class ProfileScreen extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            '${profileProvider.profileModel.data!.targetPoints} IDR',
+                            '${controller.profile.value.targetPoints} IDR',
                             style: TextStyle(
                               color: const Color(0xFFB1A39E),
                               fontSize: 12,

@@ -148,18 +148,21 @@ class Images {
 class OpeningHours {
   String? open;
   String? close;
+  List<String>? openingDays;
 
-  OpeningHours({this.open, this.close});
+  OpeningHours({this.open, this.close, this.openingDays});
 
   OpeningHours.fromJson(Map<String, dynamic> json) {
     open = json['opening_hour'];
     close = json['closing_hour'];
+    openingDays = List<String>.from(json['opening_days'] ?? []);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['opening_hour'] = open;
     data['closing_hour'] = close;
+    data['opening_days'] = openingDays;
     return data;
   }
 }
