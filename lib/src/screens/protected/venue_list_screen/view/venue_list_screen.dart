@@ -220,34 +220,39 @@ class _VenueListScreenState extends State<VenueListScreen> {
                           style: TextStyle(color: Colors.white54),
                         ),
                       )
-                    : ListView.builder(
-                        itemCount: controller.venuesList.length,
-                        itemBuilder: (context, index) {
-                          final venue = controller.venuesList[index];
-                          return _VenueCard(
-                            onTap: () {
-                              // venuesProvider.selectedVenue(venue.id);
-                              // await eventProvider.getEvetListVuneWise(
-                              //   venue.id!.toInt(),
-                              // );
-                              // await venuesProvider.getVenueMenuList(
-                              //   venue.id!.toInt(),
-                              // );
-                              context.push("/venue-detail", extra: venue);
-                            },
-                            image:
-                                venue.images!.isEmpty ||
-                                    venue.images!.first.imageUrl == null
-                                ? "https://www.directmobilityonline.co.uk/assets/img/noimage.png"
-                                : "${AppUrls.imageUrl}${venue.images!.first.imageUrl!}",
-                            title: venue.name ?? '',
-                            location: venue.city ?? '',
-                            time: venue.openingHours == null
-                                ? ""
-                                : "${venue.openingHours!.open} - ${venue.openingHours!.close}",
-                          );
+                    : RefreshIndicator(
+                        onRefresh: () async{
+                          controller.fetchVenues();
                         },
-                      ),
+                      child: ListView.builder(
+                          itemCount: controller.venuesList.length,
+                          itemBuilder: (context, index) {
+                            final venue = controller.venuesList[index];
+                            return _VenueCard(
+                              onTap: () {
+                                // venuesProvider.selectedVenue(venue.id);
+                                // await eventProvider.getEvetListVuneWise(
+                                //   venue.id!.toInt(),
+                                // );
+                                // await venuesProvider.getVenueMenuList(
+                                //   venue.id!.toInt(),
+                                // );
+                                context.push("/venue-detail", extra: venue);
+                              },
+                              image:
+                                  venue.images!.isEmpty ||
+                                      venue.images!.first.imageUrl == null
+                                  ? "https://www.directmobilityonline.co.uk/assets/img/noimage.png"
+                                  : "${AppUrls.imageUrl}${venue.images!.first.imageUrl!}",
+                              title: venue.name ?? '',
+                              location: venue.city ?? '',
+                              time: venue.openingHours == null
+                                  ? ""
+                                  : "${venue.openingHours!.open} - ${venue.openingHours!.close}",
+                            );
+                          },
+                        ),
+                    ),
               );
             }),
           ],

@@ -1,5 +1,6 @@
 import 'dart:core';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -22,11 +23,9 @@ class VenueDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(VenueDetailController(venue));
-
-    final provider = context.watch<VenueProvider>();
-    final eventProvider = context.watch<EventsProvider>();
+    // final controller = Get.put(VenueDetailController(venue));
     final theme = Theme.of(context);
+
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
@@ -37,7 +36,7 @@ class VenueDetailScreen extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          provider.selectedVenueData.name ?? 'Venue Detail',
+          'Venue Detail',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: false,
@@ -61,35 +60,35 @@ class VenueDetailScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 180,
+                height: 0.26.sh,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: venue.images == null || venue.images!.isEmpty
-                      ? Image.network(
-                          "https://www.directmobilityonline.co.uk/assets/img/noimage.png",
-                          height: 180,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                        )
-                      : PageView.builder(
-                          itemCount: venue.images!.length,
-                          itemBuilder: (context, index) {
-                            final image = venue.images![index];
-                            return Image.network(
-                              "${AppUrls.imageUrl}${image.imageUrl}",
-                              height: 180,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Container(
-                                    color: Colors.grey[500],
-                                    child: const Icon(
-                                      Icons.image_not_supported,
-                                    ),
-                                  ),
-                            );
-                          },
+                  child: CarouselSlider.builder(
+                    itemCount: venue.images?.length ?? 0,
+                    options: CarouselOptions(
+                      height: 0.26.sh,
+                      enlargeCenterPage: true,
+                      autoPlay: true,
+                      autoPlayInterval: Duration(seconds: 5),
+                      viewportFraction: 0.9,
+                      enlargeFactor: 0.2,
+                    ),
+                    itemBuilder: (context, index, realIndex) {
+                      return Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          image: DecorationImage(
+                            image: NetworkImage(
+                              AppUrls.imageUrl +
+                                  venue.images![index].imageUrl.toString(),
+                            ),
+                            fit: BoxFit.fill,
+                          ),
                         ),
+                      );
+                    },
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
@@ -106,7 +105,8 @@ class VenueDetailScreen extends StatelessWidget {
                   children: [
                     InkWell(
                       onTap: () {
-                        provider.toggleMenuList();
+                        //provider.toggleMenuList();
+                        
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -126,7 +126,7 @@ class VenueDetailScreen extends StatelessWidget {
                     Container(height: 35, width: 1, color: Color(0xFF8E7A72)),
                     InkWell(
                       onTap: () {
-                        provider.toggleMenuList();
+                        // provider.toggleMenuList();
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -148,213 +148,210 @@ class VenueDetailScreen extends StatelessWidget {
               ),
 
               const SizedBox(height: 16),
-
-              //event list and other info
-              provider.isMenuList == false
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    venue.name ?? '',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18.sp,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                  SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.location_on,
+                        color: theme.colorScheme.primary,
+                        size: 20,
+                      ),
+                      SizedBox(width: 8),
+                      Text(
+                        'Address',
+                        style: TextStyle(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    "${venue.address.toString()}, ${venue.city.toString()}, ${venue.state.toString()}, ${venue.country.toString()}",
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                  const SizedBox(height: 16),
+                  if (venue.openingHours?.openingDays?.isNotEmpty == true)
+                    Row(
                       children: [
+                        Icon(
+                          Icons.access_time,
+                          color: theme.colorScheme.primary,
+                          size: 20,
+                        ),
+                        SizedBox(width: 8),
                         Text(
-                          venue.name ?? '',
+                          'Opening',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: theme.colorScheme.primary,
                             fontWeight: FontWeight.bold,
-                            fontSize: 18.sp,
                           ),
-                          textAlign: TextAlign.left,
                         ),
-                        SizedBox(height: 16),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.location_on,
-                              color: theme.colorScheme.primary,
-                              size: 20,
-                            ),
-                            SizedBox(width: 8),
-                            Text(
-                              'Address',
-                              style: TextStyle(
-                                color: theme.colorScheme.primary,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
+                      ],
+                    ),
+                  if (venue.openingHours?.openingDays?.isNotEmpty == true)
+                    const SizedBox(height: 4),
+                  if (venue.openingHours?.openingDays?.isNotEmpty == true)
+                    Row(
+                      children: [
+                        Text('Friday', style: TextStyle(color: Colors.white70)),
+                        SizedBox(width: 16),
                         Text(
-                          "${venue.address.toString()}, ${venue.city.toString()}, ${venue.state.toString()}, ${venue.country.toString()}",
+                          venue.openingHours == null
+                              ? ""
+                              : "${venue.openingHours!.open} - ${venue.openingHours!.close}",
                           style: TextStyle(color: Colors.white70),
                         ),
-                        const SizedBox(height: 16),
-                        if (venue.openingHours?.openingDays?.isNotEmpty == true)
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.access_time,
-                                color: theme.colorScheme.primary,
-                                size: 20,
-                              ),
-                              SizedBox(width: 8),
-                              Text(
-                                'Opening',
-                                style: TextStyle(
-                                  color: theme.colorScheme.primary,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        if (venue.openingHours?.openingDays?.isNotEmpty == true)
-                          const SizedBox(height: 4),
-                        if (venue.openingHours?.openingDays?.isNotEmpty == true)
-                          Row(
-                            children: [
-                              Text(
-                                'Friday',
-                                style: TextStyle(color: Colors.white70),
-                              ),
-                              SizedBox(width: 16),
-                              Text(
-                                venue.openingHours == null
-                                    ? ""
-                                    : "${venue.openingHours!.open} - ${venue.openingHours!.close}",
-                                style: TextStyle(color: Colors.white70),
-                              ),
-                            ],
-                          ),
-                        const SizedBox(height: 16),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.group,
-                              color: theme.colorScheme.primary,
-                              size: 20,
-                            ),
-                            SizedBox(width: 8),
-                            Text(
-                              'Capacity',
-                              style: TextStyle(
-                                color: Color(0xFFD1B26F),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            Text(
-                              provider.selectedVenueData.capacity.toString(),
-                              style: TextStyle(color: Colors.white70),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 24),
-
-                        // const SizedBox(height: 8),
-                        // Obx(() {
-                        //   return controller.eventsList.isEmpty
-                        //       ? Container()
-                        //       : Column(
-                        //           children: List.generate(
-                        //             controller.eventsList.length,
-                        //             (index) {
-                        //               return InkWell(
-                        //                 onTap: () async {
-                        //                   context.push(
-                        //                     "/event-detail",
-                        //                     extra: controller.eventsList[index],
-                        //                   );
-                        //                 },
-                        //                 child: _PopularEventCard(
-                        //                   image:
-                        //                       controller
-                        //                                   .eventsList[index]
-                        //                                   .images
-                        //                                   ?.isEmpty ==
-                        //                               true ||
-                        //                           controller
-                        //                                   .eventsList[index]
-                        //                                   .images
-                        //                                   ?.firstOrNull
-                        //                                   ?.imageUrl ==
-                        //                               null
-                        //                       ? "https://www.directmobilityonline.co.uk/assets/img/noimage.png"
-                        //                       : "${AppUrls.imageUrl}${eventProvider.eventsListVenueWise[index].images!.first.imageUrl}",
-                        //                   name: eventProvider
-                        //                       .eventsListVenueWise[index]
-                        //                       .eventName
-                        //                       .toString(),
-                        //                 ),
-                        //               );
-                        //             },
-                        //           ),
-                        //         );
-                        // }),
-                        const SizedBox(height: 32),
                       ],
-                    )
-                  : provider.venueMenuList.isEmpty
-                  ? Center(child: Text("No menu available"))
-                  : Column(
-                      children: List.generate(provider.venueMenuList.length, (
-                        index,
-                      ) {
-                        final item = provider.venueMenuList[index];
-                        return MenuCardVenue(
-                          item: item,
-                          onTap: () {
-                            // Example: navigate to detail page or show details modal.
-                            showDialog(
-                              context: context,
-                              builder: (_) => AlertDialog(
-                                title: Text(item.name!),
-                                content: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Image.network(
-                                      AppUrls.imageUrl + item.image!,
-                                      width: 120,
-                                      height: 120,
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) =>
-                                              Container(
-                                                width: 120,
-                                                height: 120,
-                                                color: Colors.grey[500],
-                                                child: const Icon(
-                                                  Icons.image_not_supported,
-                                                ),
-                                              ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Text(item.description!),
-                                    const SizedBox(height: 8),
-                                    Text('Quantity: ${item.quantity}'),
-                                    Text(
-                                      'Price: ${double.parse(item.price!).toStringAsFixed(2)}',
-                                    ),
-                                  ],
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(),
-                                    child: const Text('Close'),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        );
-                      }),
                     ),
-              provider.venueMenuList.isEmpty && provider.isMenuList
-                  ? SizedBox(height: 32)
-                  : const SizedBox(),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.group,
+                        color: theme.colorScheme.primary,
+                        size: 20,
+                      ),
+                      SizedBox(width: 8),
+                      Text(
+                        'Capacity',
+                        style: TextStyle(
+                          color: Color(0xFFD1B26F),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Text(
+                        venue.capacity.toString(),
+                        style: TextStyle(color: Colors.white70),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+
+                  // const SizedBox(height: 8),
+                  // Obx(() {
+                  //   return controller.eventsList.isEmpty
+                  //       ? Container()
+                  //       : Column(
+                  //           children: List.generate(
+                  //             controller.eventsList.length,
+                  //             (index) {
+                  //               return InkWell(
+                  //                 onTap: () async {
+                  //                   context.push(
+                  //                     "/event-detail",
+                  //                     extra: controller.eventsList[index],
+                  //                   );
+                  //                 },
+                  //                 child: _PopularEventCard(
+                  //                   image:
+                  //                       controller
+                  //                                   .eventsList[index]
+                  //                                   .images
+                  //                                   ?.isEmpty ==
+                  //                               true ||
+                  //                           controller
+                  //                                   .eventsList[index]
+                  //                                   .images
+                  //                                   ?.firstOrNull
+                  //                                   ?.imageUrl ==
+                  //                               null
+                  //                       ? "https://www.directmobilityonline.co.uk/assets/img/noimage.png"
+                  //                       : "${AppUrls.imageUrl}${eventProvider.eventsListVenueWise[index].images!.first.imageUrl}",
+                  //                   name: eventProvider
+                  //                       .eventsListVenueWise[index]
+                  //                       .eventName
+                  //                       .toString(),
+                  //                 ),
+                  //               );
+                  //             },
+                  //           ),
+                  //         );
+                  // }),
+                  const SizedBox(height: 32),
+                ],
+              ),
+
+              //event list and other info
+              // provider.isMenuList == false
+              //     ? provider.venueMenuList.isEmpty
+              //     ? Center(child: Text("No menu available"))
+              //     : Column(
+              //         children: List.generate(provider.venueMenuList.length, (
+              //           index,
+              //         ) {
+              //           final item = provider.venueMenuList[index];
+              //           return MenuCardVenue(
+              //             item: item,
+              //             onTap: () {
+              //               // Example: navigate to detail page or show details modal.
+              //               showDialog(
+              //                 context: context,
+              //                 builder: (_) => AlertDialog(
+              //                   title: Text(item.name!),
+              //                   content: Column(
+              //                     mainAxisSize: MainAxisSize.min,
+              //                     crossAxisAlignment: CrossAxisAlignment.center,
+              //                     children: [
+              //                       Image.network(
+              //                         AppUrls.imageUrl + item.image!,
+              //                         width: 120,
+              //                         height: 120,
+              //                         fit: BoxFit.cover,
+              //                         errorBuilder:
+              //                             (context, error, stackTrace) =>
+              //                                 Container(
+              //                                   width: 120,
+              //                                   height: 120,
+              //                                   color: Colors.grey[500],
+              //                                   child: const Icon(
+              //                                     Icons.image_not_supported,
+              //                                   ),
+              //                                 ),
+              //                       ),
+              //                       const SizedBox(height: 8),
+              //                       Text(item.description!),
+              //                       const SizedBox(height: 8),
+              //                       Text('Quantity: ${item.quantity}'),
+              //                       Text(
+              //                         'Price: ${double.parse(item.price!).toStringAsFixed(2)}',
+              //                       ),
+              //                     ],
+              //                   ),
+              //                   actions: [
+              //                     TextButton(
+              //                       onPressed: () =>
+              //                           Navigator.of(context).pop(),
+              //                       child: const Text('Close'),
+              //                     ),
+              //                   ],
+              //                 ),
+              //               );
+              //             },
+              //           );
+              //         }),
+              //       ),
+              // provider.venueMenuList.isEmpty && provider.isMenuList
+              //     ? SizedBox(height: 32)
+              //     : const SizedBox(),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Row(
@@ -371,7 +368,7 @@ class VenueDetailScreen extends StatelessWidget {
                         ),
                         onPressed: () {
                           openMapToAddress(
-                            "${provider.selectedVenueData.address.toString()}, ${provider.selectedVenueData.city.toString()}, ${provider.selectedVenueData.state.toString()}, ${provider.selectedVenueData.country.toString()}",
+                            "${venue.address.toString()}, ${venue.city.toString()}, ${venue.state.toString()}, ${venue.country.toString()}",
                           );
                         },
                         child: const Text('Direction'),

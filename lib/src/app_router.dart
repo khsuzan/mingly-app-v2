@@ -40,8 +40,8 @@ import 'package:mingly/src/screens/protected/profile_screen/view_profile_screen.
 import 'package:mingly/src/screens/protected/profile_screen/voucher_list.dart';
 import 'package:mingly/src/screens/protected/select_country_screen/select_country_screen.dart';
 import 'package:mingly/src/screens/protected/select_payment_screen/select_payment_screen.dart';
-import 'package:mingly/src/screens/protected/table_booking_screen/table_booking_screen.dart';
-import 'package:mingly/src/screens/protected/ticket_booking_screen/ticket_booking_screen.dart';
+import 'package:mingly/src/screens/protected/table_booking_screen/view/table_booking_screen.dart';
+import 'package:mingly/src/screens/protected/ticket_booking_screen/view/ticket_booking_screen.dart';
 import 'package:mingly/src/screens/protected/venue_detail_screen/view/venue_detail_screen.dart';
 import 'package:mingly/src/screens/protected/venue_list_screen/view/venue_list_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -99,27 +99,27 @@ class AppRouter {
         ),
         GoRoute(
           path: '/ticket-booking',
-          builder: (context, state) => const TicketBookingScreen(),
+          builder: (context, state) =>
+              TicketBookingScreen(event: state.extra as EventsModel),
         ),
         GoRoute(
           path: '/venue-detail',
           builder: (context, state) {
-            final venue =
-                state.extra as VenuesModel;
+            final venue = state.extra as VenuesModel;
             return VenueDetailScreen(venue: venue);
           },
         ),
         GoRoute(
           path: '/venue-reserve',
           builder: (context, state) {
-            final venue =
-                state.extra as VenuesModel;
+            final venue = state.extra as VenuesModel;
             return VenueReserveScreen(venue: venue);
           },
         ),
         GoRoute(
           path: '/table-booking',
-          builder: (context, state) => const TableBookingScreen(),
+          builder: (context, state) =>
+              TableBookingScreen(event: state.extra as EventsModel),
         ),
         GoRoute(
           path: '/select-country',
@@ -154,7 +154,7 @@ class AppRouter {
           builder: (context, state) {
             final event =
                 state.extra as EventsModel; // 👈 cast to your event model type
-            return EventDetailScreen(model: event);
+            return EventDetailScreen(event: event);
           },
         ),
 

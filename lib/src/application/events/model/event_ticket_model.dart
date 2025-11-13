@@ -1,5 +1,5 @@
 class EventsTicketModel {
-  int? id;
+  final int id;
   String? title;
   String? price;
   int? totalTicketQty;
@@ -22,7 +22,7 @@ class EventsTicketModel {
   int? promocode;
 
   EventsTicketModel(
-      {this.id,
+      {required this.id,
       this.title,
       this.price,
       this.totalTicketQty,
@@ -44,28 +44,30 @@ class EventsTicketModel {
       this.tax,
       this.promocode});
 
-  EventsTicketModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    title = json['title'];
-    price = json['price'];
-    totalTicketQty = json['total_ticket_qty'];
-    isHasBookingLimit = json['is_has_booking_limit'];
-    ticketLimit = json['ticket_limit'];
-    isHasAllowKids = json['is_has_allow_kids'];
-    description = json['description'];
-    isOffer = json['is_offer'];
-    startOfferDateTime = json['start_offer_date_time'];
-    endOfferDateTime = json['end_offer_date_time'];
-    offerValue = json['offer_value'];
-    availableSales = json['available_sales'];
-    isSoldOut = json['is_sold_out'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    ticketType = json['ticket_type'];
-    event = json['event'];
-    commission = json['commission'];
-    tax = json['tax'];
-    promocode = json['promocode'];
+  factory EventsTicketModel.fromJson(Map<String, dynamic> json) {
+    return EventsTicketModel(
+      id: json['id'] as int,
+      title: json['title'] as String?,
+      price: json['price'] as String?,
+      totalTicketQty: json['total_ticket_qty'] as int?,
+      isHasBookingLimit: json['is_has_booking_limit'] as int?,
+      ticketLimit: json['ticket_limit'] as int?,
+      isHasAllowKids: json['is_has_allow_kids'] as int?,
+      description: json['description'] as String?,
+      isOffer: json['is_offer'] as int?,
+      startOfferDateTime: json['start_offer_date_time'],
+      endOfferDateTime: json['end_offer_date_time'],
+      offerValue: json['offer_value'] as String?,
+      availableSales: json['available_sales'] as int?,
+      isSoldOut: json['is_sold_out'] as int?,
+      createdAt: json['created_at'] as String?,
+      updatedAt: json['updated_at'] as String?,
+      ticketType: json['ticket_type'],
+      event: json['event'] as int?,
+      commission: json['commission'] as int?,
+      tax: json['tax'] as int?,
+      promocode: json['promocode'] as int?,
+    );
   }
 
   Map<String, dynamic> toJson() {

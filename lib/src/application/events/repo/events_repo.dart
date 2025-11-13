@@ -9,6 +9,8 @@ import 'package:mingly/src/application/events/model/table_ticket_model.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../model/event_session_model.dart';
+
 class EventsRepo {
   Future<List<EventsModel>> getEvents() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -125,6 +127,13 @@ class EventsRepo {
     );
     return reseponse;
   }
-
+  Future<List<EventSessionModel>> getEventSessions(String id) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final response = await ApiService().getList(
+      AppUrls.eventSessions.replaceFirst(":id", id),
+      authToken: preferences.getString("authToken"),
+    );
+    return response.map((e) => EventSessionModel.fromJson(e)).toList();
+  }
   
 }

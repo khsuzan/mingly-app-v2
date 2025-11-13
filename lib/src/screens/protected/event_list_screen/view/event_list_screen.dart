@@ -28,26 +28,26 @@ class _EventListScreenState extends State<EventListScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final controller = Get.put(EventListController());
-    final eventProvider = context.watch<EventsProvider>();
+    // final eventProvider = context.watch<EventsProvider>();
     // Apply filters
-    final filteredEvents = eventProvider.eventsList.where((event) {
-      final matchesSearch =
-          _searchQuery.isEmpty ||
-          (event.eventName?.toLowerCase().contains(
-                _searchQuery.toLowerCase(),
-              ) ??
-              false) ||
-          (event.venueName?.toLowerCase().contains(
-                _searchQuery.toLowerCase(),
-              ) ??
-              false);
+    // final filteredEvents = eventProvider.eventsList.where((event) {
+    //   final matchesSearch =
+    //       _searchQuery.isEmpty ||
+    //       (event.eventName?.toLowerCase().contains(
+    //             _searchQuery.toLowerCase(),
+    //           ) ??
+    //           false) ||
+    //       (event.venueName?.toLowerCase().contains(
+    //             _searchQuery.toLowerCase(),
+    //           ) ??
+    //           false);
 
-      final matchesDate = _selectedDate == null
-          ? true
-          : DateTime.tryParse('')?.toLocal().day == _selectedDate?.day;
+    //   final matchesDate = _selectedDate == null
+    //       ? true
+    //       : DateTime.tryParse('')?.toLocal().day == _selectedDate?.day;
 
-      return matchesSearch && matchesDate;
-    }).toList();
+    //   return matchesSearch && matchesDate;
+    // }).toList();
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
@@ -95,10 +95,10 @@ class _EventListScreenState extends State<EventListScreen> {
                       if (picked != null) {
                         setState(() => _selectedDate = picked);
                       }
-                      await eventProvider.getEventListSearch(
-                        _selectedDate.toString(),
-                        _searchQuery,
-                      );
+                      // await eventProvider.getEventListSearch(
+                      //   _selectedDate.toString(),
+                      //   _searchQuery,
+                      // );
                     },
                     child: Container(
                       height: 48,
@@ -166,10 +166,10 @@ class _EventListScreenState extends State<EventListScreen> {
                       ),
                       onChanged: (value) async {
                         setState(() => _searchQuery = value);
-                        await eventProvider.getEventListSearch(
-                          _selectedDate.toString(),
-                          _searchQuery,
-                        );
+                        // await eventProvider.getEventListSearch(
+                        //   _selectedDate.toString(),
+                        //   _searchQuery,
+                        // );
                       },
                     ),
                   ),
@@ -179,50 +179,48 @@ class _EventListScreenState extends State<EventListScreen> {
           ),
 
           // Event Grid
-          Expanded(
-            child: filteredEvents.isEmpty
-                ? const Center(
-                    child: Text(
-                      "No events found",
-                      style: TextStyle(color: Colors.white70),
+          Obx(() {
+            return Expanded(
+              child: controller.isEventsLoading.value
+                  ? Center(child: CircularProgressIndicator())
+                  : controller.events.isEmpty
+                  ? const Center(
+                      child: Text(
+                        "No events found",
+                        style: TextStyle(color: Colors.white70),
+                      ),
+                    )
+                  : GridView.builder(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 2,
+                        vertical: 8,
+                      ),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 8,
+                            mainAxisSpacing: 12,
+                            childAspectRatio: 0.7,
+                          ),
+                      itemCount: controller.events.length,
+                      itemBuilder: (context, index) {
+                        final event = controller.events[index];
+                        return _EventCard(
+                          onTap: () async {
+                            context.push("/event-detail", extra: event);
+                          },
+                          date: "",
+                          image: event.images!.isEmpty
+                              ? ''
+                              : event.images!.first.imageUrl!,
+                          title: event.eventName ?? "",
+                          location: event.venueName ?? "",
+                          country: event.currency ?? "",
+                        );
+                      },
                     ),
-                  )
-                : GridView.builder(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 2,
-                      vertical: 8,
-                    ),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 8,
-                          mainAxisSpacing: 12,
-                          childAspectRatio: 0.7,
-                        ),
-                    itemCount: filteredEvents.length,
-                    itemBuilder: (context, index) {
-                      final event = filteredEvents[index];
-                      return _EventCard(
-                        onTap: () async {
-                          LoadingDialog.show(context);
-                          eventProvider.selectEventModelFunction(event);
-                          await eventProvider.getEventsDetailsData(
-                            event.id.toString(),
-                          );
-                          LoadingDialog.hide(context);
-                          context.push("/event-detail", extra: event);
-                        },
-                        date: "",
-                        image: event.images!.isEmpty
-                            ? ''
-                            : event.images!.first.imageUrl!,
-                        title: event.eventName ?? "",
-                        location: event.venueName ?? "",
-                        country: event.currency ?? "",
-                      );
-                    },
-                  ),
-          ),
+            );
+          }),
         ],
       ),
     );

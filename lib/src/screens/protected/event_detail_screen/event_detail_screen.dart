@@ -1,25 +1,27 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mingly/src/application/events/model/events_model.dart';
 import 'package:mingly/src/components/custom_loading_dialog.dart';
-import 'package:mingly/src/components/custom_snackbar.dart';
 import 'package:mingly/src/components/helpers.dart';
-import 'package:mingly/src/constant/app_urls.dart';
-import 'package:mingly/src/screens/protected/event_list_screen/events_provider.dart';
-import 'package:mingly/src/screens/protected/venue_list_screen/venue_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../constant/app_urls.dart';
+import 'controller/event_detail_controller.dart';
+
 class EventDetailScreen extends StatelessWidget {
-  EventsModel model;
-  EventDetailScreen({super.key, required this.model});
+  final EventsModel event;
+  const EventDetailScreen({super.key, required this.event});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final eventProvider = context.watch<EventsProvider>();
-    final venueProvider = context.watch<VenueProvider>();
+    final controller = Get.put(EventDetailController(id: event.id.toString()));
+    // final eventProvider = context.watch<EventsProvider>();
+    // final venueProvider = context.watch<VenueProvider>();
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
@@ -30,31 +32,15 @@ class EventDetailScreen extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          eventProvider.eventDetailsModel.eventName.toString(),
+          event.eventName.toString(),
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         actions: [
           IconButton(
             icon: Icon(Icons.favorite_border, color: const Color(0xFFD1B26F)),
             onPressed: () async {
-              // Toggle favorite
               LoadingDialog.show(context);
-              final response = await eventProvider.addToFavourite(
-                eventProvider.eventDetailsModel.id.toString(),
-              );
-              if (response["message"] != null) {
-                CustomSnackbar.show(
-                  context,
-                  message: response["message"],
-                  backgroundColor: Colors.green,
-                );
-              } else {
-                CustomSnackbar.show(
-                  context,
-                  message: "Something wrong, try again",
-                  backgroundColor: Colors.green,
-                );
-              }
+              await controller.addToFavourite(event.id.toString());
               LoadingDialog.hide(context);
             },
           ),
@@ -76,109 +62,36 @@ class EventDetailScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Image carousel (static for now)
-              SizedBox(
-                height: 180,
-                child: Stack(
-                  children: [
-                    eventProvider.eventDetailsImageList.isEmpty
-                        ? Image.network(
-                            "https://www.directmobilityonline.co.uk/assets/img/noimage.png",
-                            height: 180,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                const Center(
-                                  child: Icon(
-                                    Icons.broken_image,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                          )
-                        : ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: PageView.builder(
-                              itemCount:
-                                  eventProvider.eventDetailsImageList.length,
-                              onPageChanged: (index) {},
-
-                              itemBuilder: (context, index) {
-                                return Image.network(
-                                  "${AppUrls.imageUrl}${eventProvider.eventDetailsImageList[index]}",
-                                  height: 180,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      const Center(
-                                        child: Icon(
-                                          Icons.broken_image,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                );
-                              },
-                            ),
-                          ),
-                    // 🔹 Back arrow
-                    Positioned(
-                      left: 8,
-                      top: 80,
-                      child: IconButton(
-                        icon: const Icon(
-                          Icons.arrow_back_ios,
-                          color: Colors.white70,
-                        ),
-                        onPressed: () {
-                          eventProvider.previousImage();
-                        },
-                      ),
-                    ),
-                    // 🔹 Forward arrow
-                    Positioned(
-                      right: 8,
-                      top: 80,
-                      child: IconButton(
-                        icon: const Icon(
-                          Icons.arrow_forward_ios,
-                          color: Colors.white70,
-                        ),
-                        onPressed: () {
-                          eventProvider.nextImage();
-                        },
-                      ),
-                    ),
-                    // 🔹 Dots indicator
-                    eventProvider.eventDetailsModel.images!.isEmpty
-                        ? SizedBox()
-                        : Positioned(
-                            bottom: 8,
-                            left: 0,
-                            right: 0,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: List.generate(
-                                eventProvider.eventDetailsModel.images!.length,
-                                (index) => Container(
-                                  margin: const EdgeInsets.symmetric(
-                                    horizontal: 3,
-                                  ),
-                                  width: 8,
-                                  height: 8,
-                                  decoration: BoxDecoration(
-                                    color: eventProvider.currentIndex == index
-                                        ? Colors.white
-                                        : Colors.white30,
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                  ],
+              CarouselSlider.builder(
+                itemCount: event.images?.length,
+                options: CarouselOptions(
+                  height: 0.26.sh,
+                  enlargeCenterPage: true,
+                  autoPlay: false,
+                  viewportFraction: 0.96,
+                  enlargeFactor: 0.2,
+                  enableInfiniteScroll: false
                 ),
+                itemBuilder: (context, index, realIndex) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          AppUrls.imageUrl +
+                              (event.images?[index].imageUrl.toString() ?? ''),
+                        ),
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                  );
+                },
               ),
+
               const SizedBox(height: 16),
               Text(
-                model.eventName.toString(),
+                event.eventName.toString(),
                 style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -191,7 +104,7 @@ class EventDetailScreen extends StatelessWidget {
                   Icon(Icons.location_on, color: Color(0xFFD1B26F), size: 18),
                   SizedBox(width: 4),
                   Text(
-                    model.venueCity.toString(),
+                    event.venueCity.toString(),
                     style: TextStyle(color: Colors.white70),
                   ),
                 ],
@@ -205,10 +118,12 @@ class EventDetailScreen extends StatelessWidget {
                     size: 18,
                   ),
                   SizedBox(width: 4),
-                  Text(
-                    eventProvider.eventDetailsModel.firstSessionDate.toString(),
-                    style: TextStyle(color: Colors.white70),
-                  ),
+                  Obx(() {
+                    return Text(
+                      controller.detail.value.firstSessionDate.toString(),
+                      style: TextStyle(color: Colors.white70),
+                    );
+                  }),
                 ],
               ),
               const SizedBox(height: 8),
@@ -217,7 +132,7 @@ class EventDetailScreen extends StatelessWidget {
                   Icon(Icons.access_time, color: Color(0xFFD1B26F), size: 18),
                   SizedBox(width: 4),
                   Text(
-                    '${formatTimeToAmPm(eventProvider.eventDetailsModel.sessionStartTime.toString())} - ${formatTimeToAmPm(eventProvider.eventDetailsModel.sessionEndTime.toString())}',
+                    '${formatTimeToAmPm(controller.detail.value.sessionStartTime.toString())} - ${formatTimeToAmPm(controller.detail.value.sessionEndTime.toString())}',
                     style: TextStyle(color: Colors.white70),
                   ),
                 ],
@@ -233,7 +148,7 @@ class EventDetailScreen extends StatelessWidget {
               const SizedBox(height: 4),
 
               Linkify(
-                text: model.description ?? '',
+                text: event.description ?? '',
                 onOpen: (link) async {
                   print('Opening link: ${link.url}');
                   final Uri url = Uri.parse(link.url);
@@ -270,21 +185,22 @@ class EventDetailScreen extends StatelessWidget {
                       ),
                     ),
                     onPressed: () async {
-                      LoadingDialog.show(context);
-                      final status = await eventProvider.getEventTicketList(
-                        model.id.toString(),
-                      );
+                      context.push("/ticket-booking", extra: event);
+                      // LoadingDialog.show(context);
+                      // final status = await eventProvider.getEventTicketList(
+                      //   event.id.toString(),
+                      // );
 
-                      LoadingDialog.hide(context);
-                      if (status) {
-                        context.push("/ticket-booking");
-                      } else {
-                        CustomSnackbar.show(
-                          context,
-                          message: "No tickets available for this event",
-                          backgroundColor: Colors.red,
-                        );
-                      }
+                      // LoadingDialog.hide(context);
+                      // if (status) {
+                      //   context.push("/ticket-booking");
+                      // } else {
+                      //   CustomSnackbar.show(
+                      //     context,
+                      //     message: "No tickets available for this event",
+                      //     backgroundColor: Colors.red,
+                      //   );
+                      // }
                     },
                     child: const Text('Book Ticket'),
                   ),
@@ -301,30 +217,31 @@ class EventDetailScreen extends StatelessWidget {
                       ),
                     ),
                     onPressed: () async {
-                      LoadingDialog.show(context);
-                      final status = await eventProvider.getTableTicketList(
-                        eventProvider.eventDetailsModel.firstSessionDate
-                            .toString(),
-                        eventProvider.eventDetailsModel.sessionStartTime
-                            .toString(),
-                      );
-                      await venueProvider.getVenueMenuList(
-                        int.parse(
-                          venueProvider.getVenueId(
-                            eventProvider.selectEventModel.venueName.toString(),
-                          ),
-                        ),
-                      );
-                      LoadingDialog.hide(context);
-                      if (status) {
-                        context.push("/table-booking");
-                      } else {
-                        CustomSnackbar.show(
-                          context,
-                          message: "No tables available for this event",
-                          backgroundColor: Colors.red,
-                        );
-                      }
+                      context.push("/table-booking", extra: event);
+                      // LoadingDialog.show(context);
+                      // final status = await eventProvider.getTableTicketList(
+                      //   eventProvider.eventDetailsModel.firstSessionDate
+                      //       .toString(),
+                      //   eventProvider.eventDetailsModel.sessionStartTime
+                      //       .toString(),
+                      // );
+                      // await venueProvider.getVenueMenuList(
+                      //   int.parse(
+                      //     venueProvider.getVenueId(
+                      //       eventProvider.selectEventModel.venueName.toString(),
+                      //     ),
+                      //   ),
+                      // );
+                      // LoadingDialog.hide(context);
+                      // if (status) {
+                      //   context.push("/table-booking");
+                      // } else {
+                      //   CustomSnackbar.show(
+                      //     context,
+                      //     message: "No tables available for this event",
+                      //     backgroundColor: Colors.red,
+                      //   );
+                      // }
                     },
                     child: const Text('Sofa & Table'),
                   ),
