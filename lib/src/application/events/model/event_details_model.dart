@@ -8,6 +8,7 @@ class EventDetailsModel {
   String? sessionEndTime;
   String? requiredMembershipLevel;
   List<Images>? images;
+  Others? others;
 
   EventDetailsModel({
     this.eventName,
@@ -18,6 +19,7 @@ class EventDetailsModel {
     this.sessionEndTime,
     this.requiredMembershipLevel,
     this.images,
+    this.others,
   });
 
   EventDetailsModel.fromJson(Map<String, dynamic> json) {
@@ -32,23 +34,67 @@ class EventDetailsModel {
     if (json['images'] != null) {
       images = <Images>[];
       json['images'].forEach((v) {
-        images!.add(new Images.fromJson(v));
+        images!.add(Images.fromJson(v));
       });
+    }
+    if (json['others'] != null) {
+      others = Others.fromJson(json['others']);
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['event_name'] = this.eventName;
-    data['description'] = this.description;
-    data['city'] = this.city;
-    data['first_session_date'] = this.firstSessionDate;
-    data['session_start_time'] = this.sessionStartTime;
-    data['session_end_time'] = this.sessionEndTime;
-    data['required_membership_level'] = this.requiredMembershipLevel;
-    if (this.images != null) {
-      data['images'] = this.images!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = {};
+    data['event_name'] = eventName;
+    data['description'] = description;
+    data['city'] = city;
+    data['first_session_date'] = firstSessionDate;
+    data['session_start_time'] = sessionStartTime;
+    data['session_end_time'] = sessionEndTime;
+    data['required_membership_level'] = requiredMembershipLevel;
+    if (images != null) {
+      data['images'] = images!.map((v) => v.toJson()).toList();
     }
+    if (others != null) {
+      data['others'] = others!.toJson();
+    }
+    return data;
+  }
+}
+
+class Others {
+  int? id;
+  String? thumbnailImage;
+  String? bgImage;
+  String? imageGl;
+  String? seatingPlan;
+  String? youtube;
+
+  Others({
+    this.id,
+    this.thumbnailImage,
+    this.bgImage,
+    this.imageGl,
+    this.seatingPlan,
+    this.youtube,
+  });
+
+  Others.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    thumbnailImage = json['thumbnail_image'];
+    bgImage = json['bg_image'];
+    imageGl = json['image_gl'];
+    seatingPlan = json['seating_plan'];
+    youtube = json['youtube'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['thumbnail_image'] = thumbnailImage;
+    data['bg_image'] = bgImage;
+    data['image_gl'] = imageGl;
+    data['seating_plan'] = seatingPlan;
+    data['youtube'] = youtube;
     return data;
   }
 }

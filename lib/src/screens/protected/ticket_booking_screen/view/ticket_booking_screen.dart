@@ -81,7 +81,7 @@ class TicketBookingScreen extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(left: 32),
                 child: Text(
-                  '${event.venueName}\nCity - ${event.venueCity}',
+                  '${event.venue?.name}\nCity - ${event.venue?.city}',
                   style: TextStyle(color: Colors.white54, fontSize: 12),
                 ),
               ),

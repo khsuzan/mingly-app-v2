@@ -12,7 +12,7 @@ import 'package:mingly/src/screens/auth/welcome_screen/welcome_screen.dart';
 import 'package:mingly/src/screens/auth/signup_screen/signup_screen.dart';
 import 'package:mingly/src/screens/auth/password_reset_screen/password_reset_screen.dart';
 import 'package:mingly/src/screens/auth/otp_verification_screen/otp_verification_screen.dart';
-import 'package:mingly/src/screens/auth/login_screen/login_screen.dart';
+import 'package:mingly/src/screens/auth/login_screen/view/login_screen.dart';
 import 'package:mingly/src/screens/protected/event_detail_screen/event_details_screen_one.dart';
 import 'package:provider/provider.dart';
 // Protected screens

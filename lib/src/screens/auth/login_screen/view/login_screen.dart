@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mingly/src/components/custom_loading_dialog.dart';
 import 'package:mingly/src/components/custom_snackbar.dart';
 import 'package:mingly/src/screens/auth/auth_provider.dart';
+import 'package:mingly/src/screens/auth/login_screen/controller/login_controller.dart';
 import 'package:provider/provider.dart';
 
-import '../../../components/helpers.dart';
+import '../../../../components/helpers.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -15,7 +17,8 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final provider = context.watch<AuthProvider>();
+    final controller = Get.put(LoginController());
+    // final provider = context.watch<AuthProvider>();
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       body: SafeArea(
@@ -49,7 +52,8 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 32),
               // Username field
               SingleLineTextField(
-                controller: provider.emailController,
+                focusNode: controller.emailFocusNode,
+                controller: controller.emailController,
                 hintText: "Enter Email",
                 prefixSvg: SvgPicture.asset(
                   'lib/assets/icons/profile.svg',
@@ -64,7 +68,8 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 20),
               // Password field
               PasswordInputField(
-                controller: provider.passwordController,
+                focusNode: controller.passwordFocusNode,
+                controller: controller.passwordController,
                 hintText: "Enter Password",
 
                 prefixSvg: SvgPicture.asset(
@@ -81,26 +86,12 @@ class LoginScreen extends StatelessWidget {
               // Login button
               PrimaryButton(
                 text: 'Login',
-                onPressed: () async {
-                  LoadingDialog.show(context);
-                  final status = await provider.login();
-                  if (status['message'] != null) {
-                    LoadingDialog.hide(context);
-                    CustomSnackbar.show(
-                      context,
-                      message: status["message"],
-                      textColor: Colors.white,
-                      backgroundColor: Colors.green,
-                    );
-                    context.push("/home");
-                  } else if (status["error"] != null) {
-                    LoadingDialog.hide(context);
-                    CustomSnackbar.show(
-                      context,
-                      message: status["error"],
-                      backgroundColor: Colors.red,
-                    );
+                onPressed: () {
+                  if(controller.emailFocusNode.hasFocus || controller.passwordFocusNode.hasFocus){
+                    controller.emailFocusNode.unfocus();
+                    controller.passwordFocusNode.unfocus();
                   }
+                  controller.login(context);
                 },
               ),
               const SizedBox(height: 32),

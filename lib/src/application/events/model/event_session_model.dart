@@ -5,7 +5,7 @@ class EventSessionModel {
   final int event;
   final String sessionType;
   final String occurrence;
-  final List<int> daysOfWeek;
+  final List<String> daysOfWeek;
   final DateTime firstSessionDate;
   final DateTime lastSessionDate;
   final String sessionStartTime;
@@ -35,7 +35,7 @@ class EventSessionModel {
     required this.updatedAt,
   });
 
-  factory EventSessionModel.fromMap(Map<String, dynamic> map) {
+  factory EventSessionModel.fromJson(Map<String, dynamic> map) {
     int _toInt(dynamic v) {
       if (v is int) return v;
       if (v is num) return v.toInt();
@@ -47,8 +47,8 @@ class EventSessionModel {
       return DateTime.parse(v.toString());
     }
 
-    List<int> _toDays(dynamic raw) {
-      if (raw == null) return <int>[];
+    List<String> _toDays(dynamic raw) {
+      if (raw == null) return <String>[];
       String str;
       if (raw is String) {
         str = raw;
@@ -57,12 +57,11 @@ class EventSessionModel {
       }
       final decoded = jsonDecode(str);
       if (decoded is List) {
-        return decoded.map<int>((e) {
-          if (e is int) return e;
-          return int.tryParse(e.toString()) ?? 0;
+        return decoded.map<String>((e) {
+          return e.toString();
         }).toList();
       }
-      return <int>[];
+      return <String>[];
     }
 
     return EventSessionModel(
@@ -105,10 +104,6 @@ class EventSessionModel {
       'updated_at': updatedAt.toIso8601String(),
     };
   }
-
-  factory EventSessionModel.fromJson(String source) =>
-      EventSessionModel.fromMap(jsonDecode(source));
-
   String toJson() => jsonEncode(toMap());
 
   EventSessionModel copyWith({
@@ -116,7 +111,7 @@ class EventSessionModel {
     int? event,
     String? sessionType,
     String? occurrence,
-    List<int>? daysOfWeek,
+    List<String>? daysOfWeek,
     DateTime? firstSessionDate,
     DateTime? lastSessionDate,
     String? sessionStartTime,

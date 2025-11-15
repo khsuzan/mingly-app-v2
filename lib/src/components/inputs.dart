@@ -7,6 +7,7 @@ class CustomInputField extends StatefulWidget {
   final SvgPicture? suffixSvg;
   final bool isPassword;
   final TextEditingController? controller;
+  final FocusNode? focusNode;
   final ValueChanged<String>? onChanged;
   final bool isMultiline;
   final int? maxLines;
@@ -19,6 +20,7 @@ class CustomInputField extends StatefulWidget {
     this.suffixSvg,
     this.isPassword = false,
     this.controller,
+    this.focusNode,
     this.onChanged,
     this.isMultiline = false,
     this.maxLines,
@@ -36,6 +38,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
   Widget build(BuildContext context) {
     final onSurface = Theme.of(context).colorScheme.onSurface;
     return TextField(
+      focusNode: widget.focusNode,
       controller: widget.controller,
       obscureText: widget.isPassword ? _obscureText : false,
       onChanged: widget.onChanged,

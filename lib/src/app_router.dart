@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mingly/src/application/events/model/events_model.dart';
 import 'package:mingly/src/screens/auth/email_verification_screen/email_verification_screen.dart';
-import 'package:mingly/src/screens/auth/login_screen/login_screen.dart';
+import 'package:mingly/src/screens/auth/login_screen/view/login_screen.dart';
 import 'package:mingly/src/screens/auth/otp_verification_screen/otp_verfication_forgot_password.dart';
 import 'package:mingly/src/screens/auth/otp_verification_screen/otp_verification_screen.dart';
 import 'package:mingly/src/screens/auth/password_reset_screen/password_reset_screen.dart';
 import 'package:mingly/src/screens/auth/signup_screen/signup_screen.dart';
 import 'package:mingly/src/screens/auth/welcome_screen/welcome_screen.dart'
     show WelcomeScreen;
-import 'package:mingly/src/screens/protected/berverages/beverages_screen.dart';
-import 'package:mingly/src/screens/protected/booking_confirmation_screen/booking_confirmation_screen.dart';
-import 'package:mingly/src/screens/protected/booking_confirmation_screen/table_booking_confirmation_screen.dart';
+import 'package:mingly/src/screens/protected/berverages/view/beverages_screen.dart';
+import 'package:mingly/src/screens/protected/booking_confirmation_screen/ticket_booking/view/booking_confirmation_screen.dart';
+import 'package:mingly/src/screens/protected/booking_confirmation_screen/table_booking/view/table_booking_confirmation_screen.dart';
 import 'package:mingly/src/screens/protected/booking_summary/booking_summary.dart';
 import 'package:mingly/src/screens/protected/event_detail_screen/event_detail_screen.dart';
 import 'package:mingly/src/screens/protected/event_detail_screen/event_details_screen_one.dart';
@@ -19,7 +19,7 @@ import 'package:mingly/src/screens/protected/event_list_screen/view/event_list_s
 import 'package:mingly/src/screens/protected/favourite/favourite_screen.dart';
 import 'package:mingly/src/screens/protected/food_menu_screen/food_menu_screen.dart';
 import 'package:mingly/src/screens/protected/home_screen/ai_chat.dart';
-import 'package:mingly/src/screens/protected/home_screen/home_screen.dart';
+import 'package:mingly/src/screens/protected/home_screen/view/home_screen.dart';
 import 'package:mingly/src/screens/protected/landing_page.dart/landing_page.dart';
 import 'package:mingly/src/screens/protected/membership_screen/membership_screen.dart';
 import 'package:mingly/src/screens/protected/my_bottles/my_bottles_history.dart';
@@ -164,7 +164,9 @@ class AppRouter {
         ),
         GoRoute(
           path: '/beverages',
-          builder: (context, state) => const BeveragesScreen(),
+          builder: (context, state) => BeveragesScreen(
+            venueId: state.extra as int,
+          ),
         ),
         GoRoute(
           path: '/payment',
@@ -176,7 +178,9 @@ class AppRouter {
         ),
         GoRoute(
           path: '/table-booking-confirmation',
-          builder: (context, state) => TableBookingConfirmationScreen(),
+          builder: (context, state) => TableBookingConfirmationScreen(
+            bookingInfo: state.extra as TableBookInfo,
+          ),
         ),
         GoRoute(
           path: '/payment-table',
@@ -225,7 +229,21 @@ class AppRouter {
           routes: [
             GoRoute(
               path: "/home",
-              builder: (context, state) => const HomeScreen(),
+              pageBuilder: (context, state) => CustomTransitionPage(
+                key: state.pageKey,
+                child: HomeScreen(),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                      // Only new screen slides in from right
+                      return SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(1.0, 0.0),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      );
+                    },
+              ),
             ),
             GoRoute(
               path: '/my-reservation',

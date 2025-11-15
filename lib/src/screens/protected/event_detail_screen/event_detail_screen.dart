@@ -104,7 +104,7 @@ class EventDetailScreen extends StatelessWidget {
                   Icon(Icons.location_on, color: Color(0xFFD1B26F), size: 18),
                   SizedBox(width: 4),
                   Text(
-                    event.venueCity.toString(),
+                    event.venue?.city ?? "",
                     style: TextStyle(color: Colors.white70),
                   ),
                 ],

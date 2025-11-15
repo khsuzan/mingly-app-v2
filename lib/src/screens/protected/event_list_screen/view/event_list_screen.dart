@@ -126,7 +126,10 @@ class _EventListScreenState extends State<EventListScreen> {
                             _selectedDate == null
                                 ? "Date"
                                 : "${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}",
-                            style: const TextStyle(color: Colors.white),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              height: 1.2,
+                            ),
                           ),
                           if (_selectedDate != null)
                             IconButton(
@@ -159,8 +162,12 @@ class _EventListScreenState extends State<EventListScreen> {
                       style: const TextStyle(color: Colors.white),
                       decoration: const InputDecoration(
                         hintText: 'Search events...',
-                        hintStyle: TextStyle(color: Colors.grey),
-                        prefixIcon: Icon(Icons.search, color: Colors.white),
+                        hintStyle: TextStyle(color: Colors.grey, height: 1.2),
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: Colors.white,
+                          size: 22,
+                        ),
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.symmetric(vertical: 14),
                       ),
@@ -214,7 +221,7 @@ class _EventListScreenState extends State<EventListScreen> {
                               ? ''
                               : event.images!.first.imageUrl!,
                           title: event.eventName ?? "",
-                          location: event.venueName ?? "",
+                          location: event.venue?.name ?? "",
                           country: event.currency ?? "",
                         );
                       },

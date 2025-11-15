@@ -42,7 +42,7 @@ class EventsRepo {
   Future<EventDetailsModel> getEventsDetails(String id) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final response = await ApiService().getData(
-      "${AppUrls.eventDetails}$id/detail/",
+      AppUrls.eventDetails.replaceFirst(":id", id),
       authToken: preferences.getString("authToken"),
     );
     return EventDetailsModel.fromJson(response);
@@ -79,6 +79,15 @@ class EventsRepo {
     return response;
   }
 
+  Future<List<EventsTicketModel>> getTablesTickets(String eventId) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final response = await ApiService().getList(
+      AppUrls.getTableTickets.replaceFirst(":id", eventId),
+      authToken: preferences.getString("authToken"),
+    );
+    return response.map((e) => EventsTicketModel.fromJson(e)).toList();
+  }
+
   Future<Map<String, dynamic>> buyTableEventTicket(
     Map<String, dynamic> data,
     String id,
@@ -100,6 +109,7 @@ class EventsRepo {
     );
     return reseponse;
   }
+
   Future<List<EventsModel>> getEventsById(int venueId) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final reseponse = await ApiService().getList(
@@ -127,6 +137,7 @@ class EventsRepo {
     );
     return reseponse;
   }
+
   Future<List<EventSessionModel>> getEventSessions(String id) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final response = await ApiService().getList(
@@ -135,5 +146,4 @@ class EventsRepo {
     );
     return response.map((e) => EventSessionModel.fromJson(e)).toList();
   }
-  
 }

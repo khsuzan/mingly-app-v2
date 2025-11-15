@@ -1,19 +1,17 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:mingly/src/application/events/model/event_session_model.dart';
 import 'package:mingly/src/application/events/model/events_model.dart';
 import 'package:mingly/src/application/events/model/table_ticket_model.dart';
-import 'package:mingly/src/components/custom_loading_dialog.dart'
-    show LoadingDialog;
-import 'package:mingly/src/components/custom_snackbar.dart';
-import 'package:mingly/src/constant/app_urls.dart';
-import 'package:mingly/src/screens/protected/event_list_screen/events_provider.dart';
-import 'package:mingly/src/screens/protected/venue_list_screen/venue_provider.dart';
-import 'package:provider/provider.dart';
 
+import '../../../../components/custom_snackbar.dart';
+import '../../../../components/helpers.dart';
+import '../../../../constant/app_urls.dart';
+import '../../booking_confirmation_screen/table_booking/view/table_booking_confirmation_screen.dart';
 import '../controller/table_booking_controller.dart';
 
 class TableBookingScreen extends StatelessWidget {
@@ -23,7 +21,10 @@ class TableBookingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final controller = Get.put(TableBookingController(id: event.id.toString()));
+    final controller = Get.put(
+      TableBookingController(id: event.id.toString()),
+      permanent: false,
+    );
     // final eventProvider = context.watch<EventsProvider>();
     // final venueProvider = context.watch<VenueProvider>();
     return Scaffold(
@@ -68,7 +69,7 @@ class TableBookingScreen extends StatelessWidget {
                   Icon(Icons.location_on, color: Color(0xFFD1B26F)),
                   SizedBox(width: 8),
                   Text(
-                    event.venueCity.toString(),
+                    event.venue!.city.toString(),
                     style: TextStyle(color: Colors.white),
                   ),
                 ],
@@ -95,37 +96,34 @@ class TableBookingScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Obx(() {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        final sessions = controller.sessionTimes;
-                        showSessionPicker(context, sessions, (selectedSession) {
-                          // Handle the selected session here
-                          debugPrint("Selected session: $selectedSession");
-                        });
-                      },
-                      child: Row(
-                        children: [
-                          SvgPicture.asset(
-                            "lib/assets/icons/calender_gold.svg",
-                          ),
-                          const SizedBox(width: 5),
-                          Text(
-                            formatDate(
-                              controller.detail.value.firstSessionDate,
-                            ),
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                          const Icon(
-                            Icons.arrow_drop_down_sharp,
-                            color: Colors.white,
-                          ),
-                        ],
+                if (controller.selectedSession == null) {
+                  return SizedBox();
+                }
+                return InkWell(
+                  onTap: () {
+                    final sessions = controller.groupedSessionsByDate.keys
+                        .toList();
+                    showSessionPicker(context, sessions, (date) {
+                      // Handle the selected session here
+                      controller.updateDateSelection(date);
+                    });
+                  },
+                  child: Row(
+                    children: [
+                      SvgPicture.asset("lib/assets/icons/calender_gold.svg"),
+                      const SizedBox(width: 5),
+                      Text(
+                        formatDate(
+                          controller.selectedSession!.firstSessionDate,
+                        ),
+                        style: const TextStyle(color: Colors.white),
                       ),
-                    ),
-                  ],
+                      const Icon(
+                        Icons.arrow_drop_down_sharp,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
                 );
               }),
               const SizedBox(height: 16),
@@ -152,71 +150,62 @@ class TableBookingScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
 
-              // if (controller.sessionTimes.isEmpty)
-              //   Wrap(
-              //     spacing: 15,
-              //     runSpacing: 8,
-              //     children: [
-              //       ...List.generate(controller.sessionTimes.length, (
-              //         index,
-              //       ) {
-              //         final timeSlot = controller.sessionTimes[index];
-              //         return _TimeSlotButton(label: timeSlot, index: index);
-              //       }),
-              //     ],
-              //   ),
-              // eventProvider.listedTimeSlot.isEmpty
-              //     ? SizedBox()
-              //     : Wrap(
-              //         spacing: 15,
-              //         runSpacing: 8,
-              //         children: [
-              //           ...List.generate(eventProvider.listedTimeSlot!.length, (
-              //             index,
-              //           ) {
-              //             final timeSlot = eventProvider.listedTimeSlot![index];
-              //             return _TimeSlotButton(label: timeSlot, index: index);
-              //           }),
-              //         ],
-              //       ),
-              const SizedBox(height: 24),
-
-              // eventProvider.tableTicketModel.tables == null
-              //     ? Center(child: Text("No Tables found in this session"))
-              //     : Center(
-              //         child: Container(
-              //           decoration: BoxDecoration(
-              //             border: Border.all(color: Colors.white24),
-              //             borderRadius: BorderRadius.circular(12),
-              //           ),
-              //           child:
-              //               eventProvider
-              //                       .tableTicketModel
-              //                       .tables!
-              //                       .first
-              //                       .image ==
-              //                   null
-              //               ? Image.network(
-              //                   'https://www.directmobilityonline.co.uk/assets/img/noimage.png',
-              //                   height: 200,
-              //                   fit: BoxFit.contain,
-              //                 )
-              //               : Image.network(
-              //                   '${AppUrls.imageUrl}${eventProvider.tableTicketModel.tables!.first.image}',
-              //                   height: 200,
-              //                   fit: BoxFit.contain,
-              //                   errorBuilder: (context, error, stackTrace) {
-              //                     debugPrint("❌ Image load failed: $error");
-              //                     return Image.network(
-              //                       'https://www.directmobilityonline.co.uk/assets/img/noimage.png',
-              //                       fit: BoxFit.cover,
-              //                       height: 160,
-              //                       width: double.infinity,
-              //                     );
-              //                   },
-              //                 ),
-              //         ),
-              //       ),
+              Obx(() {
+                if (controller.timeSlots.isEmpty) {
+                  return Center(
+                    child: Text(
+                      'No time slots available',
+                      style: TextStyle(color: Colors.white70),
+                    ),
+                  );
+                }
+                return Wrap(
+                  spacing: 15,
+                  runSpacing: 8,
+                  children: [
+                    ...List.generate(controller.timeSlots.length, (index) {
+                      final timeSlot = controller.timeSlots[index];
+                      return _TimeSlotButton(
+                        label: formatTimeToAmPm(timeSlot.sessionStartTime),
+                        index: index,
+                        selected:
+                            timeSlot.sessionStartTime ==
+                            controller.selectedTimeSlot.value?.sessionStartTime,
+                        onPressed: (index) {
+                          controller.selectTimeSlot(
+                            controller.timeSlots[index],
+                          );
+                        },
+                      );
+                    }),
+                  ],
+                );
+              }),
+              const SizedBox(height: 16),
+              const Text(
+                'Seating Plan',
+                style: TextStyle(
+                  color: Color(0xFFD1B26F),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Obx(() {
+                if (controller.detail.value.others == null) {
+                  return SizedBox();
+                }
+                final image = controller.detail.value.others!.seatingPlan;
+                return SizedBox(
+                  width: double.infinity,
+                  child: Image.network(
+                    '${AppUrls.imageUrl}$image',
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Text("Seat plan not available");
+                    },
+                  ),
+                );
+              }),
               const SizedBox(height: 16),
               const Text(
                 'Book Preferred Slot',
@@ -226,34 +215,41 @@ class TableBookingScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              // eventProvider.tableTicketModel.tables == null ||
-              //         eventProvider.tableTicketModel.tables!.isEmpty
-              //     ? SizedBox()
-              //     : Wrap(
-              //         spacing: 8,
-              //         runSpacing: 8,
-              //         children: [
-              //           ...List.generate(
-              //             eventProvider.tableTicketModel.tables!.length,
-              //             (index) {
-              //               final table =
-              //                   eventProvider.tableTicketModel.tables![index];
+              Obx(() {
+                if (controller.filteredList.isEmpty) {
+                  return Center(
+                    child: Text(
+                      'No tables available',
+                      style: TextStyle(color: Colors.white70),
+                    ),
+                  );
+                }
+                return Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    ...List.generate(controller.filteredList.length, (index) {
+                      final table = controller.filteredList[index];
 
-              //               // Example: consider "available" if availabilityStatus == "available"
-              //               final isAvailable =
-              //                   table.availabilityStatus == "available";
+                      // Example: consider "available" if availabilityStatus == "available"
+                      final isAvailable =
+                          true /* table.availabilityStatus == "available" */;
 
-              //               return _TableSlotButton(
-              //                 id: table.tableId!.toInt(),
-              //                 label:
-              //                     'Table\n${(table.tcketNumber ?? index + 1).toString().padLeft(2, '0')}',
-              //                 available: isAvailable,
-              //                 table: table,
-              //               );
-              //             },
-              //           ),
-              //         ],
-              //       ),
+                      return _TableSlotButton(
+                        id: table.id,
+                        label: table.title ?? '',
+                        available: isAvailable,
+                        // table: table,
+                        price: table.price ?? '',
+                        priceUnit: "\$",
+                        onClicked: () {
+                          controller.toggleTableSelection(table);
+                        },
+                      );
+                    }),
+                  ],
+                );
+              }),
               const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -262,11 +258,67 @@ class TableBookingScreen extends StatelessWidget {
                   SizedBox(width: 4),
                   Text('Available', style: TextStyle(color: Colors.white)),
                   SizedBox(width: 16),
-                  Icon(Icons.circle, color: Colors.red, size: 16),
+                  Icon(Icons.circle, color: Color(0xFFAFAFAF), size: 16),
                   SizedBox(width: 4),
                   Text('Sold', style: TextStyle(color: Colors.white)),
                 ],
               ),
+              Obx(() {
+                if (controller.selectedTables.isEmpty) {
+                  return SizedBox();
+                }
+                return Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 60,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Selected Tables:',
+                              style: TextStyle(
+                                color: Color(0xFFD1B26F),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              controller.selectedTables
+                                  .map((element) => element.title ?? '')
+                                  .join(", "),
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      Expanded(
+                        flex: 40,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            const Text(
+                              'Total Price:',
+                              style: TextStyle(
+                                color: Color(0xFFD1B26F),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              "\$${controller.selectedTables.map((element) => double.tryParse(element.price ?? '') ?? 0.0).sum.toStringAsFixed(2)}",
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
@@ -280,7 +332,22 @@ class TableBookingScreen extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
                   onPressed: () {
-                    context.push("/beverages");
+                    if (controller.selectedTables.isEmpty) {
+                      CustomSnackbar.show(
+                        context,
+                        message: "Please select at least one table.",
+                        backgroundColor: Colors.red,
+                      );
+                      return;
+                    }
+                    context.push(
+                      "/table-booking-confirmation",
+                      extra: TableBookInfo(
+                        event: event,
+                        eventDetail: controller.detail.value,
+                        tables: controller.selectedTables,
+                      ),
+                    );
                   },
                   child: const Text('Proceed'),
                 ),
@@ -295,15 +362,30 @@ class TableBookingScreen extends StatelessWidget {
 
   void showSessionPicker(
     BuildContext context,
-    List<EventSessionModel> sessions,
-    Function(DateTime selectedSession) onDateSelected,
+    List<String> sessionDates,
+    Function(String index) onDateSelected,
   ) async {
-    final DateTime? choice = await showModalBottomSheet<dynamic>(
+    final String? choice = await showModalBottomSheet<dynamic>(
       context: context,
       builder: (ctx) {
+        final theme = Theme.of(ctx);
         return SafeArea(
-          child: sessions.isEmpty
-              ? SizedBox(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: Text(
+                  'Select a Session Date',
+                  style: TextStyle(
+                    color: theme.colorScheme.primary,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              if (sessionDates.isEmpty)
+                SizedBox(
                   height: 160,
                   child: Center(
                     child: Text(
@@ -312,23 +394,27 @@ class TableBookingScreen extends StatelessWidget {
                     ),
                   ),
                 )
-              : ListView.separated(
-                  shrinkWrap: true,
-                  itemCount: sessions.length,
-                  separatorBuilder: (_, __) =>
-                      const Divider(height: 1, color: Colors.white24),
-                  itemBuilder: (ctx, i) {
-                    final s = sessions[i].firstSessionDate;
-                    // if session is an object adjust the label below:
-                    return ListTile(
-                      title: Text(
-                        formatDate(s),
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                      onTap: () => context.pop(sessions[i]),
-                    );
-                  },
+              else
+                Flexible(
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    itemCount: sessionDates.length,
+                    separatorBuilder: (_, __) =>
+                        const Divider(height: 1, color: Colors.white10),
+                    itemBuilder: (ctx, i) {
+                      final s = sessionDates[i];
+                      return ListTile(
+                        title: Text(
+                          formatDate(s),
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        onTap: () => context.pop(s),
+                      );
+                    },
+                  ),
                 ),
+            ],
+          ),
         );
       },
     );
@@ -363,28 +449,28 @@ class _TimeSlotButton extends StatelessWidget {
   final String label;
   final bool selected;
   final int index;
+  final Function(int index)? onPressed;
   const _TimeSlotButton({
     required this.label,
     this.selected = false,
     required this.index,
+    this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<EventsProvider>();
+    // final provider = context.watch<EventsProvider>();
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: provider.indexOfSelectedTimeSlot == index
+        backgroundColor: selected
             ? const Color(0xFFD1B26F)
             : Colors.grey.shade900,
-        foregroundColor: provider.indexOfSelectedTimeSlot == index
-            ? Colors.black
-            : Colors.white,
+        foregroundColor: selected ? Colors.black : Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       ),
       onPressed: () {
-        provider.selectTimeSlot(index);
+        onPressed?.call(index);
       },
       child: Text(label),
     );
@@ -394,62 +480,78 @@ class _TimeSlotButton extends StatelessWidget {
 class _TableSlotButton extends StatelessWidget {
   final int id;
   final String label;
-  final Tables table;
+  final String price;
+  final String priceUnit;
+  final Tables? table;
   final bool available;
+  final VoidCallback? onClicked;
   const _TableSlotButton({
-    required this.label,
-    required this.available,
     required this.id,
-    required this.table,
+    required this.label,
+    required this.price,
+    this.priceUnit = "\$",
+    required this.available,
+    this.table,
+    this.onClicked,
   });
 
   @override
   Widget build(BuildContext context) {
-    final eventProvider = context.watch<EventsProvider>();
+    // final eventProvider = context.watch<EventsProvider>();
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: available ? Colors.green : Colors.red,
+        backgroundColor: available ? Colors.green : const Color(0xFFAFAFAF),
         foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-          side: eventProvider.tableBooking.seatId == table.id
-              ? BorderSide(color: Colors.white)
-              : BorderSide(color: Colors.transparent),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       ),
       onPressed: () {
+        onClicked?.call();
         if (available == false) {
-          CustomSnackbar.show(
-            context,
-            message: "Table already booked.",
-            backgroundColor: Colors.red,
-          );
-        } else if (available) {
-          List<String> parts = eventProvider
-              .tableTicketModel
-              .sessionInfo!
-              .sessionStart!
-              .split(':');
-          print("Data show" + parts.length.toString());
-          String formate = "${parts[0]}:${parts[1]}";
+          //   CustomSnackbar.show(
+          //     context,
+          //     message: "Table already booked.",
+          //     backgroundColor: Colors.red,
+          //   );
+          // } else if (available) {
+          //   List<String> parts = eventProvider
+          //       .tableTicketModel
+          //       .sessionInfo!
+          //       .sessionStart!
+          //       .split(':');
+          //   print("Data show" + parts.length.toString());
+          //   String formate = "${parts[0]}:${parts[1]}";
 
-          eventProvider.selecteTableBooking(
-            table.tableId!,
-            eventProvider.selectedTableTime,
-            table.id!,
-          );
-          eventProvider.selectedTable(table);
+          //   eventProvider.selecteTableBooking(
+          //     table.tableId!,
+          //     eventProvider.selectedTableTime,
+          //     table.id!,
+          //   );
+          //   eventProvider.selectedTable(table);
         }
       },
-      child: Text(
-        label,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 10,
-          fontFamily: 'Poppins',
-          fontWeight: FontWeight.w500,
-        ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 14.sp,
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          Text(
+            "$priceUnit$price",
+            style: TextStyle(
+              color: Colors.white54,
+              fontSize: 10.sp,
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
       ),
     );
   }

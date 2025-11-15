@@ -12,10 +12,10 @@ import 'package:mingly/src/constant/app_urls.dart';
 import 'package:mingly/src/screens/protected/event_list_screen/events_provider.dart';
 import 'package:mingly/src/screens/protected/home_screen/controller/home_controller.dart';
 import 'package:mingly/src/screens/protected/home_screen/home_proivder.dart';
-import 'package:mingly/src/screens/protected/profile_screen/profile_provider.dart';
-import 'package:mingly/src/screens/protected/venue_list_screen/venue_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+
+import '../../../../components/helpers.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -24,10 +24,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final controller = Get.put(HomeController());
-    final profileProvider = context.watch<ProfileProvider>();
-    final homeProvider = context.watch<HomeProivder>();
-    final eventsProvider = context.watch<EventsProvider>();
-    final venueProvider = context.watch<VenueProvider>();
+
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       floatingActionButton: Padding(
@@ -46,12 +43,9 @@ class HomeScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: RefreshIndicator(
-          onRefresh: () async {
-            await homeProvider.getHomeData();
-            await profileProvider.getProfile();
-            await eventsProvider.getEventList();
-            await venueProvider.getVenuesList();
-            await venueProvider.getFeaturedVenuesList();
+          onRefresh: () {
+            controller.fetchHomeData();
+            return Future.delayed(const Duration(seconds: 1));
           },
           child: CustomScrollView(
             slivers: [
@@ -95,10 +89,13 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(width: 4.w),
-                                Text(
-                                  homeProvider.addressUser,
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: Colors.white,
+                                Obx(
+                                  () => Text(
+                                    controller.profile.value.data?.address ??
+                                        'Tap to select',
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -114,45 +111,35 @@ class HomeScreen extends StatelessWidget {
                             radius: 20.r,
                             backgroundColor: Colors.grey.shade800,
                             child: ClipOval(
-                              child: Builder(
-                                builder: (context) {
-                                  final profileModel =
-                                      profileProvider.profileModel;
-                                  final avatar = profileModel?.data?.avatar;
+                              child: Obx(() {
+                                final profileModel = controller.profile.value;
+                                final avatar = profileModel.data?.avatar;
 
-                                  if (profileModel == null) {
-                                    // Still loading the profile
-                                    return const Center(
-                                      child: CircularProgressIndicator(),
-                                    );
-                                  }
-
-                                  if (avatar != null && avatar.isNotEmpty) {
-                                    print("profile image ${avatar}");
-                                    // Avatar available
-                                    return Image.network(
-                                      AppUrls.imageUrlNgrok + avatar,
-                                      fit: BoxFit.cover,
-                                      width: double.infinity,
-                                      height: double.infinity,
-                                      errorBuilder: (context, error, stackTrace) {
-                                        return Image.network(
-                                          'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
-                                          fit: BoxFit.cover,
-                                        );
-                                      },
-                                    );
-                                  } else {
-                                    // Avatar not available — show fallback asset
-                                    return Image.asset(
-                                      'lib/assets/images/dummy_profile.jpg',
-                                      fit: BoxFit.cover,
-                                      width: double.infinity,
-                                      height: double.infinity,
-                                    );
-                                  }
-                                },
-                              ),
+                                if (avatar != null && avatar.isNotEmpty) {
+                                  debugPrint("profile image $avatar");
+                                  // Avatar available
+                                  return Image.network(
+                                    AppUrls.imageUrlNgrok + avatar,
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Image.network(
+                                        'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
+                                        fit: BoxFit.cover,
+                                      );
+                                    },
+                                  );
+                                } else {
+                                  // Avatar not available — show fallback asset
+                                  return Image.asset(
+                                    'lib/assets/images/dummy_profile.jpg',
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                  );
+                                }
+                              }),
                             ),
                           ),
                         ),
@@ -175,31 +162,58 @@ class HomeScreen extends StatelessWidget {
                           autoPlay: true,
                           autoPlayInterval: Duration(seconds: 5),
                           viewportFraction: 0.8,
-                          enlargeFactor: 0.2
+                          enlargeFactor: 0.2,
                         ),
                         itemBuilder: (context, index, realIndex) {
-                          return Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              image: DecorationImage(
-                                image: NetworkImage(
-                                  AppUrls.imageUrl +
-                                      controller.featuredItems[index].imageUrl
-                                          .toString(),
+                          return Stack(
+                            children: [
+                              Positioned.fill(
+                                child: Container(
+                                  margin: const EdgeInsets.symmetric(
+                                    horizontal: 0,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    image: DecorationImage(
+                                      image: NetworkImage(
+                                        AppUrls.imageUrl +
+                                            controller
+                                                .featuredItems[index]
+                                                .imageUrl
+                                                .toString(),
+                                      ),
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
                                 ),
-                                fit: BoxFit.fill,
                               ),
-                            ),
+                              Align(
+                                alignment: Alignment.bottomLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.all(16.0.w),
+                                  child: Text(
+                                    controller.featuredItems[index].title
+                                        .toString(),
+                                    overflow: TextOverflow.ellipsis,
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: Colors.white,
+                                      fontSize: 18.sp,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    maxLines: 1,
+                                  ),
+                                ),
+                              ),
+                            ],
                           );
                         },
                       ),
                       // Referral code
                       Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 20.w,
-                            vertical: 8,
-                          ).copyWith(top: 16),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20.w,
+                          vertical: 8,
+                        ).copyWith(top: 16),
                         child: Container(
                           decoration: BoxDecoration(
                             color: theme.colorScheme.primaryContainer,
@@ -221,19 +235,25 @@ class HomeScreen extends StatelessWidget {
                                     ),
                                   ),
                                   SizedBox(height: 4.h),
-                                  Text(
-                                    profileProvider.profileModel.data == null
+                                  Obx(() {
+                                    final refferel =
+                                        controller.profile.value.data == null
                                         ? "N/A"
-                                        : profileProvider
-                                                  .profileModel
+                                        : controller
+                                                  .profile
+                                                  .value
                                                   .data!
                                                   .referralCode ??
-                                              "N/A",
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
+                                              "N/A";
+                                    return Text(
+                                      refferel,
+                                      style: theme.textTheme.bodyMedium
+                                          ?.copyWith(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                    );
+                                  }),
                                 ],
                               ),
                               const Spacer(),
@@ -295,63 +315,72 @@ class HomeScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 24),
                       // Featured Venues
-                      _SectionHeader(title: 'Featured Venues'),
-
-                      venueProvider.venuesFeaturedList.isEmpty
-                          ? SizedBox()
-                          : Column(
-                              children: List.generate(
-                                venueProvider.venuesFeaturedList.length,
-                                (index) => InkWell(
-                                  onTap: () async {
-                                    LoadingDialog.show(context);
-                                    venueProvider.selectedVenue(
-                                      venueProvider
-                                          .venuesFeaturedList[index]
-                                          .id,
-                                    );
-                                    await eventsProvider.getEvetListVuneWise(
-                                      venueProvider
-                                          .venuesFeaturedList[index]
-                                          .id!
-                                          .toInt(),
-                                    );
-                                    await venueProvider.getVenueMenuList(
-                                      venueProvider
-                                          .venuesFeaturedList[index]
-                                          .id!
-                                          .toInt(),
-                                    );
-                                    LoadingDialog.hide(context);
-                                    context.push("/venue-detail");
-                                  },
-                                  child: _VenueCard(
-                                    image:
-                                        venueProvider
-                                                .venuesFeaturedList[index]
-                                                .images!
-                                                .isEmpty ||
-                                            venueProvider
-                                                    .venuesFeaturedList[index]
-                                                    .images!
-                                                    .first
-                                                    .imageUrl ==
-                                                null
-                                        ? "https://www.directmobilityonline.co.uk/assets/img/noimage.png"
-                                        : "${AppUrls.imageUrl}${venueProvider.venuesFeaturedList[index].images!.first.imageUrl!}",
-                                    title: venueProvider
-                                        .venuesFeaturedList[index]
-                                        .name!,
-                                    location:
-                                        '${venueProvider.venuesFeaturedList[index].address}\n${venueProvider.venuesFeaturedList[index].city}, ${venueProvider.venuesFeaturedList[index].country}',
-                                  ),
-                                ),
+                      Obx(() {
+                        if (controller.featuredVenues.isEmpty ||
+                            controller.isRefreshing.value) {
+                          return SizedBox();
+                        }
+                        return _SectionHeader(title: 'Featured Venues');
+                      }),
+                      Obx(() {
+                        if (controller.featuredVenues.isEmpty ||
+                            controller.isRefreshing.value) {
+                          return SizedBox();
+                        }
+                        return Column(
+                          children: List.generate(controller.featuredVenues.length, (
+                            index,
+                          ) {
+                            final image = controller
+                                .featuredVenues[index]
+                                .images
+                                ?.firstOrNull;
+                            return InkWell(
+                              onTap: () {
+                                context.push(
+                                  "/venue-detail",
+                                  extra: controller.featuredVenues[index],
+                                );
+                                // LoadingDialog.show(context);
+                                // venueProvider.selectedVenue(
+                                //   venueProvider.venuesFeaturedList[index].id,
+                                // );
+                                // await eventsProvider.getEvetListVuneWise(
+                                //   venueProvider.venuesFeaturedList[index].id!
+                                //       .toInt(),
+                                // );
+                                // await venueProvider.getVenueMenuList(
+                                //   venueProvider.venuesFeaturedList[index].id!
+                                //       .toInt(),
+                                // );
+                                // LoadingDialog.hide(context);
+                              },
+                              child: _VenueCard(
+                                image: image == null
+                                    ? null
+                                    : "${AppUrls.imageUrl}${image.imageUrl!}",
+                                title: controller.featuredVenues[index].name!,
+                                location:
+                                    '${controller.featuredVenues[index].address}\n${controller.featuredVenues[index].city}, ${controller.featuredVenues[index].country}',
                               ),
-                            ),
+                            );
+                          }),
+                        );
+                      }),
                       SizedBox(height: 12.h),
                       // Popular Events
-                      _SectionHeader(title: 'Popular Events'),
-                      _EventCard(),
+                      Obx(() {
+                        if (controller.popularEvents.isEmpty) {
+                          return SizedBox();
+                        }
+                        return _SectionHeader(title: 'Popular Events');
+                      }),
+                      Obx(() {
+                        if (controller.popularEvents.isEmpty) {
+                          return SizedBox();
+                        }
+                        return _EventCard();
+                      }),
                       const SizedBox(height: 24),
                       // Top 10 spenders
                       Padding(
@@ -381,67 +410,64 @@ class HomeScreen extends StatelessWidget {
                       _Leaderboard(),
                       const SizedBox(height: 24),
                       // Recommendations
-                      _SectionHeader(title: 'Recommendations for you'),
-                      eventsProvider.recomendedEventModel.recommended == null ||
-                              eventsProvider
-                                  .recomendedEventModel
-                                  .recommended!
-                                  .isEmpty
-                          ? SizedBox()
-                          : Column(
-                              children: List.generate(
-                                eventsProvider
-                                    .recomendedEventModel
-                                    .recommended!
-                                    .length,
-                                (index) => InkWell(
-                                  onTap: () => context.push('/venue-detail'),
-                                  child: _RecommendationCard(
-                                    image:
-                                        (eventsProvider
-                                                    .recomendedEventModel
-                                                    .recommended?[index]
-                                                    .images !=
-                                                null &&
-                                            eventsProvider
-                                                .recomendedEventModel
-                                                .recommended![index]
-                                                .images!
-                                                .isNotEmpty &&
-                                            eventsProvider
-                                                    .recomendedEventModel
-                                                    .recommended![index]
-                                                    .images!
-                                                    .first
-                                                    .thumbnailImage !=
-                                                null)
-                                        ? eventsProvider
-                                              .recomendedEventModel
-                                              .recommended![index]
-                                              .images!
-                                              .first
-                                              .thumbnailImage!
-                                        : 'https://via.placeholder.com/150', // fallback image
-                                    title: 'Sky High Soirée- MU;IN',
-                                    location: 'New York',
-                                    tag: 'Gold member',
-                                  ),
+                      Obx(() {
+                        if (controller.recommendationEvents.isEmpty) {
+                          return SizedBox();
+                        }
+                        return _SectionHeader(title: 'Recommendations for you');
+                      }),
+                      Obx(() {
+                        if (controller.recommendationEvents.isEmpty) {
+                          return SizedBox();
+                        }
+                        return Column(
+                          children: List.generate(
+                            controller.recommendationEvents.length,
+                            (index) {
+                              final image = controller
+                                  .recommendationEvents[index]
+                                  .images
+                                  ?.firstOrNull
+                                  ?.imageUrl;
+                              return InkWell(
+                                onTap: () => context.push('/venue-detail'),
+                                child: _RecommendationCard(
+                                  image: image != null
+                                      ? "${AppUrls.imageUrl}$image"
+                                      : 'https://via.placeholder.com/150', // fallback image
+                                  title: controller
+                                      .recommendationEvents[index]
+                                      .eventName!,
+                                  location:
+                                      controller
+                                          .recommendationEvents[index]
+                                          .venue!
+                                          .city ??
+                                      "",
+                                  tag: 'Gold member',
                                 ),
-                              ),
-                            ),
-
-                      // InkWell(
-                      //   onTap: () => context.push('/event-detail'),
-                      //   child: _RecommendationCard(
-                      //     image: 'lib/assets/images/dummy_muin.png',
-                      //     title: '[Waves & Raves ] - Celvaie',
-                      //     location: 'California',
-                      //     tag: 'Free',
-                      //   ),
-                      // ),
+                              );
+                            },
+                          ),
+                        );
+                      }),
                       const SizedBox(height: 32),
                     ],
                   );
+                }),
+              ),
+              SliverToBoxAdapter(
+                child: Obx(() {
+                  return controller.isRefreshing.value
+                      ? SizedBox(
+                          height: 100.h,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: theme.colorScheme.primary,
+                            ),
+                          ),
+                        )
+                      : SizedBox();
                 }),
               ),
               SliverToBoxAdapter(
@@ -526,7 +552,7 @@ class _SectionHeader extends StatelessWidget {
 }
 
 class _VenueCard extends StatelessWidget {
-  final String image;
+  final String? image;
   final String title;
   final String location;
   const _VenueCard({
@@ -555,7 +581,9 @@ class _VenueCard extends StatelessWidget {
                 height: 90.h,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.network(image, fit: BoxFit.cover),
+                  child: (image == null || image!.isEmpty)
+                      ? const NoImage()
+                      : Image.network(image!, fit: BoxFit.cover),
                 ),
               ),
               SizedBox(width: 16),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:mingly/src/constant/app_urls.dart';
 
@@ -225,7 +226,9 @@ class ApiService {
         Uri.parse('${AppUrls.baseUrl}$endpoint'),
         headers: headers,
       );
-      print("Regular Get Data ${response.body}");
+      if (kDebugMode) {
+        print("Regular Get Data ${response.body}");
+      }
       return _handleResponse(response);
     } on http.ClientException catch (e) {
       return _handleError('Network error: ${e.message}');
@@ -246,6 +249,10 @@ class ApiService {
         Uri.parse('${AppUrls.baseUrl}$endpoint'),
         headers: headers,
       );
+
+      if(kDebugMode){
+        print("Get List Response: ${response.body}");
+      }
 
       return _handleListResponse(response);
     } on http.ClientException catch (e) {

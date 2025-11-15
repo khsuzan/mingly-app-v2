@@ -120,7 +120,7 @@ class BookingConfirmationScreen extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(left: 32),
                 child: Text(
-                  '${eventProvider.selectEventModel.venueName}\nCity - ${eventProvider.selectEventModel.venueCity}',
+                  '${eventProvider.selectEventModel.venue?.city}\nCity - ${eventProvider.selectEventModel.venue?.city}',
                   style: TextStyle(color: Colors.white54, fontSize: 12),
                 ),
               ),

@@ -2,20 +2,14 @@ import 'package:flutter/material.dart';
 
 class TableCard extends StatelessWidget {
   final List<String> no;
-  final String downPayment;
-  final String minimumCharge;
+  final String price;
   final String tableCount;
-  final String totalDownPayment;
-  final VoidCallback onDelete;
 
   const TableCard({
     super.key,
     required this.no,
-    required this.downPayment,
-    required this.minimumCharge,
+    required this.price,
     required this.tableCount,
-    required this.totalDownPayment,
-    required this.onDelete,
   });
 
   @override
@@ -38,16 +32,10 @@ class TableCard extends StatelessWidget {
                     Text("No : "),
                     no.isEmpty
                         ? Text("No chairs selected")
-                        : Row(
-                            children: List.generate(
-                              no.length,
-                              (index) => Text("${no[index]} "),
-                            ),
-                          ),
+                        : Text(no.join(", ")),
                   ],
                 ),
-                _buildRow("Down Payment:", downPayment),
-                _buildRow("Minimum Charge :", minimumCharge),
+                _buildRow("Minimum Charge :", price),
                 const SizedBox(height: 20),
                 const Text(
                   "Total",
@@ -57,13 +45,8 @@ class TableCard extends StatelessWidget {
                   ),
                 ),
                 _buildRow("Table :", tableCount),
-                _buildRow("Down Payment :", totalDownPayment),
               ],
             ),
-          ),
-          IconButton(
-            onPressed: onDelete,
-            icon: const Icon(Icons.delete, color: Colors.white),
           ),
         ],
       ),

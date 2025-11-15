@@ -46,6 +46,7 @@ class PrimaryButton extends StatelessWidget {
 /// - [onChanged]: Callback when the text changes.
 
 class SingleLineTextField extends StatelessWidget {
+  final FocusNode? focusNode;
   final TextEditingController controller;
   final String hintText;
   final ValueChanged<String>? onChanged;
@@ -55,6 +56,7 @@ class SingleLineTextField extends StatelessWidget {
     super.key,
     required this.controller,
     required this.hintText,
+    this.focusNode,
     this.onChanged,
     this.prefixSvg,
   });
@@ -62,6 +64,7 @@ class SingleLineTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomInputField(
+      focusNode: focusNode,
       controller: controller,
       hintText: hintText,
       onChanged: onChanged,
@@ -87,6 +90,7 @@ class SingleLineTextField extends StatelessWidget {
 
 class PasswordInputField extends StatefulWidget {
   final TextEditingController controller;
+  final FocusNode? focusNode;
   final String hintText;
   final ValueChanged<String>? onChanged;
   final Widget? prefixSvg;
@@ -94,6 +98,7 @@ class PasswordInputField extends StatefulWidget {
   const PasswordInputField({
     super.key,
     required this.controller,
+    this.focusNode,
     required this.hintText,
     this.onChanged,
     this.prefixSvg,
@@ -107,6 +112,7 @@ class _PasswordInputFieldState extends State<PasswordInputField> {
   @override
   Widget build(BuildContext context) {
     return CustomInputField(
+      focusNode: widget.focusNode,
       controller: widget.controller,
       hintText: widget.hintText,
       onChanged: widget.onChanged,
@@ -138,6 +144,17 @@ String formatDate(String isoString) {
     return DateFormat("dd MMM yyyy").format(dateTime);
   } catch (e) {
     return isoString; // fallback if invalid
+  }
+}
+
+String formatDayAndDate(String dateString) {
+  try {
+    DateTime dateTime = DateTime.parse(dateString).toLocal();
+    String day = DateFormat('EEE').format(dateTime); // Mon, Tue, etc.
+    String date = DateFormat('dd MMM yyyy').format(dateTime); // 14 Nov 2025
+    return "$day, $date";
+  } catch (e) {
+    return dateString;
   }
 }
 
@@ -194,5 +211,19 @@ Future<void> openMapToAddress(String destinationAddress) async {
   } catch (e) {
     // ultimate fallback
     await launchUrl(googleMapUrl, mode: LaunchMode.platformDefault);
+  }
+}
+
+class NoImage extends StatelessWidget {
+  const NoImage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Image.asset(
+      'lib/assets/images/noimage.png',
+      width: double.infinity,
+      height: double.infinity,
+      fit: BoxFit.cover,
+    );
   }
 }

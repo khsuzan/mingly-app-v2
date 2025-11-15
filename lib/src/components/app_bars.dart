@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:mingly/src/screens/protected/home_screen/home_screen.dart';
+import 'package:mingly/src/screens/protected/home_screen/view/home_screen.dart';
 import 'package:mingly/src/screens/protected/my_reservation_screen/my_reservation_screen.dart';
 import 'package:mingly/src/screens/protected/notification_screen/notification_screen.dart';
 import 'package:mingly/src/screens/protected/profile_screen/view/profile_screen.dart';

@@ -70,13 +70,13 @@ class AuthProvider extends ChangeNotifier {
     return response;
   }
 
-  Future<Map<String, dynamic>> login() async {
+  Future<Map<String, dynamic>> login(String email, String password) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     isLoading = true;
     notifyListeners();
     final response = await AuthenticationRepo(ApiService()).login({
-      "email": emailController.text,
-      "password": passwordController.text,
+      "email": email,
+      "password": password,
       "device_token": "test-token-12345",
     });
     if (response["message"] != null) {
