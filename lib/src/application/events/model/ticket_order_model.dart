@@ -1,5 +1,5 @@
 class TicketOrderItem {
-  final String ticketId;
+  final int ticketId;
   final int quantity;
 
   TicketOrderItem({required this.ticketId, required this.quantity});

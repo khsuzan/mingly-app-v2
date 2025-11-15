@@ -55,11 +55,11 @@ class EventsRepo {
 
   Future<Map<String, dynamic>> buyEventTicket(
     Map<String, dynamic> data,
-    String id,
+    int id,
   ) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final response = await ApiService().postData(
-      "${AppUrls.buyTicket}${id}/",
+      AppUrls.buyTicket.replaceFirst(":eventId", id.toString()),
       data,
       authToken: preferences.getString("authToken"),
     );

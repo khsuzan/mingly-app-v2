@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mingly/src/components/custom_dialog.dart';
 import 'package:mingly/src/constant/app_urls.dart';
-import 'package:mingly/src/screens/protected/my_reservation_screen/my_reservation_screen.dart';
+import 'package:mingly/src/screens/protected/my_booking/view/my_booking_screen.dart';
 import 'package:mingly/src/screens/protected/profile_screen/controller/profile_controller.dart';
 import 'package:mingly/src/screens/protected/profile_screen/profile_provider.dart';
 import 'package:provider/provider.dart';

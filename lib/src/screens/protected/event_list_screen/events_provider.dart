@@ -177,19 +177,19 @@ class EventsProvider extends ChangeNotifier {
   final List<TicketOrderItem> selectedTickets = [];
 
   void addOrUpdateTicket(String ticketId, int quantity) {
-    final index = selectedTickets.indexWhere((e) => e.ticketId == ticketId);
-    if (index >= 0) {
-      selectedTickets[index] = TicketOrderItem(
-        ticketId: ticketId,
-        quantity: quantity,
-      );
-    } else {
-      selectedTickets.add(
-        TicketOrderItem(ticketId: ticketId, quantity: quantity),
-      );
-    }
-    totalPrice += ticketTotalPrice;
-    notifyListeners();
+    // final index = selectedTickets.indexWhere((e) => e.ticketId == ticketId);
+    // if (index >= 0) {
+    //   selectedTickets[index] = TicketOrderItem(
+    //     ticketId: ticketId,
+    //     quantity: quantity,
+    //   );
+    // } else {
+    //   selectedTickets.add(
+    //     TicketOrderItem(ticketId: ticketId, quantity: quantity),
+    //   );
+    // }
+    // totalPrice += ticketTotalPrice;
+    // notifyListeners();
   }
 
   void clearTickets() {

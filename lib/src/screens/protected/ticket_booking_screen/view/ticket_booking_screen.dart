@@ -1,18 +1,24 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mingly/src/application/events/model/events_model.dart';
 
+import '../../../../application/booking/ticket_booking.dart';
+import '../../../../components/helpers.dart';
 import '../controller/ticket_booking_controller.dart';
 
 class TicketBookingScreen extends StatelessWidget {
-  final EventsModel event;
-  const TicketBookingScreen({super.key, required this.event});
+  final TicketBookInfoArg info;
+  const TicketBookingScreen({super.key, required this.info});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final event = info.event;
+    final eventDetail = info.eventDetail;
     final controller = Get.put(
       TicketBookingController(id: event.id.toString()),
     );
@@ -54,21 +60,14 @@ class TicketBookingScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Row(
-                children: const [
+                children: [
                   Icon(Icons.calendar_today, color: Colors.white),
                   SizedBox(width: 8),
                   Text(
-                    'Fri, 26 Jan 2025',
+                    formatDayAndDate(eventDetail.firstSessionDate ?? ""),
                     style: TextStyle(color: Colors.white),
                   ),
                 ],
-              ),
-              const Padding(
-                padding: EdgeInsets.only(left: 32),
-                child: Text(
-                  'Open gate at 20:00',
-                  style: TextStyle(color: Colors.white54, fontSize: 12),
-                ),
               ),
               const SizedBox(height: 16),
               Row(
@@ -135,7 +134,17 @@ class TicketBookingScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                     onPressed: () {
-                      context.push("/booking-confirmation");
+                      context.push(
+                        "/booking-confirmation",
+                        extra: TicketBookInfoArg(
+                          event: event,
+                          eventDetail: eventDetail,
+                          tickets: controller.eventTicketList
+                              .where((t) => t.quantity > 0)
+                              .toList(),
+                          promoCode: '',
+                        ),
+                      );
                     },
                     child: Text(
                       'Buy Tickets (\$${controller.totalPrice.value.toStringAsFixed(2)})',

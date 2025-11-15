@@ -1,10 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mingly/src/components/custom_snackbar.dart';
-import 'package:mingly/src/screens/protected/booking_summary/widget/custom_confirm_dialog.dart';
-import 'package:mingly/src/screens/protected/event_list_screen/events_provider.dart';
-import 'package:provider/provider.dart';
-
 import 'package:webview_flutter/webview_flutter.dart';
 
 class StripePaymentWebView extends StatefulWidget {
@@ -13,11 +10,11 @@ class StripePaymentWebView extends StatefulWidget {
   final void Function()? onSuccess;
 
   const StripePaymentWebView({
-    Key? key,
+    super.key,
     required this.url,
     this.onSuccess,
     this.message,
-  }) : super(key: key);
+  });
 
   @override
   State<StripePaymentWebView> createState() => _StripePaymentWebViewState();
@@ -50,7 +47,9 @@ class _StripePaymentWebViewState extends State<StripePaymentWebView> {
   @override
   void initState() {
     super.initState();
-    print(widget.url);
+    if (kDebugMode) {
+      print(widget.url);
+    }
 
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -74,16 +73,21 @@ class _StripePaymentWebViewState extends State<StripePaymentWebView> {
             }
           },
           onWebResourceError: (error) {
-            print("WebView error: ${error.description}");
+            if (kDebugMode) {
+              print("WebView error: ${error.description}");
+            }
           },
           onNavigationRequest: (NavigationRequest request) {
-            print("Navigation: ${request.url}");
+            if (kDebugMode) {
+              print("Navigation: ${request.url}");
+            }
 
             // ✅ Detect PayFast success
             if (request.url.contains(successUrlPattern)) {
               _showSuccessSnackBar();
               widget.onSuccess?.call();
-              Navigator.of(context).pop(true);
+
+              context.go('/my-reservation');
 
               return NavigationDecision.prevent;
             }

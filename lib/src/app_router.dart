@@ -24,7 +24,7 @@ import 'package:mingly/src/screens/protected/landing_page.dart/landing_page.dart
 import 'package:mingly/src/screens/protected/membership_screen/membership_screen.dart';
 import 'package:mingly/src/screens/protected/my_bottles/my_bottles_history.dart';
 import 'package:mingly/src/screens/protected/my_bottles/my_bottles_screen.dart';
-import 'package:mingly/src/screens/protected/my_reservation_screen/my_reservation_screen.dart';
+import 'package:mingly/src/screens/protected/my_booking/view/my_booking_screen.dart';
 import 'package:mingly/src/screens/protected/notification_screen/notification_screen.dart';
 import 'package:mingly/src/screens/protected/payment/payment_screen.dart';
 import 'package:mingly/src/screens/protected/payment/payment_table.dart';
@@ -46,7 +46,9 @@ import 'package:mingly/src/screens/protected/venue_detail_screen/view/venue_deta
 import 'package:mingly/src/screens/protected/venue_list_screen/view/venue_list_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'application/booking/ticket_booking.dart';
 import 'application/venues/model/venues_model.dart';
+import 'screens/protected/payment/payment_strrpe.dart';
 import 'screens/protected/promo_code/view/promo_code_screen.dart';
 import 'screens/protected/reserve_venue/view/venue_reserve_screen.dart';
 
@@ -101,7 +103,7 @@ class AppRouter {
         GoRoute(
           path: '/ticket-booking',
           builder: (context, state) =>
-              TicketBookingScreen(event: state.extra as EventsModel),
+              TicketBookingScreen(info: state.extra as TicketBookInfoArg),
         ),
         GoRoute(
           path: '/venue-detail',
@@ -174,7 +176,9 @@ class AppRouter {
         ),
         GoRoute(
           path: '/booking-confirmation',
-          builder: (context, state) => BookingConfirmationScreen(),
+          builder: (context, state) => BookingConfirmationScreen(
+            info: state.extra as TicketBookInfoArg,
+          ),
         ),
         GoRoute(
           path: '/table-booking-confirmation',
@@ -189,6 +193,11 @@ class AppRouter {
         GoRoute(
           path: '/payment-table',
           builder: (context, state) => PaymentTable(),
+        ),
+        GoRoute(
+          path: '/payment-ticket',
+          builder: (context, state) =>
+              StripePaymentWebView(url: state.extra as String),
         ),
         GoRoute(
           path: '/booking-summary',

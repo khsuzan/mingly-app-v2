@@ -1,10 +1,10 @@
 class AppUrls {
-  static String baseUrl = "http://192.168.0.111:8900/app/api/v1";
+  static String baseUrl = "http://10.10.13.11:8900/app/api/v1";
   // static String baseUrl = "https://api.dockploy.72-60-211-160.sslip.io/app/api/v1";
-  static String imageUrl = "http://192.168.0.111:8000";
+  static String imageUrl = "http://10.10.13.11:8000";
 
   // static String baseUrl = "https://080aadaa0adf.ngrok-free.app/app/api/v1";
-  static String imageUrlNgrok = "http://192.168.0.111:8900";
+  static String imageUrlNgrok = "http://10.10.13.11:8900";
   //authentication
   static String login = "/auth/login/";
   static String loginGoogle = "/google/login/";
@@ -24,7 +24,7 @@ class AppUrls {
   static String eventDetails = "/event/:id/detail/";
   static String eventSessions = "/event/:id/sessions/";
   static String ticketList = "/event_tickets/";
-  static String buyTicket = "/book_ticket/";
+  static String buyTicket = "/book_ticket/:eventId/";
   //bottles
   static String getBottle = "/all-bottles/";
 
@@ -58,6 +58,7 @@ class AppUrls {
   static String pointHistory = "/my-point-transactions/";
 
   static String reservation = "/my-reservations/";
+  static String bookingOrders = "/my-bookings/";
 
   static String addToFav = "/favourite/";
 

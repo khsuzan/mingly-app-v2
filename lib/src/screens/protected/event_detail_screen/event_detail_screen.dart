@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mingly/src/application/booking/ticket_booking.dart';
 import 'package:mingly/src/application/events/model/events_model.dart';
 import 'package:mingly/src/components/custom_loading_dialog.dart';
 import 'package:mingly/src/components/helpers.dart';
@@ -70,7 +71,7 @@ class EventDetailScreen extends StatelessWidget {
                   autoPlay: false,
                   viewportFraction: 0.96,
                   enlargeFactor: 0.2,
-                  enableInfiniteScroll: false
+                  enableInfiniteScroll: false,
                 ),
                 itemBuilder: (context, index, realIndex) {
                   return Container(
@@ -185,7 +186,15 @@ class EventDetailScreen extends StatelessWidget {
                       ),
                     ),
                     onPressed: () async {
-                      context.push("/ticket-booking", extra: event);
+                      context.push(
+                        "/ticket-booking",
+                        extra: TicketBookInfoArg(
+                          event: event,
+                          eventDetail: controller.detail.value,
+                          tickets: [],
+                          promoCode: '',
+                        ),
+                      );
                       // LoadingDialog.show(context);
                       // final status = await eventProvider.getEventTicketList(
                       //   event.id.toString(),

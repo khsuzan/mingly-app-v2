@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
+import '../../../../application/booking/ticket_booking.dart';
 import '../../../../application/events/repo/events_repo.dart';
 
 class TicketBookingController extends GetxController {
@@ -57,38 +58,6 @@ class TicketBookingController extends GetxController {
       0.0,
 
       (prev, t) => prev + (t.unitPrice * t.quantity),
-    );
-  }
-}
-
-class TicketBuyingInfo {
-  int ticketId;
-  String ticketTitle;
-  int totalTicketQty;
-  int quantity;
-  double unitPrice;
-
-  TicketBuyingInfo({
-    required this.ticketId,
-    required this.ticketTitle,
-    required this.totalTicketQty,
-    required this.quantity,
-    required this.unitPrice,
-  });
-
-  TicketBuyingInfo copyWith({
-    int? ticketId,
-    String? ticketTitle,
-    int? totalTicketQty,
-    int? quantity,
-    double? unitPrice,
-  }) {
-    return TicketBuyingInfo(
-      ticketId: ticketId ?? this.ticketId,
-      ticketTitle: ticketTitle ?? this.ticketTitle,
-      totalTicketQty: totalTicketQty ?? this.totalTicketQty,
-      quantity: quantity ?? this.quantity,
-      unitPrice: unitPrice ?? this.unitPrice,
     );
   }
 }

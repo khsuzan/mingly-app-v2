@@ -49,8 +49,8 @@ class ReservationProvider extends ChangeNotifier {
         return data;
       } else if (response.statusCode == 400 || response.statusCode == 401) {
         final data = jsonDecode(response.body);
-        return data;
         debugPrint("Added to favourites: $data");
+        return data;
       } else {
         debugPrint(" Failed (${response.statusCode}): ${response.body}");
         return {

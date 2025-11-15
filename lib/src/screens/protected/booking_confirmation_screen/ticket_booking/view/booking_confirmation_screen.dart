@@ -1,20 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mingly/src/application/events/model/events_model.dart';
 import 'package:mingly/src/components/custom_loading_dialog.dart';
 import 'package:mingly/src/components/custom_snackbar.dart';
+import 'package:mingly/src/screens/protected/booking_confirmation_screen/ticket_booking/controller/booking_confirmation_controller.dart';
 import 'package:mingly/src/screens/protected/booking_summary/widget/custom_confirm_dialog.dart';
 import 'package:mingly/src/screens/protected/event_list_screen/events_provider.dart';
 import 'package:mingly/src/screens/protected/payment/payment_strrpe.dart';
 import 'package:mingly/src/screens/protected/profile_screen/profile_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../application/booking/ticket_booking.dart';
+import '../../../../../application/events/model/event_details_model.dart';
+import '../../../../../components/helpers.dart';
+
 class BookingConfirmationScreen extends StatelessWidget {
-  const BookingConfirmationScreen({super.key});
+  final TicketBookInfoArg info;
+  const BookingConfirmationScreen({super.key, required this.info});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final eventProvider = context.watch<EventsProvider>();
+    final event = info.event;
+    final eventDetail = info.eventDetail;
+    final tickets = info.tickets;
+    final controller = Get.put(
+      TicketBookingConfirmationController(event: event),
+    );
+    // final eventProvider = context.watch<EventsProvider>();
     final profileProvider = context.watch<ProfileProvider>();
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
@@ -37,55 +51,55 @@ class BookingConfirmationScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 8),
-              const Text(
-                'Personal details',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              profileProvider.profileModel == null ||
-                      profileProvider.profileModel.data == null
-                  ? Center(child: CircularProgressIndicator())
-                  : Card(
-                      color: Colors.grey.shade900,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: ListTile(
-                        title: Text(
-                          profileProvider.profileModel.data!.fullName
-                              .toString(),
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              profileProvider.profileModel.data!.mobile
-                                  .toString(),
-                              style: TextStyle(color: Colors.white70),
-                            ),
-                            Text(
-                              'tyler.howell@gmail.com',
-                              style: TextStyle(color: Colors.white70),
-                            ),
-                          ],
-                        ),
-                        trailing: InkWell(
-                          onTap: () => context.push("/personal-info"),
-                          child: const Icon(
-                            Icons.chevron_right,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
+              // const SizedBox(height: 8),
+              // const Text(
+              //   'Personal details',
+              //   style: TextStyle(
+              //     color: Colors.white,
+              //     fontWeight: FontWeight.bold,
+              //   ),
+              // ),
+              // const SizedBox(height: 8),
+              // profileProvider.profileModel == null ||
+              //         profileProvider.profileModel.data == null
+              //     ? Center(child: CircularProgressIndicator())
+              //     : Card(
+              //         color: Colors.grey.shade900,
+              //         shape: RoundedRectangleBorder(
+              //           borderRadius: BorderRadius.circular(12),
+              //         ),
+              //         child: ListTile(
+              //           title: Text(
+              //             profileProvider.profileModel.data!.fullName
+              //                 .toString(),
+              //             style: TextStyle(color: Colors.white),
+              //           ),
+              //           subtitle: Column(
+              //             crossAxisAlignment: CrossAxisAlignment.start,
+              //             children: [
+              //               Text(
+              //                 profileProvider.profileModel.data!.mobile
+              //                     .toString(),
+              //                 style: TextStyle(color: Colors.white70),
+              //               ),
+              //               Text(
+              //                 'tyler.howell@gmail.com',
+              //                 style: TextStyle(color: Colors.white70),
+              //               ),
+              //             ],
+              //           ),
+              //           trailing: InkWell(
+              //             onTap: () => context.push("/personal-info"),
+              //             child: const Icon(
+              //               Icons.chevron_right,
+              //               color: Colors.white,
+              //             ),
+              //           ),
+              //         ),
+              //       ),
               const SizedBox(height: 16),
               Text(
-                eventProvider.selectEventModel.eventName.toString(),
+                event.eventName.toString(),
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -93,34 +107,27 @@ class BookingConfirmationScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Row(
-                children: const [
+                children: [
                   Icon(Icons.calendar_today, color: Colors.white),
                   SizedBox(width: 8),
                   Text(
-                    'Fri, 26 Jan 2025',
+                    formatDayAndDate(eventDetail.firstSessionDate ?? ""),
                     style: TextStyle(color: Colors.white),
                   ),
                 ],
-              ),
-              const Padding(
-                padding: EdgeInsets.only(left: 32),
-                child: Text(
-                  'Open gate at 20:00',
-                  style: TextStyle(color: Colors.white54, fontSize: 12),
-                ),
               ),
               const SizedBox(height: 8),
               Row(
                 children: const [
                   Icon(Icons.store, color: Colors.white),
                   SizedBox(width: 8),
-                  Text('Outlet', style: TextStyle(color: Colors.white)),
+                  Text('Location', style: TextStyle(color: Colors.white)),
                 ],
               ),
               Padding(
                 padding: EdgeInsets.only(left: 32),
                 child: Text(
-                  '${eventProvider.selectEventModel.venue?.city}\nCity - ${eventProvider.selectEventModel.venue?.city}',
+                  '${event.venue?.name}\nCity - ${event.venue?.city}',
                   style: TextStyle(color: Colors.white54, fontSize: 12),
                 ),
               ),
@@ -136,47 +143,42 @@ class BookingConfirmationScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Column(
-                        children: List.generate(
-                          eventProvider.selectedTickets.length,
-                          (index) {
-                            final ticket = eventProvider.selectedTickets[index];
-                            return Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Ticket  : ${eventProvider.getTicketName(int.parse(ticket.ticketId.toString()))}',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    Text(
-                                      eventProvider.getTicketPrice(
-                                        int.parse(ticket.ticketId),
-                                      ),
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 4),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      '${ticket.quantity} x',
-                                      style: TextStyle(color: Colors.white70),
-                                    ),
-                                    Text(
-                                      '${double.parse(eventProvider.getTicketPrice(int.parse(ticket.ticketId))) * double.parse(ticket.quantity.toString())}',
-                                      style: TextStyle(color: Colors.white70),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            );
-                          },
-                        ),
+                        children: List.generate(tickets.length, (index) {
+                          final ticket = tickets[index];
+                          return Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Ticket  : ${tickets[index].quantity}',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  Text(
+                                    tickets[index].unitPrice.toString(),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 4),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '${ticket.quantity} x',
+                                    style: TextStyle(color: Colors.white70),
+                                  ),
+                                  Text(
+                                    '${double.parse(tickets[index].unitPrice.toString()) * double.parse(ticket.quantity.toString())}',
+                                    style: TextStyle(color: Colors.white70),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          );
+                        }),
                       ),
                       const Divider(color: Colors.white24),
                       Row(
@@ -184,7 +186,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                         children: [
                           Text('Total', style: TextStyle(color: Colors.white)),
                           Text(
-                            eventProvider.getTotalPrice(),
+                            controller.getTotalPrice(tickets),
                             style: TextStyle(color: Colors.white),
                           ),
                         ],
@@ -208,8 +210,8 @@ class BookingConfirmationScreen extends StatelessWidget {
                     child: TextField(
                       onChanged: (value) {
                         String promo = profileProvider.getPromoValue(value);
-                        eventProvider.calculateTotalAmountWithPromo(promo);
-                        eventProvider.getPromoCode(value);
+                        // controller.calculateTotalAmountWithPromo(promo);
+                        // eventProvider.getPromoCode(value);
                       },
                       decoration: InputDecoration(
                         filled: true,
@@ -246,7 +248,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      eventProvider.addPromoValue();
+                      // eventProvider.addPromoValue();
                     },
                     child: const Text('Apply'),
                   ),
@@ -270,7 +272,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                             style: TextStyle(color: Colors.white),
                           ),
                           Text(
-                            eventProvider.getTotalPrice(),
+                            controller.getTotalPrice(tickets),
                             style: TextStyle(color: Colors.white),
                           ),
                         ],
@@ -280,10 +282,12 @@ class BookingConfirmationScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('Promo', style: TextStyle(color: Colors.white)),
-                          Text(
-                            '${eventProvider.promoValue}',
-                            style: TextStyle(color: Colors.white),
-                          ),
+                          Obx(() {
+                            return Text(
+                              '${controller.promoValue}',
+                              style: TextStyle(color: Colors.white),
+                            );
+                          }),
                         ],
                       ),
                       const SizedBox(height: 4),
@@ -294,13 +298,15 @@ class BookingConfirmationScreen extends StatelessWidget {
                             'Grand Total',
                             style: TextStyle(color: Colors.white),
                           ),
-                          Text(
-                            (double.parse(eventProvider.getTotalPrice()) -
-                                    eventProvider.promoValue)
-                                .toString(),
+                          Obx(() {
+                            return Text(
+                              (double.parse(controller.getTotalPrice(tickets)) -
+                                      controller.promoValue.value)
+                                  .toString(),
 
-                            style: TextStyle(color: Colors.white),
-                          ),
+                              style: TextStyle(color: Colors.white),
+                            );
+                          }),
                         ],
                       ),
                     ],
@@ -319,8 +325,8 @@ class BookingConfirmationScreen extends StatelessWidget {
                   children: [
                     Text('Full Payment', style: TextStyle(color: Colors.black)),
                     Text(
-                      (double.parse(eventProvider.getTotalPrice()) -
-                              eventProvider.promoValue)
+                      (double.parse(controller.getTotalPrice(tickets)) -
+                              controller.promoValue.value)
                           .toString(),
 
                       style: TextStyle(color: Colors.black),
@@ -340,74 +346,22 @@ class BookingConfirmationScreen extends StatelessWidget {
                     ),
                     padding: EdgeInsets.symmetric(vertical: 16),
                   ),
-                  onPressed: () async {
-                    LoadingDialog.show(context);
-                    final status = await eventProvider.buyTicketEvent(
-                      eventProvider
-                          .buildOrderRequest(
-                            promoCode: eventProvider.promoCode ?? "",
-                          )
-                          .toJson(),
-                      eventProvider.selectEventModel.id.toString(),
-                    );
-                    LoadingDialog.hide(context);
-
-                    if (status["message"] == "Booking Successful" &&
-                        status["checkout_url"] != null) {
-                      // Navigate to payment
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => StripePaymentWebView(
-                            url: status["checkout_url"],
-                            message: status["message"],
-                          ),
-                        ),
-                      ).then((success) {
-                        if (success == true) {
-                          showCustomConfirmDialogEventTicket(
-                            context,
-                            context
-                                .read<EventsProvider>()
-                                .selectedTickets
-                                .length
-                                .toString(),
-                            status["message"],
-                          );
-                        }
-                      });
-
-                      // showCustomConfirmDialogEventTicket(
-                      //   context,
-                      //   eventProvider.selectedTickets.length.toString(),
-                      //   "table booking successfully",
-                      // );
-
-                      //           Navigator.push(
-                      //             context,
-                      //             MaterialPageRoute(
-                      //               builder: (_) => StripePaymentWebView(
-                      //                 url: status["checkout_url"],
-                      //                 message: status["message"],
-                      //               ),
-                      //             ),
-                      //           );
-
-                      //             showCustomConfirmDialogEventTicket(
-                      //   context,
-                      //   context.read<EventsProvider>().selectedTickets.length.toString(),
-                      //   widget.message!,
-                      // );
-                    } else {
+                  onPressed: () {
+                    if (event.id == null) {
                       CustomSnackbar.show(
                         context,
-                        message: "Getting some error",
-                        backgroundColor: Colors.red,
+                        message: 'Event ID is missing.',
                       );
+                      return;
                     }
-                    // if (status != null) {
-                    //
-                    // }
+                    controller.buyTicketEvent(
+                      context,
+                      TicketBooking(
+                        items: tickets,
+                        promoCode: info.promoCode,
+                      ).toJson(),
+                      event.id!,
+                    );
                   },
                   child: const Text('Proceed'),
                 ),
