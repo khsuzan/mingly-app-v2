@@ -47,6 +47,7 @@ import 'package:mingly/src/screens/protected/venue_list_screen/view/venue_list_s
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'application/venues/model/venues_model.dart';
+import 'screens/protected/promo_code/view/promo_code_screen.dart';
 import 'screens/protected/reserve_venue/view/venue_reserve_screen.dart';
 
 class AppRouter {
@@ -164,9 +165,8 @@ class AppRouter {
         ),
         GoRoute(
           path: '/beverages',
-          builder: (context, state) => BeveragesScreen(
-            venueId: state.extra as int,
-          ),
+          builder: (context, state) =>
+              BeveragesScreen(venueId: state.extra as int),
         ),
         GoRoute(
           path: '/payment',
@@ -181,6 +181,10 @@ class AppRouter {
           builder: (context, state) => TableBookingConfirmationScreen(
             bookingInfo: state.extra as TableBookInfo,
           ),
+        ),
+        GoRoute(
+          path: '/promo-code',
+          builder: (context, state) => PromoCodeScreen(),
         ),
         GoRoute(
           path: '/payment-table',

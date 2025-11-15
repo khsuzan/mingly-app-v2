@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mingly/src/application/events/model/events_model.dart';
 import 'package:mingly/src/components/helpers.dart';
 import 'package:mingly/src/screens/protected/berverages/widget/table_card.dart';
@@ -114,32 +115,44 @@ class TableBookingConfirmationScreen extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: TextField(
-                        onChanged: (value) {
-                          // eventProvider.getPromoCode(value);
-                          // eventProvider.calculateTotalAmountWithPromo(value);
+                      child: GestureDetector(
+                        onTap: () async {
+                          final promoCode = await context.push<String?>(
+                            '/promo-code',
+                          );
+                          if (promoCode != null) {
+                            controller.setPromoCode(promoCode);
+                          }
                         },
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.grey.shade900,
-                          prefixIcon: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: SvgPicture.asset(
-                              "lib/assets/icons/Promo.svg",
+                        child: IgnorePointer(
+                          child: TextField(
+                            onChanged: (value) {
+                              // eventProvider.getPromoCode(value);
+                              // eventProvider.calculateTotalAmountWithPromo(value);
+                            },
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.grey.shade900,
+                              prefixIcon: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SvgPicture.asset(
+                                  "lib/assets/icons/Promo.svg",
+                                ),
+                              ),
+                              hintText: 'Enter promo code',
+                              hintStyle: const TextStyle(color: Colors.white54),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide.none,
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 0,
+                                horizontal: 8,
+                              ),
                             ),
-                          ),
-                          hintText: 'Enter promo code',
-                          hintStyle: const TextStyle(color: Colors.white54),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 0,
-                            horizontal: 8,
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ),
-                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
                     const SizedBox(width: 8),
