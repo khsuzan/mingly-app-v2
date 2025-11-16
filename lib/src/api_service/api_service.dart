@@ -59,6 +59,49 @@ class ApiService {
     }
   }
 
+  Future<Map<String, dynamic>> postDataOrThrow(
+    String endpoint,
+    Map<String, dynamic> data, {
+    Map<String, String>? queryParams,
+    String? authToken,
+  }) async {
+    try {
+      Uri uri = Uri.parse('${AppUrls.baseUrl}$endpoint');
+      if (queryParams != null) uri = uri.replace(queryParameters: queryParams);
+
+      final headers = {'Content-Type': 'application/json'};
+      if (authToken != null && authToken.isNotEmpty) {
+        headers['Authorization'] = 'Bearer $authToken';
+      }
+
+      final body = json.encode(data);
+      final response = await http.post(uri, headers: headers, body: body);
+
+      if (kDebugMode) print("Post Api Regular ${response.body}");
+
+      // Try to parse body safely
+      Map<String, dynamic>? decoded;
+      try {
+        decoded = json.decode(response.body) as Map<String, dynamic>?;
+      } catch (_) {
+        decoded = {'body': response.body};
+      }
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return decoded ?? {};
+      }
+
+      // For 400/other errors, throw so caller's try/catch can handle it
+      final message =
+          decoded ??
+          {'error': 'Request failed with status ${response.statusCode}'};
+      throw Exception({'status': response.statusCode, 'response': message});
+    } catch (e) {
+      // Re-throw so callers receive the exception
+      rethrow;
+    }
+  }
+
   Future<Map<String, dynamic>> postDataRegular2(
     String endpoint,
     Map<String, dynamic> data, {
@@ -250,7 +293,7 @@ class ApiService {
         headers: headers,
       );
 
-      if(kDebugMode){
+      if (kDebugMode) {
         print("Get List Response: ${response.body}");
       }
 

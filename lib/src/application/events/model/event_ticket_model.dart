@@ -1,3 +1,23 @@
+class EventTicketModelResponse {
+  final int id;
+  final String status;
+  final EventsTicketModel ticketInfo;
+  EventTicketModelResponse({
+    required this.id,
+    required this.status,
+    required this.ticketInfo,
+  });
+  factory EventTicketModelResponse.fromJson(Map<String, dynamic> json) {
+    return EventTicketModelResponse(
+      id: json['id'] as int,
+      status: json['status'] as String,
+      ticketInfo: EventsTicketModel.fromJson(
+        json['ticket_info'] as Map<String, dynamic>,
+      ),
+    );
+  }
+}
+
 class EventsTicketModel {
   final int id;
   String? title;
@@ -21,28 +41,29 @@ class EventsTicketModel {
   int? tax;
   int? promocode;
 
-  EventsTicketModel(
-      {required this.id,
-      this.title,
-      this.price,
-      this.totalTicketQty,
-      this.isHasBookingLimit,
-      this.ticketLimit,
-      this.isHasAllowKids,
-      this.description,
-      this.isOffer,
-      this.startOfferDateTime,
-      this.endOfferDateTime,
-      this.offerValue,
-      this.availableSales,
-      this.isSoldOut,
-      this.createdAt,
-      this.updatedAt,
-      this.ticketType,
-      this.event,
-      this.commission,
-      this.tax,
-      this.promocode});
+  EventsTicketModel({
+    required this.id,
+    this.title,
+    this.price,
+    this.totalTicketQty,
+    this.isHasBookingLimit,
+    this.ticketLimit,
+    this.isHasAllowKids,
+    this.description,
+    this.isOffer,
+    this.startOfferDateTime,
+    this.endOfferDateTime,
+    this.offerValue,
+    this.availableSales,
+    this.isSoldOut,
+    this.createdAt,
+    this.updatedAt,
+    this.ticketType,
+    this.event,
+    this.commission,
+    this.tax,
+    this.promocode,
+  });
 
   factory EventsTicketModel.fromJson(Map<String, dynamic> json) {
     return EventsTicketModel(

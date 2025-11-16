@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mingly/src/components/buttons.dart';
 import 'package:mingly/src/screens/protected/event_detail_screen/widget/custom_dialog_membership.dart';
 
 class EventDetailsScreenOne extends StatelessWidget {

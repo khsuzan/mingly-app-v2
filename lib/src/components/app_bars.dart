@@ -20,7 +20,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
 
   final List<_NavItem> _items = [
     _NavItem('Home', 'home', '/home'),
-    _NavItem('Reservations', 'reservation', '/my-reservation'),
+    _NavItem('Reservations', 'reservation', '/my-bookings'),
     _NavItem('Favourite', 'favourite', '/favourite'),
     _NavItem('Notification', 'notification', '/notification'),
     _NavItem('Profile', 'profile', '/profile'),
@@ -29,8 +29,8 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
   
   final List<Widget> _pages = [
     const HomeScreen(),
-     MyReservationScreen(),
-    MyReservationScreen(),
+     MyBookingsScreen(),
+    MyBookingsScreen(),
    NotificationScreen(),
    ProfileScreen()
   ];

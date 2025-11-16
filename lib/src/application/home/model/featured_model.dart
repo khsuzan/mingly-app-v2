@@ -1,3 +1,6 @@
+import '../../events/model/events_model.dart' as event;
+import '../../venues/model/venues_model.dart' as venue;
+
 /// Represents a featured entry which can point to either an Event or a Venue
 class FeaturedModel {
   final int id;
@@ -139,6 +142,26 @@ class ImageableEvent implements Imageable {
     );
   }
 
+  event.EventsModel toEventsModel() {
+    return event.EventsModel(
+      id: id,
+      eventName: eventName,
+      about: about,
+      description: description,
+      currency: currency,
+      images: images.isNotEmpty
+          ? images.map((i) => event.Images.fromJson(i.toJson())).toList()
+          : null,
+      venue: (venueName == null && venueCity == null && venueCapacity == null)
+          ? null
+          : event.Venue(
+              name: venueName,
+              city: venueCity,
+              capacity: venueCapacity,
+            ),
+    );
+  }
+
   @override
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -260,6 +283,36 @@ class ImageableVenue implements Imageable {
       }
       return null;
     }
+  }
+
+  venue.VenuesModel toVenuesModel() {
+    return venue.VenuesModel(
+      id: id,
+      images: images.isNotEmpty
+          ? images.map((i) => venue.Images.fromJson(i.toJson())).toList()
+          : null,
+      name: name,
+      description: description,
+      address: address,
+      city: city,
+      state: state,
+      country: country,
+      postalCode: postalCode,
+      latitude: latitude,
+      longitude: longitude,
+      capacity: capacity,
+      contactEmail: contactEmail,
+      contactPhone: contactPhone,
+      websiteUrl: websiteUrl,
+      status: status,
+      isFeatured: isFeatured,
+      directionUrl: directionUrl,
+      picture: images.isNotEmpty ? images.first.imageUrl : null,
+      createdAt: createdAt?.toIso8601String(),
+      updatedAt: updatedAt?.toIso8601String(),
+      createdBy: createdBy,
+      openingHours: null,
+    );
   }
 
   @override

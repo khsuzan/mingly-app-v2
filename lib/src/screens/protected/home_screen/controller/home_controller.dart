@@ -6,6 +6,7 @@ import 'package:mingly/src/application/home/model/featured_model.dart';
 import 'package:mingly/src/application/profile/model/profile_model.dart';
 import 'package:mingly/src/application/profile/repo/profile_repo.dart';
 
+import '../../../../application/home/model/leader_board_model.dart';
 import '../../../../application/venues/model/venues_model.dart';
 
 class HomeController extends GetxController {
@@ -20,6 +21,7 @@ class HomeController extends GetxController {
   final RxList<FeaturedModel> featuredItems = <FeaturedModel>[].obs;
   final RxList<VenuesModel> featuredVenues = <VenuesModel>[].obs;
   final RxList<EventsModel> popularEvents = <EventsModel>[].obs;
+  final RxList<LeaderBoardModel> topSpendersList = <LeaderBoardModel>[].obs;
   final RxList<EventsModel> recommendationEvents = <EventsModel>[].obs;
 
   @override
@@ -47,6 +49,7 @@ class HomeController extends GetxController {
     isRefreshing.value = true;
     await fetchFeaturedVenues();
     await fetchFeaturedVenues();
+    await fetchTopSpenders();
     await fetchRecommendationEvents();
     isRefreshing.value = false;
   }
@@ -84,6 +87,15 @@ class HomeController extends GetxController {
     }
   }
 
+  Future<void> fetchTopSpenders() async {
+    try {
+      final response = await homeRepo.getLeaderBoard();
+      debugPrint('topSpendersList Response: $response');
+      topSpendersList.assignAll(response);
+    } catch (e) {
+      debugPrint('Error fetching topSpendersList events: $e');
+    }
+  }
   Future<void> fetchRecommendationEvents() async {
     try {
       //TODO: Update API for recommendation events

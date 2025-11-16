@@ -2,7 +2,7 @@ import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:mingly/src/application/venues/repo/venues_repo.dart';
 
-import '../../../../application/venues/model/venue_menu_model.dart';
+import '../../../../application/venue_menu/model/venue_menu_model.dart';
 
 class FoodMenuController extends GetxController {
   final int id;

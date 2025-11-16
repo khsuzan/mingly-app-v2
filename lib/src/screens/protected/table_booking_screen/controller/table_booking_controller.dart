@@ -13,8 +13,8 @@ class TableBookingController extends GetxController {
 
   final EventsRepo eventsRepo = EventsRepo();
 
-  final String id;
-  TableBookingController({required this.id});
+  final String eventId;
+  TableBookingController({required this.eventId});
 
   final _sessionTimes = <EventSessionModel>[].obs;
 
@@ -45,14 +45,14 @@ class TableBookingController extends GetxController {
   final isEventDetailLoading = false.obs;
   final isSessionTimesLoading = false.obs;
 
-  final RxList<EventsTicketModel> tables = <EventsTicketModel>[].obs;
+  final RxList<EventTicketModelResponse> tables = <EventTicketModelResponse>[].obs;
 
   final Rx<EventSessionModel?> selectedTimeSlot = Rx<EventSessionModel?>(null);
 
   // selected for booking
   RxList<EventsTicketModel> selectedTables = <EventsTicketModel>[].obs;
 
-  RxList<EventsTicketModel> get filteredList => tables;
+  RxList<EventTicketModelResponse> get filteredList => tables;
 
   @override
   void onInit() {
@@ -69,7 +69,7 @@ class TableBookingController extends GetxController {
   void fetchDetail() async {
     try {
       isEventDetailLoading.value = true;
-      final response = await eventsRepo.getEventsDetails(id);
+      final response = await eventsRepo.getEventsDetails(eventId);
       detail.value = response;
       isEventDetailLoading.value = false;
     } catch (e) {
@@ -81,8 +81,8 @@ class TableBookingController extends GetxController {
   void fetchAvailableSessions() async {
     try {
       isSessionTimesLoading.value = true;
-      final response = await eventsRepo.getEventSessions(id);
-      debugPrint("Fetched ${response.length} sessions for event ID $id");
+      final response = await eventsRepo.getEventSessions(eventId);
+      debugPrint("Fetched ${response.length} sessions for event ID $eventId");
       _sessionTimes.assignAll(response);
       isSessionTimesLoading.value = false;
     } catch (e, stack) {
@@ -102,11 +102,22 @@ class TableBookingController extends GetxController {
   void fetchTablesTickets() async {
     try {
       if (selectedSession == null) return;
-      final response = await eventsRepo.getTablesTickets(id);
+      final response = await eventsRepo.getTablesTickets(
+        eventId: eventId,
+        date: _toDate(selectedSession!.firstSessionDate.toIso8601String()),
+        time: selectedSession!.sessionStartTime,
+      );
       tables.assignAll(response);
     } catch (e) {
       debugPrint("Error fetching table tickets: $e");
     }
+  }
+
+  String _toDate(String isoString) {
+    final dateTime = DateTime.parse(isoString);
+    return "${dateTime.year.toString().padLeft(4, '0')}-"
+        "${dateTime.month.toString().padLeft(2, '0')}-"
+        "${dateTime.day.toString().padLeft(2, '0')}";
   }
 
   void toggleTableSelection(EventsTicketModel table) {

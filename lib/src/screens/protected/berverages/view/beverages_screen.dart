@@ -5,7 +5,7 @@ import 'package:mingly/src/components/custom_snackbar.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 import 'package:mingly/src/screens/protected/event_detail_screen/widget/event_menu_card.dart';
 import 'package:mingly/src/screens/protected/event_list_screen/events_provider.dart';
-import 'package:mingly/src/screens/protected/my_bottles/bottle_provider.dart';
+import 'package:mingly/src/screens/protected/my_menu/bottle_provider.dart';
 import 'package:mingly/src/screens/protected/venue_list_screen/venue_provider.dart';
 import 'package:provider/provider.dart';
 

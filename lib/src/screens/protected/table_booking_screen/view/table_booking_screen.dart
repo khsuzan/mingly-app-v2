@@ -8,10 +8,10 @@ import 'package:intl/intl.dart';
 import 'package:mingly/src/application/events/model/events_model.dart';
 import 'package:mingly/src/application/events/model/table_ticket_model.dart';
 
+import '../../../../application/booking/ticket_booking.dart';
 import '../../../../components/custom_snackbar.dart';
 import '../../../../components/helpers.dart';
 import '../../../../constant/app_urls.dart';
-import '../../booking_confirmation_screen/table_booking/view/table_booking_confirmation_screen.dart';
 import '../controller/table_booking_controller.dart';
 
 class TableBookingScreen extends StatelessWidget {
@@ -21,343 +21,367 @@ class TableBookingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final controller = Get.put(
-      TableBookingController(id: event.id.toString()),
-      permanent: false,
-    );
     // final eventProvider = context.watch<EventsProvider>();
     // final venueProvider = context.watch<VenueProvider>();
-    return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
-      appBar: AppBar(
-        elevation: 0,
+    return GetX<TableBookingController>(
+      init: TableBookingController(eventId: event.id.toString()),
+      builder: (controller) => Scaffold(
         backgroundColor: theme.colorScheme.surface,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text(
-          "Table Booking",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontFamily: 'Lato',
-            fontWeight: FontWeight.w600,
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: theme.colorScheme.surface,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
           ),
+          title: Text(
+            "Table Booking",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontFamily: 'Lato',
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          centerTitle: false,
         ),
-        centerTitle: false,
-      ),
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 8),
-                Text(
-                  event.eventName.toString(),
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w700,
+        body: SingleChildScrollView(
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 8),
+                  Text(
+                    event.eventName.toString(),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Icon(Icons.location_on, color: Color(0xFFD1B26F)),
-                    SizedBox(width: 8),
-                    Text(
-                      event.venue!.city.toString(),
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ],
-                ),
-                Text(
-                  '${controller.detail.value.city}',
-                  style: TextStyle(color: Colors.white70),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Icon(Icons.access_time, color: Color(0xFFD1B26F)),
-                    SizedBox(width: 8),
-                    Text(
-                      "  ${controller.detail.value.sessionStartTime.toString()} - ${controller.detail.value.sessionEndTime.toString()}",
-                      style: TextStyle(color: Colors.white),
-                    ),
-
-                    Text(
-                      "  ${controller.detail.value.firstSessionDate.toString()}",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Obx(() {
-                  if (controller.selectedSession == null) {
-                    return SizedBox();
-                  }
-                  return InkWell(
-                    onTap: () {
-                      final sessions = controller.groupedSessionsByDate.keys
-                          .toList();
-                      showSessionPicker(context, sessions, (date) {
-                        // Handle the selected session here
-                        controller.updateDateSelection(date);
-                      });
-                    },
-                    child: Row(
-                      children: [
-                        SvgPicture.asset("lib/assets/icons/calender_gold.svg"),
-                        const SizedBox(width: 5),
-                        Text(
-                          formatDate(
-                            controller.selectedSession!.firstSessionDate,
-                          ),
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                        const Icon(
-                          Icons.arrow_drop_down_sharp,
-                          color: Colors.white,
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-                const SizedBox(height: 16),
-                const Text(
-                  'Description',
-                  style: TextStyle(
-                    color: Color(0xFFD1B26F),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  controller.detail.value.description.toString(),
-                  style: TextStyle(color: Colors.white70),
-                ),
-
-                const SizedBox(height: 24),
-                const Text(
-                  'Select a time you like',
-                  style: TextStyle(
-                    color: Color(0xFFD1B26F),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-
-                Obx(() {
-                  if (controller.timeSlots.isEmpty) {
-                    return Center(
-                      child: Text(
-                        'No time slots available',
-                        style: TextStyle(color: Colors.white70),
-                      ),
-                    );
-                  }
-                  return Wrap(
-                    spacing: 15,
-                    runSpacing: 8,
+                  const SizedBox(height: 8),
+                  Row(
                     children: [
-                      ...List.generate(controller.timeSlots.length, (index) {
-                        final timeSlot = controller.timeSlots[index];
-                        return _TimeSlotButton(
-                          label: formatTimeToAmPm(timeSlot.sessionStartTime),
-                          index: index,
-                          selected:
-                              timeSlot.sessionStartTime ==
-                              controller
-                                  .selectedTimeSlot
-                                  .value
-                                  ?.sessionStartTime,
-                          onPressed: (index) {
-                            controller.selectTimeSlot(
-                              controller.timeSlots[index],
-                            );
-                          },
-                        );
-                      }),
+                      Icon(Icons.location_on, color: Color(0xFFD1B26F)),
+                      SizedBox(width: 8),
+                      Text(
+                        event.venue!.city.toString(),
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ],
-                  );
-                }),
-                const SizedBox(height: 16),
-                const Text(
-                  'Seating Plan',
-                  style: TextStyle(
-                    color: Color(0xFFD1B26F),
-                    fontWeight: FontWeight.bold,
                   ),
-                ),
-                const SizedBox(height: 8),
-                Obx(() {
-                  if (controller.detail.value.others == null) {
-                    return SizedBox();
-                  }
-                  final image = controller.detail.value.others!.seatingPlan;
-                  return SizedBox(
-                    width: double.infinity,
-                    child: Image.network(
-                      '${AppUrls.imageUrl}$image',
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Text("Seat plan not available");
+                  Text(
+                    '${controller.detail.value.city}',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Icon(Icons.access_time, color: Color(0xFFD1B26F)),
+                      SizedBox(width: 8),
+                      Text(
+                        "  ${controller.detail.value.sessionStartTime.toString()} - ${controller.detail.value.sessionEndTime.toString()}",
+                        style: TextStyle(color: Colors.white),
+                      ),
+
+                      Text(
+                        "  ${controller.detail.value.firstSessionDate.toString()}",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Obx(() {
+                    if (controller.selectedSession == null) {
+                      return SizedBox();
+                    }
+                    return InkWell(
+                      onTap: () {
+                        final sessions = controller.groupedSessionsByDate.keys
+                            .toList();
+                        showSessionPicker(context, sessions, (date) {
+                          // Handle the selected session here
+                          controller.updateDateSelection(date);
+                        });
                       },
-                    ),
-                  );
-                }),
-                const SizedBox(height: 16),
-                const Text(
-                  'Book Preferred Slot',
-                  style: TextStyle(
-                    color: Color(0xFFD1B26F),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Obx(() {
-                  if (controller.filteredList.isEmpty) {
-                    return Center(
-                      child: Text(
-                        'No tables available',
-                        style: TextStyle(color: Colors.white70),
+                      child: Row(
+                        children: [
+                          SvgPicture.asset(
+                            "lib/assets/icons/calender_gold.svg",
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            formatDate(
+                              controller.selectedSession!.firstSessionDate,
+                            ),
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                          const Icon(
+                            Icons.arrow_drop_down_sharp,
+                            color: Colors.white,
+                          ),
+                        ],
                       ),
                     );
-                  }
-                  return Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      ...List.generate(controller.filteredList.length, (index) {
-                        final table = controller.filteredList[index];
-
-                        // Example: consider "available" if availabilityStatus == "available"
-                        final isAvailable =
-                            true /* table.availabilityStatus == "available" */;
-
-                        return _TableSlotButton(
-                          id: table.id,
-                          label: table.title ?? '',
-                          available: isAvailable,
-                          // table: table,
-                          price: table.price ?? '',
-                          priceUnit: "\$",
-                          onClicked: () {
-                            controller.toggleTableSelection(table);
-                          },
-                        );
-                      }),
-                    ],
-                  );
-                }),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(Icons.circle, color: Colors.green, size: 16),
-                    SizedBox(width: 4),
-                    Text('Available', style: TextStyle(color: Colors.white)),
-                    SizedBox(width: 16),
-                    Icon(Icons.circle, color: Color(0xFFAFAFAF), size: 16),
-                    SizedBox(width: 4),
-                    Text('Sold', style: TextStyle(color: Colors.white)),
-                  ],
-                ),
-                Obx(() {
-                  if (controller.selectedTables.isEmpty) {
-                    return SizedBox();
-                  }
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 60,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Selected Tables:',
-                                style: TextStyle(
-                                  color: Color(0xFFD1B26F),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                controller.selectedTables
-                                    .map((element) => element.title ?? '')
-                                    .join(", "),
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        Expanded(
-                          flex: 40,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              const Text(
-                                'Total Price:',
-                                style: TextStyle(
-                                  color: Color(0xFFD1B26F),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                "\$${controller.selectedTables.map((element) => double.tryParse(element.price ?? '') ?? 0.0).sum.toStringAsFixed(2)}",
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                  }),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Description',
+                    style: TextStyle(
+                      color: Color(0xFFD1B26F),
+                      fontWeight: FontWeight.bold,
                     ),
-                  );
-                }),
-                const SizedBox(height: 24),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFD1B26F),
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    controller.detail.value.description.toString(),
+                    style: TextStyle(color: Colors.white70),
+                  ),
+
+                  const SizedBox(height: 24),
+                  const Text(
+                    'Select a time you like',
+                    style: TextStyle(
+                      color: Color(0xFFD1B26F),
+                      fontWeight: FontWeight.bold,
                     ),
-                    onPressed: () {
-                      if (controller.selectedTables.isEmpty) {
-                        CustomSnackbar.show(
-                          context,
-                          message: "Please select at least one table.",
-                          backgroundColor: Colors.red,
-                        );
-                        return;
-                      }
-                      context.push(
-                        "/table-booking-confirmation",
-                        extra: TableBookInfo(
-                          event: event,
-                          eventDetail: controller.detail.value,
-                          tables: controller.selectedTables,
+                  ),
+                  const SizedBox(height: 8),
+
+                  Obx(() {
+                    if (controller.timeSlots.isEmpty) {
+                      return Center(
+                        child: Text(
+                          'No time slots available',
+                          style: TextStyle(color: Colors.white70),
                         ),
                       );
-                    },
-                    child: const Text('Proceed'),
+                    }
+                    return Wrap(
+                      spacing: 15,
+                      runSpacing: 8,
+                      children: [
+                        ...List.generate(controller.timeSlots.length, (index) {
+                          final timeSlot = controller.timeSlots[index];
+                          return _TimeSlotButton(
+                            label: formatTimeToAmPm(timeSlot.sessionStartTime),
+                            index: index,
+                            selected:
+                                timeSlot.sessionStartTime ==
+                                controller
+                                    .selectedTimeSlot
+                                    .value
+                                    ?.sessionStartTime,
+                            onPressed: (index) {
+                              controller.selectTimeSlot(
+                                controller.timeSlots[index],
+                              );
+                            },
+                          );
+                        }),
+                      ],
+                    );
+                  }),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Seating Plan',
+                    style: TextStyle(
+                      color: Color(0xFFD1B26F),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 24),
-              ],
+                  const SizedBox(height: 8),
+                  Obx(() {
+                    if (controller.detail.value.others == null) {
+                      return SizedBox();
+                    }
+                    final image = controller.detail.value.others!.seatingPlan;
+                    return SizedBox(
+                      width: double.infinity,
+                      child: Image.network(
+                        '${AppUrls.imageUrl}$image',
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Text("Seat plan not available");
+                        },
+                      ),
+                    );
+                  }),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Book Preferred Slot',
+                    style: TextStyle(
+                      color: Color(0xFFD1B26F),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Obx(() {
+                    if (controller.filteredList.isEmpty) {
+                      return Center(
+                        child: Text(
+                          'No tables available',
+                          style: TextStyle(color: Colors.white70),
+                        ),
+                      );
+                    }
+                    return Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        ...List.generate(controller.filteredList.length, (
+                          index,
+                        ) {
+                          final table =
+                              controller.filteredList[index].ticketInfo;
+
+                          // Example: consider "available" if availabilityStatus == "available"
+                          final isAvailable =
+                              controller.filteredList[index].status ==
+                              "available";
+
+                          return _TableSlotButton(
+                            id: table.id,
+                            label: table.title ?? '',
+                            available: isAvailable,
+                            // table: table,
+                            price: table.price ?? '',
+                            priceUnit: "\$",
+                            onClicked: () {
+                              if (isAvailable) {
+                                controller.toggleTableSelection(table);
+                              }
+                            },
+                          );
+                        }),
+                      ],
+                    );
+                  }),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(Icons.circle, color: Colors.green, size: 16),
+                      SizedBox(width: 4),
+                      Text('Available', style: TextStyle(color: Colors.white)),
+                      SizedBox(width: 16),
+                      Icon(Icons.circle, color: Color(0xFFAFAFAF), size: 16),
+                      SizedBox(width: 4),
+                      Text('Sold', style: TextStyle(color: Colors.white)),
+                    ],
+                  ),
+                  Obx(() {
+                    if (controller.selectedTables.isEmpty) {
+                      return SizedBox();
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 60,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Selected Tables:',
+                                  style: TextStyle(
+                                    color: Color(0xFFD1B26F),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  controller.selectedTables
+                                      .map((element) => element.title ?? '')
+                                      .join(", "),
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          Expanded(
+                            flex: 40,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                const Text(
+                                  'Total Price:',
+                                  style: TextStyle(
+                                    color: Color(0xFFD1B26F),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  "\$${controller.selectedTables.map((element) => double.tryParse(element.price ?? '') ?? 0.0).sum.toStringAsFixed(2)}",
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                  const SizedBox(height: 24),
+                  Obx(() {
+                    final detail = controller.detail.value;
+                    return SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFD1B26F),
+                          foregroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                        ),
+                        onPressed: () {
+                          if (controller.selectedTables.isEmpty) {
+                            CustomSnackbar.show(
+                              context,
+                              message: "Please select at least one table.",
+                              backgroundColor: Colors.red,
+                            );
+                            return;
+                          }
+                          context.push(
+                            "/table-booking-confirmation",
+                            extra: TicketBookInfoArg(
+                              event: event,
+                              eventDetail: detail,
+                              tickets: controller.selectedTables
+                                  .map((t) {
+                                    return TicketBuyingInfo(
+                                      ticketId: t.id,
+                                      quantity: 1,
+                                      ticketTitle: t.title ?? "",
+                                      totalTicketQty: t.totalTicketQty ?? 0,
+                                      unitPrice:
+                                          double.tryParse(t.price ?? '0') ??
+                                          0.0,
+                                    );
+                                  })
+                                  .where((t) => t.quantity > 0)
+                                  .toList(),
+                              promoCode: '',
+                            ),
+                          );
+                        },
+                        child: const Text('Proceed'),
+                      ),
+                    );
+                  }),
+                  const SizedBox(height: 24),
+                ],
+              ),
             ),
           ),
         ),

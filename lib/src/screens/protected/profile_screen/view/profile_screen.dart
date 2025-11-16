@@ -255,7 +255,7 @@ class ProfileScreen extends StatelessWidget {
                 title: 'My Reservation',
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => MyReservationScreen()),
+                  MaterialPageRoute(builder: (_) => MyBookingsScreen()),
                 ),
               ),
               Padding(

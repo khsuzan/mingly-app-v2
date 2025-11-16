@@ -7,6 +7,7 @@ import 'package:mingly/src/components/custom_loading_dialog.dart';
 
 import '../../../../../application/booking/ticket_success.dart';
 import '../../../../../application/events/repo/events_repo.dart';
+import '../../../../../application/payment/model/payment_from.dart';
 
 class TicketBookingConfirmationController extends GetxController {
   final EventsModel event;
@@ -19,18 +20,23 @@ class TicketBookingConfirmationController extends GetxController {
   Future<void> buyTicketEvent(
     BuildContext context,
     Map<String, dynamic> data,
-    int id,
+    int eventId,
+    int venueId,
   ) async {
     LoadingDialog.show(context);
     try {
-      final response = await eventRepo.buyEventTicket(data, id);
+      final response = await eventRepo.buyEventTicket(data, eventId);
       TicketBookingSuccess ticketBookingSuccess = TicketBookingSuccess.fromJson(
         response,
       );
       if (context.mounted) {
         context.push(
-          "/payment-ticket",
-          extra: ticketBookingSuccess.checkoutUrl,
+          "/payment-screen",
+          extra: PaymentFromArg(
+            url: ticketBookingSuccess.checkoutUrl,
+            venueId: venueId,
+            fromScreen: FromScreen.ticketBooking,
+          ),
         );
       }
       if (context.mounted) {
@@ -42,7 +48,6 @@ class TicketBookingConfirmationController extends GetxController {
       }
       debugPrint("Error buying tickets: $e");
       debugPrintStack(stackTrace: stack);
-
     }
   }
 

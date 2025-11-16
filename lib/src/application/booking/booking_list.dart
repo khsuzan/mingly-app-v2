@@ -1,4 +1,3 @@
-
 class BookingOrder {
   final String orderNumber;
   final int eventId;
@@ -10,7 +9,8 @@ class BookingOrder {
   final double totalAmount;
   final String currency;
   final DateTime? createdAt;
-  final List<Item> items;
+  final List<Ticket> tickets;
+  final List<TableReservation> tables;
 
   BookingOrder({
     required this.orderNumber,
@@ -23,7 +23,8 @@ class BookingOrder {
     required this.totalAmount,
     required this.currency,
     required this.createdAt,
-    required this.items,
+    required this.tickets,
+    required this.tables,
   });
 
   factory BookingOrder.fromJson(Map<String, dynamic> json) {
@@ -37,8 +38,15 @@ class BookingOrder {
       subtotal: (json['subtotal'] as num).toDouble(),
       totalAmount: (json['total_amount'] as num).toDouble(),
       currency: json['currency'] as String,
-      createdAt: json['created_at'] == null ? null : DateTime.parse(json['created_at'] as String),
-      items: (json['items'] as List<dynamic>).map((e) => Item.fromJson(e as Map<String, dynamic>)).toList(),
+      createdAt: json['created_at'] == null
+          ? null
+          : DateTime.parse(json['created_at'] as String),
+      tickets: (json['tickets'] as List<dynamic>? ?? [])
+          .map((e) => Ticket.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      tables: (json['tables'] as List<dynamic>? ?? [])
+          .map((e) => TableReservation.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
   }
 }
@@ -69,7 +77,9 @@ class Event {
       about: json['about'] as String,
       description: json['description'] as String,
       currency: json['currency'] as String,
-      images: (json['images'] as List<dynamic>).map((e) => EventImage.fromJson(e as Map<String, dynamic>)).toList(),
+      images: (json['images'] as List<dynamic>)
+          .map((e) => EventImage.fromJson(e as Map<String, dynamic>))
+          .toList(),
       venue: Venue.fromJson(json['venue'] as Map<String, dynamic>),
     );
   }
@@ -124,7 +134,7 @@ class Venue {
   }
 }
 
-class Item {
+class Ticket {
   final int ticketId;
   final String seatNumber;
   final double unitPrice;
@@ -132,7 +142,7 @@ class Item {
   final double totalAmount;
   final String status;
 
-  Item({
+  Ticket({
     required this.ticketId,
     required this.seatNumber,
     required this.unitPrice,
@@ -141,14 +151,58 @@ class Item {
     required this.status,
   });
 
-  factory Item.fromJson(Map<String, dynamic> json) {
-    return Item(
+  factory Ticket.fromJson(Map<String, dynamic> json) {
+    return Ticket(
       ticketId: (json['ticket_id'] as num).toInt(),
       seatNumber: json['seat_number'] as String,
       unitPrice: (json['unit_price'] as num).toDouble(),
       subtotal: (json['subtotal'] as num).toDouble(),
       totalAmount: (json['total_amount'] as num).toDouble(),
       status: json['status'] as String,
+    );
+  }
+}
+
+/// Generic table reservation representation. The sample JSON shows an empty array,
+/// so fields are made nullable to accept different table payloads if present.
+class TableReservation {
+  final int? tableId;
+  final String? name;
+  final int? quantity;
+  final double? unitPrice;
+  final double? subtotal;
+  final double? totalAmount;
+  final String? status;
+
+  TableReservation({
+    this.tableId,
+    this.name,
+    this.quantity,
+    this.unitPrice,
+    this.subtotal,
+    this.totalAmount,
+    this.status,
+  });
+
+  factory TableReservation.fromJson(Map<String, dynamic> json) {
+    return TableReservation(
+      tableId: json['table_id'] == null
+          ? null
+          : (json['table_id'] as num).toInt(),
+      name: json['name'] as String?,
+      quantity: json['quantity'] == null
+          ? null
+          : (json['quantity'] as num).toInt(),
+      unitPrice: json['unit_price'] == null
+          ? null
+          : (json['unit_price'] as num).toDouble(),
+      subtotal: json['subtotal'] == null
+          ? null
+          : (json['subtotal'] as num).toDouble(),
+      totalAmount: json['total_amount'] == null
+          ? null
+          : (json['total_amount'] as num).toDouble(),
+      status: json['status'] as String?,
     );
   }
 }

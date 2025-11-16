@@ -4,15 +4,13 @@ import 'package:go_router/go_router.dart';
 import 'package:mingly/src/components/custom_snackbar.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../../../../application/payment/model/payment_from.dart';
+
 class StripePaymentWebView extends StatefulWidget {
-  final String url;
+  final PaymentFromArg arg;
   final void Function()? onSuccess;
 
-  const StripePaymentWebView({
-    super.key,
-    required this.url,
-    this.onSuccess,
-  });
+  const StripePaymentWebView({super.key, required this.arg, this.onSuccess});
 
   @override
   State<StripePaymentWebView> createState() => _StripePaymentWebViewState();
@@ -46,7 +44,7 @@ class _StripePaymentWebViewState extends State<StripePaymentWebView> {
   void initState() {
     super.initState();
     if (kDebugMode) {
-      print(widget.url);
+      print(widget.arg.url);
     }
 
     _controller = WebViewController()
@@ -84,8 +82,11 @@ class _StripePaymentWebViewState extends State<StripePaymentWebView> {
             if (request.url.contains(successUrlPattern)) {
               _showSuccessSnackBar();
               widget.onSuccess?.call();
-
-              context.go('/my-reservation');
+              if (widget.arg.fromScreen == FromScreen.ticketBooking) {
+                context.go('/my-bookings');
+              } else if (widget.arg.fromScreen == FromScreen.tableBooking) {
+                context.go('/venue-menu', extra: widget.arg.venueId);
+              }
 
               return NavigationDecision.prevent;
             }
@@ -101,7 +102,7 @@ class _StripePaymentWebViewState extends State<StripePaymentWebView> {
           },
         ),
       )
-      ..loadRequest(Uri.parse(widget.url));
+      ..loadRequest(Uri.parse(widget.arg.url));
   }
 
   @override

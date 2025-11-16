@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 class LandingPage extends StatefulWidget {
@@ -16,7 +15,7 @@ class _LandingPageState extends State<LandingPage> {
 
   final List<_NavItem> _items = [
     _NavItem('Home', 'home', '/home'),
-    _NavItem('Reservations', 'reservation', '/my-reservation'),
+    _NavItem('My Bookings', 'mybookings', '/my-bookings'),
     _NavItem('Favourites', 'favourite', '/my-favorites'),
     _NavItem('Notification', 'notification', '/notification'),
     _NavItem('Profile', 'profile', '/profile'),

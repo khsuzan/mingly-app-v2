@@ -2,8 +2,7 @@
 // Contains: MenuItem model, sample data, MenuCard widget and MenuListScreen
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:mingly/src/application/venues/model/venue_menu_model.dart';
+import 'package:mingly/src/application/venue_menu/model/venue_menu_model.dart';
 import 'package:mingly/src/constant/app_urls.dart'; // add `intl: ^0.18.0` (or latest) to pubspec.yaml
 
 /// Reusable MenuCard widget
@@ -11,8 +10,7 @@ class MenuCardVenue extends StatelessWidget {
   final VenueMenuModel item;
   final VoidCallback? onTap;
 
-  const MenuCardVenue({Key? key, required this.item, this.onTap})
-    : super(key: key);
+  const MenuCardVenue({super.key, required this.item, this.onTap});
 
   @override
   Widget build(BuildContext context) {

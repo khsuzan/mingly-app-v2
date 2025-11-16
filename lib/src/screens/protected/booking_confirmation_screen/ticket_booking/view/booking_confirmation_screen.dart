@@ -7,7 +7,7 @@ import 'package:mingly/src/components/custom_snackbar.dart';
 import 'package:mingly/src/screens/protected/booking_confirmation_screen/ticket_booking/controller/booking_confirmation_controller.dart';
 import 'package:mingly/src/screens/protected/booking_summary/widget/custom_confirm_dialog.dart';
 import 'package:mingly/src/screens/protected/event_list_screen/events_provider.dart';
-import 'package:mingly/src/screens/protected/payment/payment_strrpe.dart';
+import 'package:mingly/src/screens/protected/payment/view/payment_stripe_screen.dart';
 import 'package:mingly/src/screens/protected/profile_screen/profile_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -361,6 +361,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                         promoCode: info.promoCode,
                       ).toJson(),
                       event.id!,
+                      event.venue!.id!,
                     );
                   },
                   child: const Text('Proceed'),

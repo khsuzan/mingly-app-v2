@@ -17,13 +17,11 @@ import 'package:mingly/src/screens/protected/event_detail_screen/event_detail_sc
 import 'package:mingly/src/screens/protected/event_detail_screen/event_details_screen_one.dart';
 import 'package:mingly/src/screens/protected/event_list_screen/view/event_list_screen.dart';
 import 'package:mingly/src/screens/protected/favourite/favourite_screen.dart';
-import 'package:mingly/src/screens/protected/food_menu_screen/food_menu_screen.dart';
 import 'package:mingly/src/screens/protected/home_screen/ai_chat.dart';
 import 'package:mingly/src/screens/protected/home_screen/view/home_screen.dart';
 import 'package:mingly/src/screens/protected/landing_page.dart/landing_page.dart';
 import 'package:mingly/src/screens/protected/membership_screen/membership_screen.dart';
-import 'package:mingly/src/screens/protected/my_bottles/my_bottles_history.dart';
-import 'package:mingly/src/screens/protected/my_bottles/my_bottles_screen.dart';
+import 'package:mingly/src/screens/protected/my_menu/view/my_menu_screen.dart';
 import 'package:mingly/src/screens/protected/my_booking/view/my_booking_screen.dart';
 import 'package:mingly/src/screens/protected/notification_screen/notification_screen.dart';
 import 'package:mingly/src/screens/protected/payment/payment_screen.dart';
@@ -36,7 +34,7 @@ import 'package:mingly/src/screens/protected/profile_screen/order_history_detail
 import 'package:mingly/src/screens/protected/profile_screen/point_history.dart';
 import 'package:mingly/src/screens/protected/profile_screen/view/profile_screen.dart';
 import 'package:mingly/src/screens/protected/profile_screen/promo_code_screen.dart';
-import 'package:mingly/src/screens/protected/profile_screen/view_profile_screen.dart';
+import 'package:mingly/src/screens/protected/profile_screen/view_profile/view/view_profile_screen.dart';
 import 'package:mingly/src/screens/protected/profile_screen/voucher_list.dart';
 import 'package:mingly/src/screens/protected/select_country_screen/select_country_screen.dart';
 import 'package:mingly/src/screens/protected/select_payment_screen/select_payment_screen.dart';
@@ -44,11 +42,13 @@ import 'package:mingly/src/screens/protected/table_booking_screen/view/table_boo
 import 'package:mingly/src/screens/protected/ticket_booking_screen/view/ticket_booking_screen.dart';
 import 'package:mingly/src/screens/protected/venue_detail_screen/view/venue_detail_screen.dart';
 import 'package:mingly/src/screens/protected/venue_list_screen/view/venue_list_screen.dart';
+import 'package:mingly/src/screens/protected/venue_menu/view/venue_menu_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'application/booking/ticket_booking.dart';
+import 'application/payment/model/payment_from.dart';
 import 'application/venues/model/venues_model.dart';
-import 'screens/protected/payment/payment_strrpe.dart';
+import 'screens/protected/payment/view/payment_stripe_screen.dart';
 import 'screens/protected/promo_code/view/promo_code_screen.dart';
 import 'screens/protected/reserve_venue/view/venue_reserve_screen.dart';
 
@@ -133,12 +133,8 @@ class AppRouter {
           builder: (context, state) => const SelectPaymentScreen(),
         ),
         GoRoute(
-          path: '/my-bottles',
-          builder: (context, state) => const MyBottlesScreen(),
-        ),
-        GoRoute(
-          path: '/my-bottles-history',
-          builder: (context, state) => const MyBottlesHistoryScreen(),
+          path: '/my-menu',
+          builder: (context, state) => const MyMenuScreen(),
         ),
         GoRoute(
           path: '/personal-info',
@@ -149,8 +145,9 @@ class AppRouter {
           builder: (context, state) => const MembershipScreen(),
         ),
         GoRoute(
-          path: '/food-menu',
-          builder: (context, state) => const FoodMenuScreen(),
+          path: '/venue-menu',
+          builder: (context, state) =>
+              VenueMenuScreen(venueId: state.extra as int),
         ),
         GoRoute(
           path: '/event-detail',
@@ -176,14 +173,13 @@ class AppRouter {
         ),
         GoRoute(
           path: '/booking-confirmation',
-          builder: (context, state) => BookingConfirmationScreen(
-            info: state.extra as TicketBookInfoArg,
-          ),
+          builder: (context, state) =>
+              BookingConfirmationScreen(info: state.extra as TicketBookInfoArg),
         ),
         GoRoute(
           path: '/table-booking-confirmation',
           builder: (context, state) => TableBookingConfirmationScreen(
-            bookingInfo: state.extra as TableBookInfo,
+            info: state.extra as TicketBookInfoArg,
           ),
         ),
         GoRoute(
@@ -195,9 +191,9 @@ class AppRouter {
           builder: (context, state) => PaymentTable(),
         ),
         GoRoute(
-          path: '/payment-ticket',
+          path: '/payment-screen',
           builder: (context, state) =>
-              StripePaymentWebView(url: state.extra as String),
+              StripePaymentWebView(arg: state.extra as PaymentFromArg),
         ),
         GoRoute(
           path: '/booking-summary',
@@ -259,8 +255,8 @@ class AppRouter {
               ),
             ),
             GoRoute(
-              path: '/my-reservation',
-              builder: (context, state) => const MyReservationScreen(),
+              path: '/my-bookings',
+              builder: (context, state) => const MyBookingsScreen(),
             ),
             GoRoute(
               path: '/my-favorites',

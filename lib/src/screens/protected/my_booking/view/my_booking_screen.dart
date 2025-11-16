@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mingly/src/components/custom_loading_dialog.dart';
 import 'package:mingly/src/components/custom_snackbar.dart';
 import 'package:mingly/src/components/helpers.dart';
 import 'package:mingly/src/constant/app_urls.dart';
-import 'package:mingly/src/screens/protected/my_booking/reservation_provider.dart';
-import 'package:provider/provider.dart';
 
 import '../controller/my_booking_controller.dart';
 
-class MyReservationScreen extends StatelessWidget {
-  const MyReservationScreen({super.key});
+class MyBookingsScreen extends StatelessWidget {
+  const MyBookingsScreen({super.key});
 
   //   @override
   //   Widget build(BuildContext context) {
@@ -32,6 +29,7 @@ class MyReservationScreen extends StatelessWidget {
 
     // final provider = context.watch<ReservationProvider>();
     return Scaffold(
+      backgroundColor: theme.colorScheme.surface,
       body: SafeArea(
         child: Column(
           children: [
@@ -42,7 +40,7 @@ class MyReservationScreen extends StatelessWidget {
                 child: Text(
                   'Bookings',
                   style: TextStyle(
-                    color: theme.colorScheme.surface,
+                    color: theme.colorScheme.primary,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -56,13 +54,19 @@ class MyReservationScreen extends StatelessWidget {
                   ? Center(child: CircularProgressIndicator())
                   : Expanded(
                       child: controller.reservationList.isEmpty
-                          ? Center(child: Text("No reservation"))
+                          ? Center(child: Text("No orders found"))
                           : ListView.builder(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 12,
                                 vertical: 16,
                               ),
                               itemBuilder: (context, index) {
+                                if (index ==
+                                    controller.reservationList.length) {
+                                  return const SizedBox(
+                                    height: 80,
+                                  ); // footer gap
+                                }
                                 final item = controller.reservationList[index];
                                 return InkWell(
                                   onTap: () => context.push('/event-detail'),
@@ -84,22 +88,29 @@ class MyReservationScreen extends StatelessWidget {
                                     totalAmount: item.totalAmount,
                                     currency: item.currency,
                                     venueId: item.event.venue.id,
-                                    ticketsCount: item.items.length,
-                                    hasTables:false,
-                                        // (item.tablesBooked != null &&
-                                        // item.tablesBooked! > 0),
-                                    onFavoritePressed: () {
+                                    ticketsCount: item.tickets.length,
+                                    tablesCount: item.tables.length,
+                                    onTicketsClick: () {
                                       CustomSnackbar.show(
                                         context,
                                         message:
                                             "Added to favourites (mock action)",
                                       );
                                     },
+                                    onTablesClick: () {
+                                      context.push('/booked-table');
+                                    },
+                                    onVenueMenuClick: () {
+                                      context.push(
+                                        '/venue-menu',
+                                        extra: item.event.venue.id,
+                                      );
+                                    },
                                   ),
                                 );
                               },
 
-                              itemCount: controller.reservationList.length,
+                              itemCount: controller.reservationList.length + 1,
                             ),
                     );
             }),
@@ -121,9 +132,10 @@ class _BookingOrderCard extends StatelessWidget {
   final String currency;
   final int venueId;
   final int ticketsCount;
-  final bool hasTables;
-  final VoidCallback? onFavoritePressed;
-  final VoidCallback? onTap;
+  final int tablesCount;
+  final VoidCallback? onTicketsClick;
+  final VoidCallback? onTablesClick;
+  final VoidCallback? onVenueMenuClick;
 
   const _BookingOrderCard({
     required this.orderNumber,
@@ -136,9 +148,10 @@ class _BookingOrderCard extends StatelessWidget {
     required this.currency,
     required this.venueId,
     this.ticketsCount = 0,
-    this.hasTables = false,
-    this.onFavoritePressed,
-    this.onTap,
+    this.tablesCount = 0,
+    this.onTicketsClick,
+    this.onTablesClick,
+    this.onVenueMenuClick,
   });
 
   @override
@@ -151,7 +164,7 @@ class _BookingOrderCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: InkWell(
-        onTap: onTap,
+        onTap: onTablesClick,
         child: Card(
           color: theme.colorScheme.surface,
           shape: RoundedRectangleBorder(
@@ -196,11 +209,15 @@ class _BookingOrderCard extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                "Order: $orderNumber",
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: theme.colorScheme.onSurface
-                                      .withOpacity(0.7),
+                              Expanded(
+                                child: Text(
+                                  "Order: $orderNumber",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: theme.colorScheme.onSurface
+                                        .withOpacity(0.7),
+                                  ),
                                 ),
                               ),
                               Text(
@@ -261,18 +278,10 @@ class _BookingOrderCard extends StatelessWidget {
                     ),
                   ),
                   // Favorite icon
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8.0, top: 4),
-                    child: IconButton(
-                      icon: const Icon(Icons.favorite_border),
-                      color: theme.colorScheme.primary,
-                      onPressed: onFavoritePressed,
-                    ),
-                  ),
                 ],
               ),
 
-              const Divider(height: 1),
+              const Divider(height: 1, color: Colors.white24),
 
               // Bottom row: Tickets | Tables | Menu
               Padding(
@@ -292,19 +301,33 @@ class _BookingOrderCard extends StatelessWidget {
                           context.push('/booking-tickets/$orderNumber');
                         },
                         style: TextButton.styleFrom(
-                          foregroundColor: theme.colorScheme.onSurface,
+                          foregroundColor: ticketsCount > 0
+                              ? theme.colorScheme.onSurface
+                              : theme.colorScheme.onSurface.withOpacity(0.5),
                         ),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(
                               Icons.confirmation_num_outlined,
-                              color: theme.colorScheme.primary,
+                              color: ticketsCount > 0
+                                  ? theme.colorScheme.primary
+                                  : theme.colorScheme.onSurface.withOpacity(
+                                      0.5,
+                                    ),
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              "Tickets (${ticketsCount})",
-                              style: theme.textTheme.bodySmall,
+                              ticketsCount > 0
+                                  ? "Tickets ($ticketsCount)"
+                                  : "Tickets",
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: ticketsCount > 0
+                                    ? theme.colorScheme.onSurface
+                                    : theme.colorScheme.onSurface.withOpacity(
+                                        0.5,
+                                      ),
+                              ),
                             ),
                           ],
                         ),
@@ -314,7 +337,7 @@ class _BookingOrderCard extends StatelessWidget {
                     // Tables
                     Expanded(
                       child: TextButton(
-                        onPressed: hasTables
+                        onPressed: tablesCount > 0
                             ? () {
                                 // navigate to tables for this order
                                 // route: /booking-tables/{orderNumber}
@@ -328,7 +351,7 @@ class _BookingOrderCard extends StatelessWidget {
                                 );
                               },
                         style: TextButton.styleFrom(
-                          foregroundColor: hasTables
+                          foregroundColor: tablesCount > 0
                               ? theme.colorScheme.onSurface
                               : theme.colorScheme.onSurface.withOpacity(0.5),
                         ),
@@ -337,14 +360,23 @@ class _BookingOrderCard extends StatelessWidget {
                           children: [
                             Icon(
                               Icons.table_restaurant,
-                              color: hasTables
+                              color: tablesCount > 0
                                   ? theme.colorScheme.primary
                                   : theme.colorScheme.onSurface.withOpacity(
                                       0.5,
                                     ),
                             ),
                             const SizedBox(height: 4),
-                            Text("Tables", style: theme.textTheme.bodySmall),
+                            Text(
+                              "Tables",
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: tablesCount > 0
+                                    ? theme.colorScheme.onSurface
+                                    : theme.colorScheme.onSurface.withOpacity(
+                                        0.5,
+                                      ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -356,7 +388,7 @@ class _BookingOrderCard extends StatelessWidget {
                         onPressed: () {
                           // navigate to venue menu by id
                           // route: /venue-menu/{venueId}
-                          context.push('/venue-menu/$venueId');
+                          onVenueMenuClick?.call();
                         },
                         style: TextButton.styleFrom(
                           foregroundColor: theme.colorScheme.onSurface,

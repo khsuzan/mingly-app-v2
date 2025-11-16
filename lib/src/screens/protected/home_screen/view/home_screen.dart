@@ -14,7 +14,10 @@ import 'package:mingly/src/screens/protected/home_screen/controller/home_control
 import 'package:mingly/src/screens/protected/home_screen/home_proivder.dart';
 import 'package:provider/provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:share_plus/share_plus.dart';
 
+import '../../../../application/home/model/featured_model.dart';
+import '../../../../application/home/model/leader_board_model.dart';
 import '../../../../components/helpers.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -165,46 +168,73 @@ class HomeScreen extends StatelessWidget {
                           enlargeFactor: 0.2,
                         ),
                         itemBuilder: (context, index, realIndex) {
-                          return Stack(
-                            children: [
-                              Positioned.fill(
-                                child: Container(
-                                  margin: const EdgeInsets.symmetric(
-                                    horizontal: 0,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                        AppUrls.imageUrl +
-                                            controller
-                                                .featuredItems[index]
-                                                .imageUrl
-                                                .toString(),
+                          return GestureDetector(
+                            onTap: () {
+                              final data = controller.featuredItems[index];
+                              if (data.imageableType == "venues" &&
+                                  data.imageable?.runtimeType.toString() ==
+                                      "ImageableVenue") {
+                                context.push(
+                                  "/venue-detail",
+                                  extra:
+                                      (controller.featuredItems[index].imageable
+                                              as ImageableVenue?)
+                                          ?.toVenuesModel(),
+                                );
+                              } else if (data.imageableType == "eevents" &&
+                                  data.imageable?.runtimeType.toString() ==
+                                      "ImageableEvent") {
+                                context.push(
+                                  "/event-detail",
+                                  extra:
+                                      (controller.featuredItems[index].imageable
+                                              as ImageableEvent?)
+                                          ?.toEventsModel(),
+                                );
+                              }
+                            },
+                            child: Stack(
+                              children: [
+                                Positioned.fill(
+                                  child: Container(
+                                    margin: const EdgeInsets.symmetric(
+                                      horizontal: 0,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      image: DecorationImage(
+                                        image: NetworkImage(
+                                          AppUrls.imageUrl +
+                                              controller
+                                                  .featuredItems[index]
+                                                  .imageUrl
+                                                  .toString(),
+                                        ),
+                                        fit: BoxFit.fill,
                                       ),
-                                      fit: BoxFit.fill,
                                     ),
                                   ),
                                 ),
-                              ),
-                              Align(
-                                alignment: Alignment.bottomLeft,
-                                child: Padding(
-                                  padding: EdgeInsets.all(16.0.w),
-                                  child: Text(
-                                    controller.featuredItems[index].title
-                                        .toString(),
-                                    overflow: TextOverflow.ellipsis,
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      color: Colors.white,
-                                      fontSize: 18.sp,
-                                      fontWeight: FontWeight.bold,
+                                Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(16.0.w),
+                                    child: Text(
+                                      controller.featuredItems[index].title
+                                          .toString(),
+                                      overflow: TextOverflow.ellipsis,
+                                      style: theme.textTheme.bodyMedium
+                                          ?.copyWith(
+                                            color: Colors.white,
+                                            fontSize: 18.sp,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                      maxLines: 1,
                                     ),
-                                    maxLines: 1,
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           );
                         },
                       ),
@@ -306,7 +336,7 @@ class HomeScreen extends StatelessWidget {
                               onTap: () => context.push('/membership'),
                             ),
                             _MenuIcon(
-                              onTap: () => context.push('/my-bottles'),
+                              onTap: () => context.push('/my-menu'),
                               svgAsset: 'lib/assets/icons/bottle.svg',
                               label: 'My Menu',
                             ),
@@ -341,19 +371,6 @@ class HomeScreen extends StatelessWidget {
                                   "/venue-detail",
                                   extra: controller.featuredVenues[index],
                                 );
-                                // LoadingDialog.show(context);
-                                // venueProvider.selectedVenue(
-                                //   venueProvider.venuesFeaturedList[index].id,
-                                // );
-                                // await eventsProvider.getEvetListVuneWise(
-                                //   venueProvider.venuesFeaturedList[index].id!
-                                //       .toInt(),
-                                // );
-                                // await venueProvider.getVenueMenuList(
-                                //   venueProvider.venuesFeaturedList[index].id!
-                                //       .toInt(),
-                                // );
-                                // LoadingDialog.hide(context);
                               },
                               child: _VenueCard(
                                 image: image == null
@@ -381,7 +398,12 @@ class HomeScreen extends StatelessWidget {
                         }
                         return _EventCard();
                       }),
-                      const SizedBox(height: 24),
+                      Obx(() {
+                        if (controller.popularEvents.isNotEmpty) {
+                          return const SizedBox(height: 24);
+                        }
+                        return SizedBox();
+                      }),
                       // Top 10 spenders
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -407,7 +429,23 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      _Leaderboard(),
+                      Obx(() {
+                        if (controller.topSpendersList.length >= 3) {
+                          return _Leaderboard(data: controller.topSpendersList);
+                        }
+                        return _LeaderboardPlaceholder(
+                          count: controller.topSpendersList.length,
+                          onInvite: () {
+                            SharePlus.instance.share(
+                              ShareParams(
+                                text:
+                                    'Discover great local events, venues and exclusive offers with Mingly!\n\nFind and book tables, earn rewards, and get personalised recommendations.\n\nDownload the app: https://mingly.org',
+                              ),
+                            );
+                          }, // or any callback
+                          onHowToEarn: () => context.push('/membership'),
+                        );
+                      }),
                       const SizedBox(height: 24),
                       // Recommendations
                       Obx(() {
@@ -804,9 +842,13 @@ class _EventCard extends StatelessWidget {
 }
 
 class _Leaderboard extends StatelessWidget {
+  final List<LeaderBoardModel> data;
+
+  const _Leaderboard({required this.data});
+
   @override
   Widget build(BuildContext context) {
-    final homeProivder = context.watch<HomeProivder>();
+    // final homeProivder = context.watch<HomeProivder>();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(
@@ -816,7 +858,7 @@ class _Leaderboard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              homeProivder.leaderBoardList.isEmpty
+              data.isEmpty
                   ? SizedBox()
                   : Expanded(
                       flex: 1,
@@ -838,8 +880,7 @@ class _Leaderboard extends StatelessWidget {
                               child: ClipOval(
                                 child: Image.network(
                                   AppUrls.imageUrlNgrok +
-                                      homeProivder.leaderBoardList[1].avatar
-                                          .toString(),
+                                      data[1].avatar.toString(),
                                   errorBuilder: (context, error, stackTrace) =>
                                       Image.network(
                                         'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
@@ -849,8 +890,7 @@ class _Leaderboard extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              homeProivder.leaderBoardList[1].fullName
-                                  .toString(),
+                              data[1].fullName.toString(),
                               style: TextStyle(
                                 color: Theme.of(
                                   context,
@@ -859,7 +899,7 @@ class _Leaderboard extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              homeProivder.leaderBoardList[1].points.toString(),
+                              data[1].points.toString(),
                               style: TextStyle(
                                 color: Theme.of(
                                   context,
@@ -890,11 +930,8 @@ class _Leaderboard extends StatelessWidget {
                         backgroundColor: Colors.grey.shade800,
                         child: ClipOval(
                           child: Image.network(
-                            (homeProivder.leaderBoardList.isNotEmpty &&
-                                    homeProivder.leaderBoardList[0].avatar !=
-                                        null)
-                                ? AppUrls.imageUrlNgrok +
-                                      homeProivder.leaderBoardList[0].avatar!
+                            (data.isNotEmpty && data[0].avatar != null)
+                                ? AppUrls.imageUrlNgrok + data[0].avatar!
                                 : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) =>
@@ -907,11 +944,7 @@ class _Leaderboard extends StatelessWidget {
                       ),
 
                       Text(
-                        homeProivder.leaderBoardList.isEmpty ||
-                                homeProivder.leaderBoardList[0].fullName == null
-                            ? "N/A"
-                            : homeProivder.leaderBoardList[0].fullName
-                                  .toString(),
+                        data[0].fullName ?? "",
                         style: TextStyle(
                           color: Theme.of(
                             context,
@@ -920,9 +953,7 @@ class _Leaderboard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        homeProivder.leaderBoardList.isEmpty
-                            ? " N/A"
-                            : homeProivder.leaderBoardList[0].points.toString(),
+                        data.isEmpty ? " N/A" : data[0].points.toString(),
                         style: TextStyle(
                           color: Theme.of(
                             context,
@@ -953,11 +984,8 @@ class _Leaderboard extends StatelessWidget {
                         backgroundColor: Colors.grey.shade800,
                         child: ClipOval(
                           child: Image.network(
-                            (homeProivder.leaderBoardList.isNotEmpty &&
-                                    homeProivder.leaderBoardList[2].avatar !=
-                                        null)
-                                ? AppUrls.imageUrlNgrok +
-                                      homeProivder.leaderBoardList[2].avatar!
+                            (data[2].avatar != null)
+                                ? AppUrls.imageUrlNgrok + data[2].avatar!
                                 : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) =>
@@ -969,10 +997,7 @@ class _Leaderboard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        homeProivder.leaderBoardList.isEmpty
-                            ? "N/A"
-                            : homeProivder.leaderBoardList[2].fullName
-                                  .toString(),
+                        data.isEmpty ? "N/A" : data[2].fullName.toString(),
                         style: TextStyle(
                           color: Theme.of(
                             context,
@@ -981,9 +1006,7 @@ class _Leaderboard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        homeProivder.leaderBoardList.isEmpty
-                            ? "N/A"
-                            : homeProivder.leaderBoardList[2].points.toString(),
+                        data.isEmpty ? "N/A" : data[2].points.toString(),
                         style: TextStyle(
                           color: Theme.of(
                             context,
@@ -1005,7 +1028,7 @@ class _Leaderboard extends StatelessWidget {
           ),
           SizedBox(height: 10.w),
           // List of spenders
-          ...List.generate(homeProivder.leaderBoardList.length, (index) {
+          ...List.generate(data.length, (index) {
             if (index != 0 && index != 1 && index != 2) {
               return Padding(
                 padding: EdgeInsets.symmetric(vertical: 4.h),
@@ -1029,9 +1052,7 @@ class _Leaderboard extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8.r),
                         child: Image.network(
-                          AppUrls.imageUrlNgrok +
-                              homeProivder.leaderBoardList[index].avatar
-                                  .toString(),
+                          AppUrls.imageUrlNgrok + data[index].avatar.toString(),
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) =>
                               Image.network(
@@ -1047,14 +1068,13 @@ class _Leaderboard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Text(
-                            homeProivder.leaderBoardList[index].fullName
-                                .toString(),
+                            data[index].fullName.toString(),
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                           Text(
-                            '${homeProivder.leaderBoardList[index].points}',
+                            '${data[index].points}',
                             style: TextStyle(
                               color: Theme.of(
                                 context,
@@ -1300,6 +1320,137 @@ class _RecommendationCard extends StatelessWidget {
                 },
               ),
             ),
+    );
+  }
+}
+
+class _LeaderboardPlaceholder extends StatelessWidget {
+  final int count;
+  final VoidCallback? onInvite;
+  final VoidCallback? onHowToEarn;
+
+  const _LeaderboardPlaceholder({
+    this.count = 0,
+    this.onInvite,
+    this.onHowToEarn,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final accent = theme.colorScheme.primary;
+    final surface = theme.colorScheme.primaryContainer;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Card(
+        color: surface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              // Top row: three placeholder avatars with ranks
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(3, (i) {
+                  final rank = i + 1;
+                  return Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: i == 1
+                              ? 72
+                              : 56, // winner slightly larger in center
+                          height: i == 1 ? 72 : 56,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white24),
+                            color: Colors.grey.shade800,
+                          ),
+                          child: Center(
+                            child: Text(
+                              rank.toString(),
+                              style: TextStyle(
+                                color: Colors.white54,
+                                fontWeight: FontWeight.bold,
+                                fontSize: i == 1 ? 20 : 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        SizedBox(
+                          width: 76,
+                          child: Text(
+                            rank == 1 ? '—' : (rank == 2 ? '—' : '—'),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white38,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+              ),
+
+              const SizedBox(height: 12),
+
+              // Main text
+              Text(
+                count == 0
+                    ? 'No top spenders yet'
+                    : 'Not enough data to show the leaderboard',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'Be the first to earn points at your favourite venues. Invite friends or make purchases to climb the leaderboard.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white70, fontSize: 13),
+              ),
+
+              const SizedBox(height: 14),
+
+              // CTAs
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: accent,
+                      foregroundColor: Colors.black,
+                    ),
+                    onPressed: onInvite,
+                    icon: const Icon(Icons.person_add, color: Colors.black),
+                    label: const Text(
+                      'Invite',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: Colors.white12),
+                      foregroundColor: Colors.white,
+                    ),
+                    onPressed: onHowToEarn,
+                    child: const Text('How to earn'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

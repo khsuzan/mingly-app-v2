@@ -106,7 +106,6 @@ class VenueDetailScreen extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         //provider.toggleMenuList();
-                        
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -127,6 +126,7 @@ class VenueDetailScreen extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         // provider.toggleMenuList();
+                        context.push("/venue-menu", extra: venue.id);
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
