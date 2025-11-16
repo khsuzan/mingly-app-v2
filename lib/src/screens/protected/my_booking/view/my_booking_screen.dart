@@ -85,9 +85,9 @@ class MyReservationScreen extends StatelessWidget {
                                     currency: item.currency,
                                     venueId: item.event.venue.id,
                                     ticketsCount: item.items.length,
-                                    hasTables:
-                                        (item.tablesBooked != null &&
-                                        item.tablesBooked! > 0),
+                                    hasTables:false,
+                                        // (item.tablesBooked != null &&
+                                        // item.tablesBooked! > 0),
                                     onFavoritePressed: () {
                                       CustomSnackbar.show(
                                         context,

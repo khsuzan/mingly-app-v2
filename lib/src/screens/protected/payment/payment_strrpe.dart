@@ -5,7 +5,6 @@ import 'package:mingly/src/components/custom_snackbar.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class StripePaymentWebView extends StatefulWidget {
-  final String? message;
   final String url;
   final void Function()? onSuccess;
 
@@ -13,7 +12,6 @@ class StripePaymentWebView extends StatefulWidget {
     super.key,
     required this.url,
     this.onSuccess,
-    this.message,
   });
 
   @override
