@@ -99,12 +99,10 @@ class OrderCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             if ((order.items ?? <dynamic>[]).isNotEmpty)
-                              ...((order.items ?? <dynamic>[]) as List)
-                                  .map((item) => OrderItemRow(item: item))
-                                  .toList(),
-
-                            const Divider(),
-
+                              ...((order.items ?? <dynamic>[]) as List).map(
+                                (item) => OrderItemRow(item: item),
+                              ),
+                            const Divider(color: Colors.white30),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [

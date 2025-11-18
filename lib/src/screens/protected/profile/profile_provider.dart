@@ -64,21 +64,6 @@ class ProfileProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getPointHistory() async {
-    final response = await PointHistoryRepo().getPointHistory();
-    if (response != null) {
-      pointHistory = PointHistory.fromJson(response);
-      notifyListeners();
-    }
-  }
-
-  Future<void> getOrderHistory() async {
-    final response = await ProfileRepo().getOrderHistory();
-    if (response != null) {
-      orderHistoryModel = response;
-      notifyListeners();
-    }
-  }
 
   Orders? selectedOrder;
   void selectedOrderHistory(String id) {

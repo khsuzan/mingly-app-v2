@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mingly/src/components/custom_snackbar.dart';
-import 'package:mingly/src/screens/protected/profile_screen/profile_provider.dart';
+import 'package:mingly/src/screens/protected/profile/profile_provider.dart';
 import 'package:provider/provider.dart';
 
 class VoucherListScreen extends StatelessWidget {

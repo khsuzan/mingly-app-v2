@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mingly/src/screens/protected/profile_screen/profile_provider.dart';
+import 'package:mingly/src/screens/protected/profile/profile_provider.dart';
 import 'package:provider/provider.dart';
 
 void showCustomConfirmDialog(BuildContext context) {

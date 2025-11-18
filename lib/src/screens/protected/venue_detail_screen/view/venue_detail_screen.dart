@@ -250,29 +250,11 @@ class VenueDetailScreen extends StatelessWidget {
                     ),
                     const SizedBox(width: 16),
                     Expanded(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFFFE7B9),
-                          foregroundColor: Colors.black,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                        ),
+                      child: PrimaryButton(
+                        text: 'Reserve',
                         onPressed: () {
                           context.push("/venue-reserve", extra: venue);
                         },
-                        child: Text(
-                          'Reserve',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: const Color(0xFF0E0F11),
-                            fontSize: 14,
-                            fontFamily: 'Lato',
-                            fontWeight: FontWeight.w600,
-                            height: 1.43,
-                          ),
-                        ),
                       ),
                     ),
                   ],

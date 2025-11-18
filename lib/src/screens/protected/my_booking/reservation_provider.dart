@@ -1,22 +1,21 @@
 import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
-import 'package:mingly/src/application/favourite/model/favourite_model.dart';
-import 'package:mingly/src/application/favourite/repo/favourite_repo.dart';
-import 'package:mingly/src/application/reservation/model/reservation_model.dart';
-import 'package:mingly/src/application/reservation/repo/reversaetion_repo.dart';
 import 'package:http/http.dart' as http;
+import 'package:mingly/src/application/reservation/model/reservation_model.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../application/reservation/repo/reservation_repo.dart';
+
 class ReservationProvider extends ChangeNotifier {
-  List<ReservationModel> reservationList = [];
+  List<ReservationModelResponse> reservationList = [];
   bool isLoading = false;
 
   Future<void> getFavouriteList() async {
     isLoading = true;
     notifyListeners();
-    final response = await ReversaetionRepo().getReservation();
+    final response = await ReservationRepo().getReservations();
     if (response.isNotEmpty) {
       List<dynamic> data = response;
       for (var e in data) {
@@ -35,7 +34,7 @@ class ReservationProvider extends ChangeNotifier {
     try {
       final response = await http.post(
         Uri.parse(
-          "${AppUrls.baseUrl}${AppUrls.addToFav}$id/",
+          AppUrls.addToFav.replaceFirst('eventId', id),
         ), // ✅ include id and trailing slash
         headers: {
           "Content-Type": "application/json",

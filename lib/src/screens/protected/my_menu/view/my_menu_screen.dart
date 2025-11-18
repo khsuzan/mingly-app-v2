@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
@@ -24,20 +25,17 @@ class MyMenuScreen extends StatelessWidget {
       builder: (controller) {
         return Scaffold(
           appBar: AppBar(
-            leading: InkWell(
-              onTap: () => context.pop(),
-              child: Icon(
-                Icons.arrow_back_ios,
-                color: theme.colorScheme.primary,
-              ),
-            ),
+            elevation: 0,
+            backgroundColor: theme.colorScheme.surface,
             title: Text(
               'My Menu',
-              style: TextStyle(color: theme.colorScheme.primary),
+              style: TextStyle(
+                color: theme.colorScheme.primary,
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             centerTitle: true,
-            elevation: 1,
-            backgroundColor: theme.scaffoldBackgroundColor,
           ),
           body: SafeArea(
             child: Padding(

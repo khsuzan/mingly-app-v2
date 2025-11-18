@@ -82,7 +82,7 @@ class EventListFilters {
       params.add('date=$date');
     }
     if (query != null && query!.isNotEmpty) {
-      params.add('title=$query');
+      params.add('event_name=$query');
     }
     return params.join('&');
   }

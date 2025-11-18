@@ -1,8 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mingly/src/application/venues/repo/venues_repo.dart';
+import 'package:mingly/src/components/custom_loading_dialog.dart';
 
+import '../../../../application/payment/model/payment_from.dart';
 import '../../../../application/venue_menu/model/venue_menu_model.dart';
 
 class VenueMenuController extends GetxController {
@@ -33,8 +36,33 @@ class VenueMenuController extends GetxController {
     }
   }
 
-  void checkoutToPayment(BuildContext context) {
-    //TODO: checkout issue fix
-    try {} catch (e) {}
+  Future<void> checkoutToPayment(
+    BuildContext context,
+    Map<String, dynamic> payload,
+  ) async {
+    // send checkout payload to server
+    try {
+      LoadingDialog.show(context);
+      final resp = await venueRepo.createMyMenuOrder(payload);
+      if (context.mounted) {
+        context.push(
+          "/payment-screen",
+          extra: PaymentFromArg(
+            url: resp.checkoutUrl,
+            venueId: venueId,
+            fromScreen: FromScreen.menuBooking,
+          ),
+        );
+        return;
+      }
+    } catch (e, stack) {
+      debugPrint('Error during checkout: $e');
+      debugPrintStack(stackTrace: stack);
+      Get.snackbar(
+        'Checkout error',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
   }
 }

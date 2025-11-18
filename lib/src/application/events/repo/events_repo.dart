@@ -8,6 +8,8 @@ import 'package:mingly/src/application/events/model/events_model.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../booking/ticket_success.dart';
+import '../../venues/model/venues_model.dart';
 import '../model/event_session_model.dart';
 
 class EventsRepo {
@@ -25,6 +27,45 @@ class EventsRepo {
     return response.map((e) => EventsModel.fromJson(e)).toList();
   }
 
+  Future<VenuesModel> getEventVenue(int id) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final url = "${AppUrls.eventsUrl}$id/";
+    debugPrint("Fetching events url: $url");
+    final response = await ApiService().getOrThrow(
+      url,
+      authToken: preferences.getString("authToken"),
+    );
+    return VenuesModel.fromJson(response);
+  }
+
+  Future<Map<String, dynamic>> getEventInfavourite(int eventId) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final url = AppUrls.checkFavourite.replaceFirst(
+      ":eventId",
+      eventId.toString(),
+    );
+    debugPrint("Fetching favourite status url: $url");
+    final response = await ApiService().getOrThrow(
+      url,
+      authToken: preferences.getString("authToken"),
+    );
+    return response;
+  }
+
+  Future<Map<String, dynamic>> deleteFromfavourite(int eventId) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final url = AppUrls.deleteFromFav.replaceFirst(
+      ":eventId",
+      eventId.toString(),
+    );
+    debugPrint("Fetching favourite status url: $url");
+    final response = await ApiService().deleteDataOrThrow(
+      url,
+      authToken: preferences.getString("authToken"),
+    );
+    return response;
+  }
+
   Future<List<EventsModel>> getEventsSearch(String search, String date) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final response = await ApiService().getList(
@@ -37,7 +78,7 @@ class EventsRepo {
   Future<List<EventsModel>> getEventsVenuseWise(int id) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final response = await ApiService().getList(
-      "/venue/${id}/events/",
+      "/venue/$id/events/",
       authToken: preferences.getString("authToken"),
     );
     return response.map((e) => EventsModel.fromJson(e)).toList();
@@ -68,6 +109,18 @@ class EventsRepo {
       authToken: preferences.getString("authToken"),
     );
     return response;
+  }
+
+  Future<TicketBookingSuccess> continuePaymentEventTicket(
+    Map<String, dynamic> data,
+  ) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final response = await ApiService().postDataOrThrow(
+      AppUrls.continuePayment,
+      data,
+      authToken: preferences.getString("authToken"),
+    );
+    return TicketBookingSuccess.fromJson(response);
   }
 
   Future<Map<String, dynamic>> getTableTicket(
@@ -105,7 +158,7 @@ class EventsRepo {
   ) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final response = await ApiService().postData(
-      "${AppUrls.tableBook}${id}/",
+      "${AppUrls.tableBook}$id/",
       data,
       authToken: preferences.getString("authToken"),
     );
@@ -157,4 +210,23 @@ class EventsRepo {
     );
     return response.map((e) => EventSessionModel.fromJson(e)).toList();
   }
+
+  Future<Map<String, dynamic>> addToFavorites(String id) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final response = await ApiService().postDataOrThrow(
+      AppUrls.addToFav.replaceFirst(':eventId', id),
+      {},
+      authToken: preferences.getString("authToken"),
+    );
+    return response;
+  }
+
+  // Future<Map<String, dynamic>> validatePromoCode(String code) async {
+  //   SharedPreferences preferences = await SharedPreferences.getInstance();
+  //   final response = await ApiService().getData(
+  //     AppUrls.validatePromoCode.replaceFirst(':code', code),
+  //     authToken: preferences.getString("authToken"),
+  //   );
+  //   return response;
+  // }
 }

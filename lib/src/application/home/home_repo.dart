@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:mingly/src/api_service/api_service.dart';
 import 'package:mingly/src/application/home/model/adds_image_model.dart';
 import 'package:mingly/src/application/home/model/featured_model.dart';
@@ -10,7 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../events/model/events_model.dart';
 
 class HomeRepo {
-
   Future<List<LeaderBoardModel>> getLeaderBoard() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final response = await ApiService().getList(
@@ -29,7 +27,6 @@ class HomeRepo {
     return response.map((e) => VenuesModel.fromJson(e)).toList();
   }
 
-  
   Future<List<EventsModel>> getPopularEvents() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final response = await ApiService().getList(
@@ -39,7 +36,6 @@ class HomeRepo {
     return response.map((e) => EventsModel.fromJson(e)).toList();
   }
 
-  
   Future<List<FeaturedModel>> getFeatured() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final response = await ApiService().getList(
@@ -66,5 +62,18 @@ class HomeRepo {
       authToken: preferences.getString("authToken"),
     );
     return response;
+  }
+
+  Future<List<EventsModel>> getRecommendation() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final response = await ApiService().getData(
+      AppUrls.getRecomendedEvent,
+      authToken: preferences.getString("authToken"),
+    );
+    
+      print("Test++" + response['recommended_events'].length.toString());
+    return response['recommended_events'].map<EventsModel>((e) {
+      return EventsModel.fromJson(e);
+    }).toList();
   }
 }

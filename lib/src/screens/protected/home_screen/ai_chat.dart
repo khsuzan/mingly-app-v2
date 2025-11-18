@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mingly/src/api_service/api_service.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -118,8 +119,21 @@ class _AiChatScreenState extends State<AiChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text("AI Assistant"), centerTitle: true),
+      appBar:  AppBar(
+        elevation: 0,
+        backgroundColor: theme.colorScheme.surface,
+        title: Text(
+          'AI Assistant',
+          style: TextStyle( 
+            color: theme.colorScheme.primary,
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        centerTitle: true,
+      ),
       body: Column(
         children: [
           // Messages list

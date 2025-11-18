@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mingly/src/application/venues/model/venues_model.dart';
 
 import '../controller/venue_reserve_controller.dart';
@@ -19,7 +20,7 @@ class VenueReserveScreen extends StatelessWidget {
         backgroundColor: theme.colorScheme.surface,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
         ),
         title: Text(
           'Reserve Venue',
@@ -99,7 +100,7 @@ class VenueReserveScreen extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    //controller.reserveVenue(venue.id);
+                    controller.requestForReserveVenue(context, venue.id);
                   },
                   child: const Text(
                     'Request a Reservation',

@@ -5,6 +5,8 @@ import 'package:mingly/src/application/venues/model/venues_model.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../venue_menu/model/menue_create.dart';
+
 class VenuesRepo {
   VenuesRepo._();
   static final VenuesRepo _instance = VenuesRepo._();
@@ -47,5 +49,17 @@ class VenuesRepo {
       authToken: prefs.getString("authToken") ?? "",
     );
     return response.map((e) => VenueMenuModel.fromJson(e)).toList();
+  }
+
+  /// Create an order (my menu checkout)
+  Future<MenuCreateResponse> createMyMenuOrder(Map<String, dynamic> payload) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final auth = prefs.getString("authToken") ?? "";
+    final response = await ApiService().postDataRegular(
+      AppUrls.createOrder,
+      payload,
+      authToken: auth,
+    );
+    return MenuCreateResponse.fromJson(response);
   }
 }

@@ -82,7 +82,23 @@ class VenueMenuScreen extends StatelessWidget {
                         cart: cart,
                         theme: theme,
                         onCheckout: () {
-                          controller.checkoutToPayment(context);
+                          // build payload from cart and request customer info
+                          if (cart.isEmpty) {
+                            Get.snackbar(
+                              'Cart empty',
+                              'Please add items to cart',
+                              snackPosition: SnackPosition.BOTTOM,
+                            );
+                            return;
+                          }
+
+                          final items = cart._items.entries.map((e) {
+                            final qty = e.value.qty;
+                            return {'venue_menu_item': e.key, 'quantity': qty};
+                          }).toList();
+
+                          final payload = {'items': items};
+                          controller.checkoutToPayment(context, payload);
                         },
                       ),
                     ],
@@ -288,8 +304,7 @@ class _CheckoutBar extends StatelessWidget {
                 ),
                 SizedBox(
                   height: 48,
-                  child:
-                  PrimaryButton(text: 'Checkout', onPressed: onCheckout),
+                  child: PrimaryButton(text: 'Checkout', onPressed: onCheckout),
                 ),
               ],
             ),

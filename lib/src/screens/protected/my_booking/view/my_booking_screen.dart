@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mingly/src/components/custom_snackbar.dart';
@@ -10,113 +11,116 @@ import '../controller/my_booking_controller.dart';
 class MyBookingsScreen extends StatelessWidget {
   const MyBookingsScreen({super.key});
 
-  //   @override
-  //   Widget build(BuildContext context) {
-  //     return ChangeNotifierProvider(
-  //       create: (_) => ReservationProvider()..getFavouriteList(),
-  //       child: _Layout(),
-  //     );
-  //   }
-  // }
-
-  // class _Layout extends StatelessWidget {
-  //   const _Layout();
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final controller = Get.put(MyBookingController());
-
-    // final provider = context.watch<ReservationProvider>();
-    return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Align(
-              alignment: Alignment.center,
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Text(
-                  'Bookings',
-                  style: TextStyle(
-                    color: theme.colorScheme.primary,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+    return GetBuilder<MyBookingController>(
+      init: MyBookingController(),
+      builder: (controller) {
+        return Scaffold(
+          backgroundColor: theme.colorScheme.surface,
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: theme.colorScheme.surface,
+            automaticallyImplyLeading: false,
+            title: Text(
+              'My Booking List',
+              style: TextStyle(
+                color: theme.colorScheme.primary,
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
               ),
             ),
-
-            // ✅ Fix: Wrap ListView with Expanded
-            Obx(() {
-              return controller.isLoading.value
-                  ? Center(child: CircularProgressIndicator())
-                  : Expanded(
-                      child: controller.reservationList.isEmpty
-                          ? Center(child: Text("No orders found"))
-                          : ListView.builder(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 16,
-                              ),
-                              itemBuilder: (context, index) {
-                                if (index ==
-                                    controller.reservationList.length) {
-                                  return const SizedBox(
-                                    height: 80,
-                                  ); // footer gap
-                                }
-                                final item = controller.reservationList[index];
-                                return InkWell(
-                                  onTap: () => context.push('/event-detail'),
-                                  child: _BookingOrderCard(
-                                    orderNumber: item.orderNumber,
-                                    title: item.event.eventName,
-                                    location: item.event.venue.name,
-                                    imagePath:
-                                        item
-                                            .event
-                                            .images
-                                            .firstOrNull
-                                            ?.imageUrl ??
-                                        '',
-                                    date: formatDate(
-                                      item.createdAt?.toIso8601String() ?? '',
-                                    ),
-                                    status: item.status,
-                                    totalAmount: item.totalAmount,
-                                    currency: item.currency,
-                                    venueId: item.event.venue.id,
-                                    ticketsCount: item.tickets.length,
-                                    tablesCount: item.tables.length,
-                                    onTicketsClick: () {
-                                      CustomSnackbar.show(
-                                        context,
-                                        message:
-                                            "Added to favourites (mock action)",
-                                      );
-                                    },
-                                    onTablesClick: () {
-                                      context.push('/booked-table');
-                                    },
-                                    onVenueMenuClick: () {
-                                      context.push(
-                                        '/venue-menu',
-                                        extra: item.event.venue.id,
-                                      );
-                                    },
-                                  ),
-                                );
-                              },
-
-                              itemCount: controller.reservationList.length + 1,
-                            ),
+            centerTitle: true,
+          ),
+          body: SafeArea(
+            child: RefreshIndicator(
+              onRefresh: () async {
+                await controller.fetchBookings();
+                return Future.delayed(Duration(seconds: 1));
+              },
+              child: Obx(() {
+                if (controller.isLoading.value) {
+                  return CustomScrollView(
+                    slivers: [
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: theme.colorScheme.primary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }
+                if (controller.reservationList.isEmpty) {
+                  return CustomScrollView(
+                    slivers: [
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Center(child: Text("No orders found")),
+                      ),
+                    ],
+                  );
+                }
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 16,
+                  ),
+                  itemBuilder: (context, index) {
+                    if (index == controller.reservationList.length) {
+                      return const SizedBox(height: 80); // footer gap
+                    }
+                    final item = controller.reservationList[index];
+                    return InkWell(
+                      // onTap: () => context.push('/event-detail'),
+                      child: _BookingOrderCard(
+                        orderNumber: item.orderNumber,
+                        title: item.event.eventName,
+                        location: item.event.venue.name,
+                        imagePath:
+                            item.event.images.firstOrNull?.imageUrl ?? '',
+                        date: formatDate(
+                          item.createdAt?.toIso8601String() ?? '',
+                        ),
+                        status: item.status,
+                        paymentStatus: item.paymentStatus,
+                        totalAmount: item.totalAmount,
+                        currency: item.currency,
+                        venueId: item.event.venue.id,
+                        ticketsCount: item.tickets.length,
+                        tablesCount: item.tables.length,
+                        onTicketsClick: () {
+                          CustomSnackbar.show(
+                            context,
+                            message: "Added to favourites (mock action)",
+                          );
+                        },
+                        onTablesClick: () {
+                          context.push('/booked-table');
+                        },
+                        onVenueMenuClick: () {
+                          context.push(
+                            '/venue-menu',
+                            extra: item.event.venue.id,
+                          );
+                        },
+                        continueBooking: () {
+                          controller.continueBooking(context, item.orderNumber);
+                        },
+                      ),
                     );
-            }),
-          ],
-        ),
-      ),
+                  },
+
+                  itemCount: controller.reservationList.length + 1,
+                );
+              }),
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -128,6 +132,7 @@ class _BookingOrderCard extends StatelessWidget {
   final String imagePath;
   final String date;
   final String status;
+  final String paymentStatus;
   final double totalAmount;
   final String currency;
   final int venueId;
@@ -136,6 +141,7 @@ class _BookingOrderCard extends StatelessWidget {
   final VoidCallback? onTicketsClick;
   final VoidCallback? onTablesClick;
   final VoidCallback? onVenueMenuClick;
+  final VoidCallback? continueBooking;
 
   const _BookingOrderCard({
     required this.orderNumber,
@@ -144,6 +150,7 @@ class _BookingOrderCard extends StatelessWidget {
     required this.imagePath,
     required this.date,
     required this.status,
+    required this.paymentStatus,
     required this.totalAmount,
     required this.currency,
     required this.venueId,
@@ -152,6 +159,7 @@ class _BookingOrderCard extends StatelessWidget {
     this.onTicketsClick,
     this.onTablesClick,
     this.onVenueMenuClick,
+    this.continueBooking,
   });
 
   @override
@@ -283,132 +291,158 @@ class _BookingOrderCard extends StatelessWidget {
 
               const Divider(height: 1, color: Colors.white24),
 
+              if (paymentStatus.toLowerCase() != 'paid')
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.primary.withOpacity(0.1),
+                        ),
+                        child: Text('Unpaid'),
+                      ),
+                      PrimaryButtonSmall(
+                        text: 'Pay Now',
+                        onPressed: () {
+                          continueBooking?.call();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
               // Bottom row: Tickets | Tables | Menu
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8.0,
-                  vertical: 6,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    // Tickets
-                    Expanded(
-                      child: TextButton(
-                        onPressed: () {
-                          // navigate to booking tickets for this order
-                          // route: /booking-tickets/{orderNumber}
-                          context.push('/booking-tickets/$orderNumber');
-                        },
-                        style: TextButton.styleFrom(
-                          foregroundColor: ticketsCount > 0
-                              ? theme.colorScheme.onSurface
-                              : theme.colorScheme.onSurface.withOpacity(0.5),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.confirmation_num_outlined,
-                              color: ticketsCount > 0
-                                  ? theme.colorScheme.primary
-                                  : theme.colorScheme.onSurface.withOpacity(
-                                      0.5,
-                                    ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              ticketsCount > 0
-                                  ? "Tickets ($ticketsCount)"
-                                  : "Tickets",
-                              style: theme.textTheme.bodySmall?.copyWith(
+              if (paymentStatus.toLowerCase() == 'paid')
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8.0,
+                    vertical: 6,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      // Tickets
+                      Expanded(
+                        child: TextButton(
+                          onPressed: () {
+                            // navigate to booking tickets for this order
+                            // route: /booking-tickets/{orderNumber}
+                            context.push('/booking-tickets/$orderNumber');
+                          },
+                          style: TextButton.styleFrom(
+                            foregroundColor: ticketsCount > 0
+                                ? theme.colorScheme.onSurface
+                                : theme.colorScheme.onSurface.withOpacity(0.5),
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.confirmation_num_outlined,
                                 color: ticketsCount > 0
-                                    ? theme.colorScheme.onSurface
+                                    ? theme.colorScheme.primary
                                     : theme.colorScheme.onSurface.withOpacity(
                                         0.5,
                                       ),
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: 4),
+                              Text(
+                                ticketsCount > 0
+                                    ? "Tickets ($ticketsCount)"
+                                    : "Tickets",
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: ticketsCount > 0
+                                      ? theme.colorScheme.onSurface
+                                      : theme.colorScheme.onSurface.withOpacity(
+                                          0.5,
+                                        ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
 
-                    // Tables
-                    Expanded(
-                      child: TextButton(
-                        onPressed: tablesCount > 0
-                            ? () {
-                                // navigate to tables for this order
-                                // route: /booking-tables/{orderNumber}
-                                context.push('/booking-tables/$orderNumber');
-                              }
-                            : () {
-                                CustomSnackbar.show(
-                                  context,
-                                  message: "No tables booked for this order",
-                                  backgroundColor: Colors.orange,
-                                );
-                              },
-                        style: TextButton.styleFrom(
-                          foregroundColor: tablesCount > 0
-                              ? theme.colorScheme.onSurface
-                              : theme.colorScheme.onSurface.withOpacity(0.5),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.table_restaurant,
-                              color: tablesCount > 0
-                                  ? theme.colorScheme.primary
-                                  : theme.colorScheme.onSurface.withOpacity(
-                                      0.5,
-                                    ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              "Tables",
-                              style: theme.textTheme.bodySmall?.copyWith(
+                      // Tables
+                      Expanded(
+                        child: TextButton(
+                          onPressed: tablesCount > 0
+                              ? () {
+                                  // navigate to tables for this order
+                                  // route: /booking-tables/{orderNumber}
+                                  context.push('/booking-tables/$orderNumber');
+                                }
+                              : () {
+                                  CustomSnackbar.show(
+                                    context,
+                                    message: "No tables booked for this order",
+                                    backgroundColor: Colors.orange,
+                                  );
+                                },
+                          style: TextButton.styleFrom(
+                            foregroundColor: tablesCount > 0
+                                ? theme.colorScheme.onSurface
+                                : theme.colorScheme.onSurface.withOpacity(0.5),
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.table_restaurant,
                                 color: tablesCount > 0
-                                    ? theme.colorScheme.onSurface
+                                    ? theme.colorScheme.primary
                                     : theme.colorScheme.onSurface.withOpacity(
                                         0.5,
                                       ),
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: 4),
+                              Text(
+                                "Tables",
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: tablesCount > 0
+                                      ? theme.colorScheme.primary
+                                      : theme.colorScheme.onSurface.withOpacity(
+                                          0.5,
+                                        ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
 
-                    // Menu
-                    Expanded(
-                      child: TextButton(
-                        onPressed: () {
-                          // navigate to venue menu by id
-                          // route: /venue-menu/{venueId}
-                          onVenueMenuClick?.call();
-                        },
-                        style: TextButton.styleFrom(
-                          foregroundColor: theme.colorScheme.onSurface,
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.restaurant_menu,
-                              color: theme.colorScheme.primary,
-                            ),
-                            const SizedBox(height: 4),
-                            Text("Menu", style: theme.textTheme.bodySmall),
-                          ],
+                      // Menu
+                      Expanded(
+                        child: TextButton(
+                          onPressed: () {
+                            // navigate to venue menu by id
+                            // route: /venue-menu/{venueId}
+                            onVenueMenuClick?.call();
+                          },
+                          style: TextButton.styleFrom(
+                            foregroundColor: theme.colorScheme.onSurface,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.restaurant_menu,
+                                color: theme.colorScheme.primary,
+                              ),
+                              const SizedBox(height: 4),
+                              Text("Menu", style: theme.textTheme.bodySmall),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
             ],
           ),
         ),

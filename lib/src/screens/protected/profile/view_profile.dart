@@ -4,7 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mingly/src/components/custom_loading_dialog.dart';
 import 'package:mingly/src/components/custom_snackbar.dart';
 import 'package:mingly/src/constant/app_urls.dart';
-import 'package:mingly/src/screens/protected/profile_screen/profile_provider.dart';
+import 'package:mingly/src/screens/protected/profile/profile_provider.dart';
 import 'package:provider/provider.dart';
 
 class ViewProfileScreen extends StatefulWidget {

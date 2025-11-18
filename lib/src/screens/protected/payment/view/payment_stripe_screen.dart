@@ -85,7 +85,9 @@ class _StripePaymentWebViewState extends State<StripePaymentWebView> {
               if (widget.arg.fromScreen == FromScreen.ticketBooking) {
                 context.go('/my-bookings');
               } else if (widget.arg.fromScreen == FromScreen.tableBooking) {
-                context.go('/venue-menu', extra: widget.arg.venueId);
+                context.go('/my-bookings');
+              } else if (widget.arg.fromScreen == FromScreen.menuBooking) {
+                context.go('/my-menu');
               }
 
               return NavigationDecision.prevent;

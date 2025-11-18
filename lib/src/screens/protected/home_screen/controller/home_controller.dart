@@ -27,7 +27,6 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchFeaturedSection();
     fetchProfileInfo();
     fetchHomeData();
   }
@@ -36,7 +35,7 @@ class HomeController extends GetxController {
     try {
       isProfileLoading.value = true;
       final response = await profileRepo.fetchProfile();
-      debugPrint('Featured Section Response: $response');
+      debugPrint('Profile Section Response: $response');
       profile.value = response;
     } catch (e) {
       // Handle errors if necessary
@@ -46,25 +45,24 @@ class HomeController extends GetxController {
   }
 
   Future<void> fetchHomeData() async {
+    debugPrint('Home data fetch initiated');
     isRefreshing.value = true;
     await fetchFeaturedSection();
-    
     await fetchFeaturedVenues();
     await fetchTopSpenders();
     await fetchRecommendationEvents();
     isRefreshing.value = false;
+    debugPrint('Home data fetch completed');
   }
 
   Future<void> fetchFeaturedSection() async {
     try {
-      isFeaturedSectionLoading.value = true;
       final response = await homeRepo.getFeatured();
       debugPrint('Featured Section Response: $response');
-      featuredItems.assignAll(response);
-    } catch (e) {
-      // Handle errors if necessary
-    } finally {
-      isFeaturedSectionLoading.value = false;
+      featuredItems.value = response;
+    } catch (e, stack) {
+      debugPrint('Error fetching featured section: $e');
+      debugPrintStack(stackTrace: stack);
     }
   }
 
@@ -72,9 +70,10 @@ class HomeController extends GetxController {
     try {
       final response = await homeRepo.getFeaturedVenues();
       debugPrint('Featured Venues Response: $response');
-      featuredVenues.assignAll(response);
-    } catch (e) {
+      featuredVenues.value = response;
+    } catch (e, stack) {
       debugPrint('Error fetching featured venues: $e');
+      debugPrintStack(stackTrace: stack);
     }
   }
 
@@ -92,19 +91,21 @@ class HomeController extends GetxController {
     try {
       final response = await homeRepo.getLeaderBoard();
       debugPrint('topSpendersList Response: $response');
-      topSpendersList.assignAll(response);
-    } catch (e) {
+      topSpendersList.value = response;
+    } catch (e, stack) {
       debugPrint('Error fetching topSpendersList events: $e');
+      debugPrintStack(stackTrace: stack);
     }
   }
+
   Future<void> fetchRecommendationEvents() async {
     try {
-      //TODO: Update API for recommendation events
-      final response = await homeRepo.getPopularEvents();
+      final response = await homeRepo.getRecommendation();
       debugPrint('Recommendation Events Response: $response');
-      recommendationEvents.assignAll(response);
-    } catch (e) {
+      recommendationEvents.value = response;
+    } catch (e, stack) {
       debugPrint('Error fetching recommendation events: $e');
+      debugPrintStack(stackTrace: stack);
     }
   }
 }

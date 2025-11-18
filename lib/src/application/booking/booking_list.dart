@@ -1,7 +1,5 @@
 class BookingOrder {
   final String orderNumber;
-  final int eventId;
-  final String eventName;
   final Event event;
   final String status;
   final String paymentStatus;
@@ -14,8 +12,6 @@ class BookingOrder {
 
   BookingOrder({
     required this.orderNumber,
-    required this.eventId,
-    required this.eventName,
     required this.event,
     required this.status,
     required this.paymentStatus,
@@ -30,9 +26,7 @@ class BookingOrder {
   factory BookingOrder.fromJson(Map<String, dynamic> json) {
     return BookingOrder(
       orderNumber: json['order_number'] as String,
-      eventId: (json['event_id'] as num).toInt(),
-      eventName: json['event_name'] as String,
-      event: Event.fromJson(json['event'] as Map<String, dynamic>),
+      event: Event.fromJson(json['event'] as Map<String, dynamic>? ?? {}),
       status: json['status'] as String,
       paymentStatus: json['payment_status'] as String,
       subtotal: (json['subtotal'] as num).toDouble(),

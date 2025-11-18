@@ -7,14 +7,27 @@ import 'package:mingly/src/constant/app_urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-class ReversaetionRepo {
-  Future<List<ReservationModel>> getReservation() async {
+class ReservationRepo {
+  Future<List<ReservationModelResponse>> getReservations() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final response = await ApiService().getList(
-      AppUrls.reservation,
+      AppUrls.myReservation,
       authToken: preferences.getString("authToken"),
     );
-    return response.map((e) => ReservationModel.fromJson(e)).toList();
+    return response.map((e) => ReservationModelResponse.fromJson(e)).toList();
+  }
+
+  Future<Map<String, dynamic>> requestReservation(
+    Map<String, dynamic> reservationData,
+    int venueId,
+  ) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final response = await ApiService().postDataOrThrow(
+      AppUrls.bookReservation.replaceFirst(':venueId', venueId.toString()),
+      reservationData,
+      authToken: preferences.getString("authToken"),
+    );
+    return response;
   }
 
   Future<Map<String, dynamic>> addFavourite(String id) async {

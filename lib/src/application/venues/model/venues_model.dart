@@ -8,8 +8,8 @@ class VenuesModel {
   String? state;
   String? country;
   String? postalCode;
-  String? latitude;
-  String? longitude;
+  double? latitude;
+  double? longitude;
   int? capacity;
   String? contactEmail;
   String? contactPhone;
@@ -64,8 +64,12 @@ class VenuesModel {
     state = json['state'];
     country = json['country'];
     postalCode = json['postal_code'];
-    latitude = json['latitude'];
-    longitude = json['longitude'];
+    latitude = json['latitude'] is String
+      ? double.tryParse(json['latitude'])
+      : (json['latitude'] != null ? (json['latitude'] as num).toDouble() : null);
+    longitude = json['longitude'] is String
+      ? double.tryParse(json['longitude'])
+      : (json['longitude'] != null ? (json['longitude'] as num).toDouble() : null);
     capacity = json['capacity'];
     contactEmail = json['contact_email'];
     contactPhone = json['contact_phone'];

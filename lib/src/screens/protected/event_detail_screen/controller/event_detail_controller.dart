@@ -1,54 +1,78 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mingly/src/application/events/model/event_details_model.dart';
 import 'package:mingly/src/application/events/repo/events_repo.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-// ignore: depend_on_referenced_packages
-import 'package:http/http.dart' as http;
+import 'package:mingly/src/components/custom_snackbar.dart';
+
+import '../../../../application/venues/model/venues_model.dart';
 import '../../../../components/custom_loading_dialog.dart';
-import '../../../../constant/app_urls.dart';
 
 class EventDetailController extends GetxController {
   final String id;
-  EventDetailController({required this.id});
-
+  final Rxn<VenuesModel> venue = Rxn<VenuesModel>();
   final detail = EventDetailsModel().obs;
-
   final EventsRepo eventsRepo = EventsRepo();
+  final isFavourite = false.obs;
+
+  EventDetailController({required this.id});
 
   @override
   void onInit() {
     super.onInit();
     fetchDetail();
+    fetchEventVenue();
+    fetchIfFavourite();
   }
 
   Future<void> addToFavourite(BuildContext context, String id) async {
     try {
       LoadingDialog.show(context);
-      SharedPreferences preferences = await SharedPreferences.getInstance();
-      final response = await http.post(
-        Uri.parse(
-          "${AppUrls.baseUrl}${AppUrls.addToFav}$id/",
-        ), // ✅ include id and trailing slash
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer ${preferences.getString("authToken")}",
-        },
-      );
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final data = jsonDecode(response.body);
-        debugPrint("Added to favourites: $data");
-        if (context.mounted) LoadingDialog.hide(context);
-        return;
+      await eventsRepo.addToFavorites(id);
+      isFavourite.value = true;
+      if (context.mounted) {
+        CustomSnackbar.show(context, message: 'Added to favourites');
+        LoadingDialog.hide(context);
       }
-      debugPrint(" Failed (${response.statusCode}): ${response.body}");
-      if (context.mounted) LoadingDialog.hide(context);
     } catch (e) {
       debugPrint("Error: $e");
       if (context.mounted) LoadingDialog.hide(context);
+    }
+  }
+
+  Future<void> fetchEventVenue() async {
+    try {
+      final response = await eventsRepo.getEventVenue(int.parse(id));
+      venue.value = response;
+    } catch (e, stack) {
+      debugPrint("Error: $e");
+      debugPrintStack(stackTrace: stack);
+    }
+  }
+
+  Future<void> fetchIfFavourite() async {
+    try {
+      debugPrint("Fetching if favourite for event id: $id");
+      await eventsRepo.getEventInfavourite(int.parse(id));
+      isFavourite.value = true;
+    } catch (e, stack) {
+      isFavourite.value = false;
+      debugPrint("Error: $e");
+      debugPrintStack(stackTrace: stack);
+    }
+  }
+
+  Future<void> removeFromFavourite(BuildContext context, String id) async {
+    try {
+      LoadingDialog.show(context);
+      debugPrint("Fetching if favourite for event id: $id");
+      await eventsRepo.deleteFromfavourite(int.parse(id));
+      isFavourite.value = false;
+      if (context.mounted) LoadingDialog.hide(context);
+    } catch (e, stack) {
+      isFavourite.value = true;
+      if (context.mounted) LoadingDialog.hide(context);
+      debugPrint("Error: $e");
+      debugPrintStack(stackTrace: stack);
     }
   }
 

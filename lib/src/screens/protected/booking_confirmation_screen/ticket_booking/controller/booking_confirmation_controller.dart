@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mingly/src/application/booking/ticket_booking.dart';
 import 'package:mingly/src/application/events/model/events_model.dart';
+import 'package:mingly/src/application/promo_code/model/promo_code_model.dart';
 import 'package:mingly/src/components/custom_loading_dialog.dart';
 
 import '../../../../../application/booking/ticket_success.dart';
@@ -15,7 +16,11 @@ class TicketBookingConfirmationController extends GetxController {
 
   final eventRepo = EventsRepo();
 
-  final promoValue = 0.0.obs;
+  final promo = PromoCodeModel().obs;
+
+  RxDouble promoValue = 0.0.obs;
+
+  TextEditingController? promoCodeController = TextEditingController();
 
   Future<void> buyTicketEvent(
     BuildContext context,
@@ -55,5 +60,19 @@ class TicketBookingConfirmationController extends GetxController {
     return tickets
         .fold<double>(0.0, (prev, t) => prev + (t.unitPrice * t.quantity))
         .toStringAsFixed(2);
+  }
+
+  void storePromoCode(PromoCodeModel code) {
+    promo.value = code;
+  }
+
+  void applyPromoCode() {
+    promoValue.value = double.tryParse(promo.value.discountValue ?? '0') ?? 0.0;
+  }
+
+  @override
+  void onClose() {
+    promoCodeController?.dispose();
+    super.onClose();
   }
 }

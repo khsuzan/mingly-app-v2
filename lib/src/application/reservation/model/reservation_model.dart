@@ -1,52 +1,62 @@
-class ReservationModel {
-  int? id;
-  int? event;
-  String? eventName;
-  String? eventPicture;
-  String? address;
-  String? city;
-  String? state;
-  String? country;
-  String? addedAt;
-  String? status;
+import 'package:mingly/src/application/venues/model/venues_model.dart';
 
-  ReservationModel({
-    this.id,
-    this.event,
-    this.eventName,
-    this.eventPicture,
-    this.address,
-    this.city,
-    this.state,
-    this.country,
+class ReservationModelResponse {
+  String? orderNumber;
+  VenuesModel? venue;
+  String? status;
+  String? paymentStatus;
+  double? subtotal;
+  double? totalAmount;
+  String? currency;
+  String? createdAt;
+  String? orderType;
+
+  ReservationModelResponse({
+    this.orderNumber,
+    this.venue,
     this.status,
-    this.addedAt,
+    this.paymentStatus,
+    this.subtotal,
+    this.totalAmount,
+    this.currency,
+    this.createdAt,
+    this.orderType,
   });
 
-  ReservationModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    event = json['event'];
-    eventName = json['event_name'];
-    eventPicture = json['event_picture'];
-    address = json['address'];
-    city = json['city'];
-    state = json['state'];
-    country = json['country'];
-    addedAt = json['added_at'];
-    status = json["status"];
+  factory ReservationModelResponse.fromJson(Map<String, dynamic> json) {
+    double? _toDouble(dynamic v) {
+      if (v == null) return null;
+      if (v is double) return v;
+      if (v is int) return v.toDouble();
+      if (v is String) return double.tryParse(v);
+      if (v is num) return v.toDouble();
+      return null;
+    }
+
+    return ReservationModelResponse(
+      orderNumber: json['order_number'] as String?,
+      venue: json['venue'] != null ? VenuesModel.fromJson(json['venue']) : null,
+      status: json['status'] as String?,
+      paymentStatus: json['payment_status'] as String?,
+      subtotal: _toDouble(json['subtotal']),
+      totalAmount: _toDouble(json['total_amount']),
+      currency: json['currency'] as String?,
+      createdAt: json['created_at'] as String?,
+      orderType: json['order_type'] as String?,
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['event'] = this.event;
-    data['event_name'] = this.eventName;
-    data['event_picture'] = this.eventPicture;
-    data['address'] = this.address;
-    data['city'] = this.city;
-    data['state'] = this.state;
-    data['country'] = this.country;
-    data['added_at'] = this.addedAt;
-    return data;
+    return {
+      'order_number': orderNumber,
+      'venue': venue?.toJson(),
+      'status': status,
+      'payment_status': paymentStatus,
+      'subtotal': subtotal,
+      'total_amount': totalAmount,
+      'currency': currency,
+      'created_at': createdAt,
+      'order_type': orderType,
+    };
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mingly/src/components/helpers.dart';
 import 'package:mingly/src/screens/protected/notification_screen/notification_provider.dart';
 import 'package:provider/provider.dart';
@@ -27,49 +28,63 @@ class Layout extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: theme.colorScheme.surface,
-        // leading: IconButton(
-        //   icon: const Icon(Icons.arrow_back, color: Colors.white),
-        //   onPressed: () => Navigator.of(context).pop(),
-        // ),
-        title: const Text(
+        automaticallyImplyLeading: false,
+        title: Text(
           'Notifications',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            color: theme.colorScheme.primary,
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-        child: provider.isLoading
-            ? Center(child: CircularProgressIndicator())
-            : RefreshIndicator(
-                onRefresh: () => provider.getNotificationData(),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: List.generate(
-                      provider.notificationModel.notifications?.length ?? 0,
-                      (index) => _NotificationItem(
-                        icon: Icons.calendar_today,
-                        title: provider
-                            .notificationModel
-                            .notifications![index]
-                            .title
-                            .toString(),
-                        subtitle: provider
-                            .notificationModel
-                            .notifications![index]
-                            .message
-                            .toString(),
-                        date: provider
-                            .notificationModel
-                            .notifications![index]
-                            .createdAt
-                            .toString(),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+        child: RefreshIndicator(
+          onRefresh: () => provider.getNotificationData(),
+          child: provider.isLoading
+              ? CustomScrollView(
+                  slivers: [
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: theme.colorScheme.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              : SingleChildScrollView(
+                  child: SafeArea(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: List.generate(
+                        provider.notificationModel.notifications?.length ?? 0,
+                        (index) => _NotificationItem(
+                          icon: Icons.calendar_today,
+                          title: provider
+                              .notificationModel
+                              .notifications![index]
+                              .title
+                              .toString(),
+                          subtitle: provider
+                              .notificationModel
+                              .notifications![index]
+                              .message
+                              .toString(),
+                          date: provider
+                              .notificationModel
+                              .notifications![index]
+                              .createdAt
+                              .toString(),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
+        ),
       ),
     );
   }

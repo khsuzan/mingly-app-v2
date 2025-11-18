@@ -30,8 +30,4 @@ class MyMenuController extends GetxController {
       }
     }
   }
-
-  void setExpandedIndices(){
-
-  }
 }

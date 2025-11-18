@@ -187,8 +187,8 @@ class ImageableVenue implements Imageable {
   final String? state;
   final String? country;
   final String? postalCode;
-  final String? latitude;
-  final String? longitude;
+  final double? latitude;
+  final double? longitude;
   final int? capacity;
   final String? contactEmail;
   final String? contactPhone;
@@ -238,8 +238,16 @@ class ImageableVenue implements Imageable {
       state: json['state'] as String?,
       country: json['country'] as String?,
       postalCode: json['postal_code'] as String?,
-      latitude: json['latitude'] as String?,
-      longitude: json['longitude'] as String?,
+      latitude: (json['latitude'] is num)
+          ? (json['latitude'] as num).toDouble()
+          : (json['latitude'] is String
+          ? double.tryParse(json['latitude'] as String)
+          : null),
+      longitude: (json['longitude'] is num)
+          ? (json['longitude'] as num).toDouble()
+          : (json['longitude'] is String
+          ? double.tryParse(json['longitude'] as String)
+          : null),
       capacity: json['capacity'] is int
           ? json['capacity'] as int
           : int.tryParse('${json['capacity']}'),

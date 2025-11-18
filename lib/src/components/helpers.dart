@@ -39,6 +39,28 @@ class PrimaryButton extends StatelessWidget {
     );
   }
 }
+class PrimaryButtonSmall extends StatelessWidget {
+  final String text;
+  final VoidCallback onPressed;
+
+  const PrimaryButtonSmall({super.key, required this.text, required this.onPressed});
+  @override
+  Widget build(BuildContext context) {
+    final onPrimary = Theme.of(context).colorScheme.onPrimary;
+    return GradientButton(
+      text: text,
+      onPressed: onPressed,
+      height: 28,
+      gradientColors: const [Color(0xFFF7D99A), Color(0xFFC3A266)],
+      fullWidth: false,
+      textStyle: TextStyle(
+        color: onPrimary,
+        fontWeight: FontWeight.bold,
+        fontSize: 14.sp,
+      ),
+    );
+  }
+}
 
 /// A single-line text field using [CustomInputField] from inputs.dart.
 ///

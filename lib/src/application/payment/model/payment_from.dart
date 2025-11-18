@@ -1,12 +1,12 @@
 class PaymentFromArg {
   final String url;
-  final int venueId;
+  final int? venueId;
   final FromScreen fromScreen;
   PaymentFromArg({
     required this.url,
-    required this.venueId,
+    this.venueId,
     required this.fromScreen,
   });
 }
 
-enum FromScreen { ticketBooking, tableBooking }
+enum FromScreen { ticketBooking, tableBooking, menuBooking }

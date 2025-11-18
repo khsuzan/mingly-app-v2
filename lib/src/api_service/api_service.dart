@@ -46,7 +46,7 @@ class ApiService {
     if (response.statusCode == 200 || response.statusCode == 201) {
       // Successfully received a response, parse the response body
       return _handleResponse(response);
-    }else {
+    } else {
       // Handle different HTTP error status codes
       throw Exception(response.body);
     }
@@ -273,6 +273,29 @@ class ApiService {
     }
   }
 
+  Future<Map<String, dynamic>> getOrThrow(
+    String endpoint, {
+    String? authToken,
+  }) async {
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    if (authToken != null && authToken.isNotEmpty) {
+      headers['Authorization'] = 'Bearer $authToken';
+    }
+
+    final response = await http.get(
+      Uri.parse('${AppUrls.baseUrl}$endpoint'),
+      headers: headers,
+    );
+    if (kDebugMode) {
+      print("Regular Get Data ${response.body}");
+    }
+    if (response.statusCode >= 400) {
+      throw Exception(response.body);
+    }
+    return json.decode(response.body);
+  }
+
   Future<List<dynamic>> getList(String endpoint, {String? authToken}) async {
     try {
       Map<String, String> headers = {'Content-Type': 'application/json'};
@@ -296,6 +319,31 @@ class ApiService {
     } catch (e) {
       return _handleErrorList('An unexpected error occurred: $e');
     }
+  }
+
+  Future<List<dynamic>> getListOrThrow(
+    String endpoint, {
+    String? authToken,
+  }) async {
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    if (authToken != null && authToken.isNotEmpty) {
+      headers['Authorization'] = 'Bearer $authToken';
+    }
+
+    final response = await http.get(
+      Uri.parse('${AppUrls.baseUrl}$endpoint'),
+      headers: headers,
+    );
+
+    if (kDebugMode) {
+      print("Get List Response: ${response.body}");
+    }
+
+    if (response.statusCode >= 400) {
+      throw Exception(response.body);
+    }
+    return json.decode(response.body) as List<dynamic>;
   }
 
   List<dynamic> _handleListResponse(http.Response response) {
@@ -330,6 +378,27 @@ class ApiService {
     } catch (e) {
       return _handleError('An unexpected error occurred: $e');
     }
+  }
+
+  // DELETE Request - Delete Data by ID
+  Future<Map<String, dynamic>> deleteDataOrThrow(
+    String endpoint, {
+    String? authToken,
+  }) async {
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    if (authToken != null && authToken.isNotEmpty) {
+      headers['Authorization'] = 'Bearer $authToken';
+    }
+
+    final response = await http.delete(
+      Uri.parse('${AppUrls.baseUrl}$endpoint'),
+      headers: headers,
+    );
+    if (response.statusCode >= 400) {
+      throw Exception(response.body);
+    }
+    return json.decode(response.body);
   }
 
   // Helper method to handle the HTTP response
