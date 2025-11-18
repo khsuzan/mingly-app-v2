@@ -7,6 +7,7 @@ import 'package:mingly/src/application/events/repo/events_repo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
+import '../../../../components/custom_loading_dialog.dart';
 import '../../../../constant/app_urls.dart';
 
 class EventDetailController extends GetxController {
@@ -23,9 +24,10 @@ class EventDetailController extends GetxController {
     fetchDetail();
   }
 
-  Future<Map<String, dynamic>> addToFavourite(String id) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
+  Future<void> addToFavourite(BuildContext context, String id) async {
     try {
+      LoadingDialog.show(context);
+      SharedPreferences preferences = await SharedPreferences.getInstance();
       final response = await http.post(
         Uri.parse(
           "${AppUrls.baseUrl}${AppUrls.addToFav}$id/",
@@ -39,21 +41,14 @@ class EventDetailController extends GetxController {
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = jsonDecode(response.body);
         debugPrint("Added to favourites: $data");
-        return data;
-      } else if (response.statusCode == 400 || response.statusCode == 401) {
-        final data = jsonDecode(response.body);
-        debugPrint("Added to favourites: $data");
-        return data;
-      } else {
-        debugPrint(" Failed (${response.statusCode}): ${response.body}");
-        return {
-          "status": "error",
-          "message": "Request failed with ${response.statusCode}",
-        };
+        if (context.mounted) LoadingDialog.hide(context);
+        return;
       }
+      debugPrint(" Failed (${response.statusCode}): ${response.body}");
+      if (context.mounted) LoadingDialog.hide(context);
     } catch (e) {
       debugPrint("Error: $e");
-      return {"status": "error", "message": e.toString()};
+      if (context.mounted) LoadingDialog.hide(context);
     }
   }
 

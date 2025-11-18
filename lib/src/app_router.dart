@@ -94,7 +94,8 @@ class AppRouter {
         ),
         GoRoute(
           path: '/event-list',
-          builder: (context, state) => const EventListScreen(),
+          builder: (context, state) =>
+              EventListScreen(venueId: state.extra as int?),
         ),
         GoRoute(
           path: '/venue-list',

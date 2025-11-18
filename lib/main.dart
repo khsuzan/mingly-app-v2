@@ -1,19 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'src/global_app.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show SystemChrome, DeviceOrientation;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mingly/src/app_router.dart';
 import 'package:mingly/src/provider_list.dart';
-import 'package:mingly/src/screens/auth/email_verification_screen/email_verification_screen.dart';
-// Auth screens
-import 'package:mingly/src/screens/auth/welcome_screen/welcome_screen.dart';
-import 'package:mingly/src/screens/auth/signup_screen/signup_screen.dart';
-import 'package:mingly/src/screens/auth/password_reset_screen/password_reset_screen.dart';
-import 'package:mingly/src/screens/auth/otp_verification_screen/otp_verification_screen.dart';
-import 'package:mingly/src/screens/auth/login_screen/view/login_screen.dart';
-import 'package:mingly/src/screens/protected/event_detail_screen/event_details_screen_one.dart';
 import 'package:provider/provider.dart';
 // Protected screens
 
@@ -21,6 +12,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   final router = await AppRouter.createRouter();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   runApp(GlobalApp(router: router));
 }
 

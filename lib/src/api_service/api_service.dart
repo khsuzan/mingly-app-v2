@@ -18,44 +18,37 @@ class ApiService {
     Map<String, String>? queryParams,
     String? authToken,
   }) async {
-    try {
-      // Construct the URI with query parameters if any
-      Uri uri = Uri.parse('${AppUrls.baseUrl}$endpoint');
-      if (queryParams != null) {
-        uri = uri.replace(queryParameters: queryParams);
-      }
+    // Construct the URI with query parameters if any
+    Uri uri = Uri.parse('${AppUrls.baseUrl}$endpoint');
+    if (queryParams != null) {
+      uri = uri.replace(queryParameters: queryParams);
+    }
 
-      // Create headers for the POST request
-      Map<String, String> headers = {
-        'Content-Type': 'application/json', // Set content type to JSON
-      };
+    // Create headers for the POST request
+    Map<String, String> headers = {
+      'Content-Type': 'application/json', // Set content type to JSON
+    };
 
-      // Add Authorization header if authToken is provided
-      if (authToken != null && authToken.isNotEmpty) {
-        headers['Authorization'] = 'Bearer $authToken';
-      }
+    // Add Authorization header if authToken is provided
+    if (authToken != null && authToken.isNotEmpty) {
+      headers['Authorization'] = 'Bearer $authToken';
+    }
 
-      // Encode the data to JSON format
-      String body = json.encode(data);
+    // Encode the data to JSON format
+    String body = json.encode(data);
 
-      // Make the POST request using http.post
-      final response = await http.post(uri, headers: headers, body: body);
+    // Make the POST request using http.post
+    final response = await http.post(uri, headers: headers, body: body);
+    if (kDebugMode) {
       print("Post Api Regular ${response.body}");
-      // Handle the response based on the status code or other logic
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        // Successfully received a response, parse the response body
-        return _handleResponse(response);
-      } else if (response.statusCode == 400) {
-        return _handleResponse(response);
-      } else {
-        // Handle different HTTP error status codes
-        return _handleError(
-          'Request failed with status: ${response.statusCode}',
-        );
-      }
-    } catch (e) {
-      // Handle any exception during the request
-      return _handleError('An unexpected error occurred: $e');
+    }
+    // Handle the response based on the status code or other logic
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      // Successfully received a response, parse the response body
+      return _handleResponse(response);
+    }else {
+      // Handle different HTTP error status codes
+      throw Exception(response.body);
     }
   }
 

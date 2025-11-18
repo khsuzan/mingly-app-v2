@@ -4,6 +4,8 @@ import 'package:mingly/src/api_service/api_service.dart';
 import 'package:mingly/src/application/authentication/authentiation_repo/authentication_repo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../application/authentication/model/login_response.dart';
+
 class AuthProvider extends ChangeNotifier {
   bool isLoading = false;
   final TextEditingController nameController = TextEditingController();
@@ -70,7 +72,7 @@ class AuthProvider extends ChangeNotifier {
     return response;
   }
 
-  Future<Map<String, dynamic>> login(String email, String password) async {
+  Future<LoginResponse> login(String email, String password) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     isLoading = true;
     notifyListeners();
@@ -79,16 +81,12 @@ class AuthProvider extends ChangeNotifier {
       "password": password,
       "device_token": "test-token-12345",
     });
-    if (response["message"] != null) {
-      prefs.setString('authToken', response["access_token"]);
-      prefs.setString('refreshToken', response["refresh_token"].toString());
-      prefs.setBool("isGoogleLogin", false);
-      emailController.clear();
-      passwordController.clear();
-      notifyListeners();
-    } else {
-      debugPrint("Login failed: ${response["message"]}");
-    }
+    prefs.setString('authToken', response.accessToken);
+    prefs.setString('refreshToken', response.refreshToken.toString());
+    prefs.setBool("isGoogleLogin", false);
+    emailController.clear();
+    passwordController.clear();
+    notifyListeners();
     isLoading = false;
     notifyListeners();
     return response;

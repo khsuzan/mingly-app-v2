@@ -2,10 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
+import 'package:mingly/src/components/helpers.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 
-import '../../../../application/payment/model/payment_from.dart';
 import '../../../../application/venue_menu/model/venue_menu_model.dart';
 import '../controller/venue_menu_controller.dart';
 
@@ -16,57 +15,84 @@ class VenueMenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final controller = Get.put(VenueMenuController(venueId: venueId));
     final cart = Get.put(_MenuCartController());
 
-    return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: theme.colorScheme.surface,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: const Text('Food Menu', style: TextStyle(color: Colors.white)),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Obx(() {
-            final list = controller.menuList;
-            if (list.isEmpty) {
-              return const Center(child: CircularProgressIndicator());
-            }
+    return GetBuilder<VenueMenuController>(
+      init: VenueMenuController(venueId: venueId),
+      builder: (controller) {
+        return Scaffold(
+          backgroundColor: theme.colorScheme.surface,
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: theme.colorScheme.surface,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            title: const Text(
+              'Food Menu',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: RefreshIndicator(
+                onRefresh: () {
+                  controller.fetchVenueMenu();
+                  return Future.delayed(Duration(seconds: 1));
+                },
+                child: Obx(() {
+                  if (controller.isVenueMenuLoading.value) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  final list = controller.menuList;
+                  if (list.isEmpty) {
+                    return const CustomScrollView(
+                      slivers: [
+                        SliverFillRemaining(
+                          child: Center(child: Text('No menu items available')),
+                        ),
+                      ],
+                    );
+                  }
 
-            return Column(
-              children: [
-                Expanded(
-                  child: ListView.separated(
-                    itemCount: list.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 8),
-                    itemBuilder: (context, index) {
-                      final item = list[index];
-                      final id = item.id ?? index;
-                      return _MenuItemRow(menuItem: item, id: id, cart: cart);
-                    },
-                  ),
-                ),
+                  return Column(
+                    children: [
+                      Expanded(
+                        child: ListView.separated(
+                          itemCount: list.length,
+                          separatorBuilder: (_, __) {
+                            return const SizedBox(height: 8);
+                          },
+                          itemBuilder: (context, index) {
+                            final item = list[index];
+                            final id = item.id ?? index;
+                            return _MenuItemRow(
+                              menuItem: item,
+                              id: id,
+                              cart: cart,
+                            );
+                          },
+                        ),
+                      ),
 
-                const SizedBox(height: 8),
-                _CheckoutBar(
-                  cart: cart,
-                  theme: theme,
-                  onCheckout: () {
-                    //TODO: proceed to payment screen
-                    // controller.checkoutToPayment();
-                  },
-                ),
-              ],
-            );
-          }),
-        ),
-      ),
+                      const SizedBox(height: 8),
+                      _CheckoutBar(
+                        cart: cart,
+                        theme: theme,
+                        onCheckout: () {
+                          controller.checkoutToPayment(context);
+                        },
+                      ),
+                    ],
+                  );
+                }),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -262,19 +288,8 @@ class _CheckoutBar extends StatelessWidget {
                 ),
                 SizedBox(
                   height: 48,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFD1B26F),
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                    ),
-                    onPressed: () {
-                      onCheckout();
-                    },
-                    child: const Text(
-                      'Checkout',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ),
+                  child:
+                  PrimaryButton(text: 'Checkout', onPressed: onCheckout),
                 ),
               ],
             ),

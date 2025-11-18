@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mingly/src/application/events/model/events_model.dart';
 
 import '../../../../application/booking/ticket_booking.dart';
 import '../../../../components/helpers.dart';
@@ -19,144 +18,146 @@ class TicketBookingScreen extends StatelessWidget {
     final theme = Theme.of(context);
     final event = info.event;
     final eventDetail = info.eventDetail;
-    final controller = Get.put(
-      TicketBookingController(id: event.id.toString()),
-    );
-    return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: theme.colorScheme.surface,
 
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text(
-          'Buy Ticket',
-          style: TextStyle(
-            color: const Color(0xFFFFFAE5),
-            fontSize: 18,
-            fontFamily: 'Lato',
-            fontWeight: FontWeight.w600,
-            height: 1.56,
-          ),
-        ),
-        centerTitle: true,
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 8),
-              Text(
-                event.eventName.toString(),
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+    return GetBuilder<TicketBookingController>(
+      init: TicketBookingController(id: event.id.toString()),
+      builder: (controller) {
+        return Scaffold(
+          backgroundColor: theme.colorScheme.surface,
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: theme.colorScheme.surface,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            title: Text(
+              'Buy Ticket',
+              style: TextStyle(
+                color: const Color(0xFFFFFAE5),
+                fontSize: 18,
+                fontFamily: 'Lato',
+                fontWeight: FontWeight.w600,
+                height: 1.56,
               ),
-              const SizedBox(height: 16),
-              Row(
+            ),
+            centerTitle: true,
+          ),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.calendar_today, color: Colors.white),
-                  SizedBox(width: 8),
+                  const SizedBox(height: 8),
                   Text(
-                    formatDayAndDate(eventDetail.firstSessionDate ?? ""),
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: const [
-                  Icon(Icons.store, color: Colors.white),
-                  SizedBox(width: 8),
-                  Text('Outlet', style: TextStyle(color: Colors.white)),
-                ],
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: 32),
-                child: Text(
-                  '${event.venue?.name}\nCity - ${event.venue?.city}',
-                  style: TextStyle(color: Colors.white54, fontSize: 12),
-                ),
-              ),
-              const SizedBox(height: 24),
-              Obx(() {
-                return Column(
-                  children: [
-                    if (controller.eventTicketList.isEmpty)
-                      const Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Text(
-                          "No tickets available",
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    if (controller.eventTicketList.isNotEmpty)
-                      ...List.generate(controller.eventTicketList.length, (
-                        index,
-                      ) {
-                        final ticket = controller.eventTicketList[index];
-                        return _TicketOption(
-                          id: ticket.ticketId.toString(),
-                          title: ticket.ticketTitle,
-                          price: ticket.unitPrice.toString(),
-                          soldOut: ticket.totalTicketQty == 0,
-                          qty: ticket.totalTicketQty,
-                          selectedQty: ticket.quantity,
-                          onSelectTicket: (changeBy) =>
-                              controller.onSelectTicket(ticket, changeBy),
-                        );
-                      }),
-                  ],
-                );
-              }),
-
-              const Spacer(),
-              Obx(() {
-                return SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFD1B26F),
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    event.eventName.toString(),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
-                    onPressed: () {
-                      context.push(
-                        "/booking-confirmation",
-                        extra: TicketBookInfoArg(
-                          event: event,
-                          eventDetail: eventDetail,
-                          tickets: controller.eventTicketList
-                              .where((t) => t.quantity > 0)
-                              .toList(),
-                          promoCode: '',
-                        ),
-                      );
-                    },
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Icon(Icons.calendar_today, color: Colors.white),
+                      SizedBox(width: 8),
+                      Text(
+                        formatDayAndDate(eventDetail.firstSessionDate ?? ""),
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: const [
+                      Icon(Icons.store, color: Colors.white),
+                      SizedBox(width: 8),
+                      Text('Outlet', style: TextStyle(color: Colors.white)),
+                    ],
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 32),
                     child: Text(
-                      'Buy Tickets (\$${controller.totalPrice.value.toStringAsFixed(2)})',
+                      '${event.venue?.name}\nCity - ${event.venue?.city}',
+                      style: TextStyle(color: Colors.white54, fontSize: 12),
                     ),
                   ),
-                );
-              }),
-              SizedBox(height: 10),
-            ],
+                  const SizedBox(height: 24),
+                  Obx(() {
+                    return Column(
+                      children: [
+                        if (controller.eventTicketList.isEmpty)
+                          const Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Text(
+                              "No tickets available",
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        if (controller.eventTicketList.isNotEmpty)
+                          ...List.generate(controller.eventTicketList.length, (
+                            index,
+                          ) {
+                            final ticket = controller.eventTicketList[index];
+                            return _TicketOption(
+                              id: ticket.ticketId.toString(),
+                              title: ticket.ticketTitle,
+                              price: ticket.unitPrice.toString(),
+                              soldOut: ticket.totalTicketQty == 0,
+                              qty: ticket.totalTicketQty,
+                              selectedQty: ticket.quantity,
+                              onSelectTicket: (changeBy) =>
+                                  controller.onSelectTicket(ticket, changeBy),
+                            );
+                          }),
+                      ],
+                    );
+                  }),
+
+                  const Spacer(),
+                  Obx(() {
+                    return SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFD1B26F),
+                          foregroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                        ),
+                        onPressed: () {
+                          context.push(
+                            "/booking-confirmation",
+                            extra: TicketBookInfoArg(
+                              event: event,
+                              eventDetail: eventDetail,
+                              tickets: controller.eventTicketList
+                                  .where((t) => t.quantity > 0)
+                                  .toList(),
+                              promoCode: '',
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Buy Tickets (\$${controller.totalPrice.value.toStringAsFixed(2)})',
+                        ),
+                      ),
+                    );
+                  }),
+                  SizedBox(height: 10),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

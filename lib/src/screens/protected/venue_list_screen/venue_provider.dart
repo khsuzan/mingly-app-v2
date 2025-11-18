@@ -9,7 +9,7 @@ class VenueProvider extends ChangeNotifier {
   List<VenueMenuModel> venueMenuList = [];
 
   Future<void> getVenuesList() async {
-    final response = await VenuesRepo().getVenues();
+    final response = await VenuesRepo().getVenues("");
 
     if (response.isNotEmpty) {
       List<VenuesModel> data = response;

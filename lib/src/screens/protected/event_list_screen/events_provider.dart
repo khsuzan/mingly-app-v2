@@ -36,7 +36,7 @@ class EventsProvider extends ChangeNotifier {
   }
 
   Future<void> getEventList() async {
-    final response = await EventsRepo().getEvents();
+    final response = await EventsRepo().getEvents('');
 
     if (response.isNotEmpty) {
       List<EventsModel> data = response;

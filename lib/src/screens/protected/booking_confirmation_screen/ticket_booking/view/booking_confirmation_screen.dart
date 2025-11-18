@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
-import 'package:mingly/src/application/events/model/events_model.dart';
-import 'package:mingly/src/components/custom_loading_dialog.dart';
 import 'package:mingly/src/components/custom_snackbar.dart';
 import 'package:mingly/src/screens/protected/booking_confirmation_screen/ticket_booking/controller/booking_confirmation_controller.dart';
-import 'package:mingly/src/screens/protected/booking_summary/widget/custom_confirm_dialog.dart';
-import 'package:mingly/src/screens/protected/event_list_screen/events_provider.dart';
-import 'package:mingly/src/screens/protected/payment/view/payment_stripe_screen.dart';
 import 'package:mingly/src/screens/protected/profile_screen/profile_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../application/booking/ticket_booking.dart';
-import '../../../../../application/events/model/event_details_model.dart';
 import '../../../../../components/helpers.dart';
 
 class BookingConfirmationScreen extends StatelessWidget {
@@ -51,52 +44,6 @@ class BookingConfirmationScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // const SizedBox(height: 8),
-              // const Text(
-              //   'Personal details',
-              //   style: TextStyle(
-              //     color: Colors.white,
-              //     fontWeight: FontWeight.bold,
-              //   ),
-              // ),
-              // const SizedBox(height: 8),
-              // profileProvider.profileModel == null ||
-              //         profileProvider.profileModel.data == null
-              //     ? Center(child: CircularProgressIndicator())
-              //     : Card(
-              //         color: Colors.grey.shade900,
-              //         shape: RoundedRectangleBorder(
-              //           borderRadius: BorderRadius.circular(12),
-              //         ),
-              //         child: ListTile(
-              //           title: Text(
-              //             profileProvider.profileModel.data!.fullName
-              //                 .toString(),
-              //             style: TextStyle(color: Colors.white),
-              //           ),
-              //           subtitle: Column(
-              //             crossAxisAlignment: CrossAxisAlignment.start,
-              //             children: [
-              //               Text(
-              //                 profileProvider.profileModel.data!.mobile
-              //                     .toString(),
-              //                 style: TextStyle(color: Colors.white70),
-              //               ),
-              //               Text(
-              //                 'tyler.howell@gmail.com',
-              //                 style: TextStyle(color: Colors.white70),
-              //               ),
-              //             ],
-              //           ),
-              //           trailing: InkWell(
-              //             onTap: () => context.push("/personal-info"),
-              //             child: const Icon(
-              //               Icons.chevron_right,
-              //               color: Colors.white,
-              //             ),
-              //           ),
-              //         ),
-              //       ),
               const SizedBox(height: 16),
               Text(
                 event.eventName.toString(),
@@ -337,15 +284,8 @@ class BookingConfirmationScreen extends StatelessWidget {
               SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFD1B26F),
-                    foregroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                  ),
+                child: PrimaryButton(
+                  text: 'Proceed',
                   onPressed: () {
                     if (event.id == null) {
                       CustomSnackbar.show(
@@ -364,7 +304,6 @@ class BookingConfirmationScreen extends StatelessWidget {
                       event.venue!.id!,
                     );
                   },
-                  child: const Text('Proceed'),
                 ),
               ),
             ],

@@ -5,17 +5,21 @@ import 'package:mingly/src/api_service/api_service.dart';
 import 'package:mingly/src/application/events/model/event_details_model.dart';
 import 'package:mingly/src/application/events/model/event_ticket_model.dart';
 import 'package:mingly/src/application/events/model/events_model.dart';
-import 'package:mingly/src/application/events/model/table_ticket_model.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/event_session_model.dart';
 
 class EventsRepo {
-  Future<List<EventsModel>> getEvents() async {
+  Future<List<EventsModel>> getEvents(String queryParam) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
+    final params = queryParam.trim().isEmpty
+        ? ''
+        : "?${Uri.encodeFull(queryParam)}";
+    final url = AppUrls.eventsUrl + params;
+    debugPrint("Fetching events url: $url");
     final response = await ApiService().getList(
-      AppUrls.eventsUrl,
+      url,
       authToken: preferences.getString("authToken"),
     );
     return response.map((e) => EventsModel.fromJson(e)).toList();

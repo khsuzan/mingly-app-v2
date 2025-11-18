@@ -3,233 +3,221 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mingly/src/components/custom_loading_dialog.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 import 'package:mingly/src/screens/protected/event_list_screen/controller/event_list_controller.dart';
-import 'package:mingly/src/screens/protected/event_list_screen/events_provider.dart';
-import 'package:provider/provider.dart';
 
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-
-class EventListScreen extends StatefulWidget {
-  const EventListScreen({super.key});
-
-  @override
-  State<EventListScreen> createState() => _EventListScreenState();
-}
-
-class _EventListScreenState extends State<EventListScreen> {
-  String _searchQuery = "";
-  DateTime? _selectedDate;
+class EventListScreen extends StatelessWidget {
+  final int? venueId;
+  const EventListScreen({super.key, this.venueId});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final controller = Get.put(EventListController());
-    // final eventProvider = context.watch<EventsProvider>();
-    // Apply filters
-    // final filteredEvents = eventProvider.eventsList.where((event) {
-    //   final matchesSearch =
-    //       _searchQuery.isEmpty ||
-    //       (event.eventName?.toLowerCase().contains(
-    //             _searchQuery.toLowerCase(),
-    //           ) ??
-    //           false) ||
-    //       (event.venueName?.toLowerCase().contains(
-    //             _searchQuery.toLowerCase(),
-    //           ) ??
-    //           false);
-
-    //   final matchesDate = _selectedDate == null
-    //       ? true
-    //       : DateTime.tryParse('')?.toLocal().day == _selectedDate?.day;
-
-    //   return matchesSearch && matchesDate;
-    // }).toList();
-
-    return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: theme.colorScheme.surface,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: const Text('Event List', style: TextStyle(color: Colors.white)),
-      ),
-      body: Column(
-        children: [
-          // Search + Date Row
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-            child: Row(
-              children: [
-                // Date filter
-                Expanded(
-                  flex: 2,
-                  child: GestureDetector(
-                    onTap: () async {
-                      final picked = await showDatePicker(
-                        context: context,
-                        initialDate: _selectedDate ?? DateTime.now(),
-                        firstDate: DateTime(2023),
-                        lastDate: DateTime(2030),
-                        builder: (context, child) {
-                          return Theme(
-                            data: Theme.of(context).copyWith(
-                              colorScheme: const ColorScheme.dark(
-                                primary: Color(0xFFD1B26F),
-                                onPrimary: Colors.white,
-                                surface: Color(0xFF1F2937),
-                                onSurface: Colors.white,
-                              ),
-                            ),
-                            child: child!,
-                          );
-                        },
-                      );
-
-                      if (picked != null) {
-                        setState(() => _selectedDate = picked);
-                      }
-                      // await eventProvider.getEventListSearch(
-                      //   _selectedDate.toString(),
-                      //   _searchQuery,
-                      // );
-                    },
-                    child: Container(
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade900,
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(12),
-                          bottomLeft: Radius.circular(12),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            'lib/assets/icons/calendar.svg',
-                            colorFilter: const ColorFilter.mode(
-                              Colors.white,
-                              BlendMode.srcIn,
-                            ),
-                            width: 20,
-                            height: 20,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            _selectedDate == null
-                                ? "Date"
-                                : "${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}",
-                            style: const TextStyle(
-                              color: Colors.white,
-                              height: 1.2,
-                            ),
-                          ),
-                          if (_selectedDate != null)
-                            IconButton(
-                              icon: const Icon(
-                                Icons.close,
-                                color: Colors.white,
-                              ),
-                              onPressed: () =>
-                                  setState(() => _selectedDate = null),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-
-                // Search bar
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade900,
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(12),
-                        bottomRight: Radius.circular(12),
-                      ),
-                    ),
-                    child: TextField(
-                      style: const TextStyle(color: Colors.white),
-                      decoration: const InputDecoration(
-                        hintText: 'Search events...',
-                        hintStyle: TextStyle(color: Colors.grey, height: 1.2),
-                        prefixIcon: Icon(
-                          Icons.search,
-                          color: Colors.white,
-                          size: 22,
-                        ),
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(vertical: 14),
-                      ),
-                      onChanged: (value) async {
-                        setState(() => _searchQuery = value);
-                        // await eventProvider.getEventListSearch(
-                        //   _selectedDate.toString(),
-                        //   _searchQuery,
-                        // );
-                      },
-                    ),
-                  ),
-                ),
-              ],
+    return GetBuilder<EventListController>(
+      init: EventListController(venueId: venueId),
+      builder: (controller) {
+        return Scaffold(
+          backgroundColor: theme.colorScheme.surface,
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: theme.colorScheme.surface,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            title: const Text(
+              'Event List',
+              style: TextStyle(color: Colors.white),
             ),
           ),
+          body: Column(
+            children: [
+              // Search + Date Row
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 16,
+                  horizontal: 8,
+                ),
+                child: Row(
+                  children: [
+                    // Date filter
+                    Expanded(
+                      flex: 2,
+                      child: GestureDetector(
+                        onTap: () async {
+                          final picked = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(2023),
+                            lastDate: DateTime(2030),
+                            builder: (context, child) {
+                              return Theme(
+                                data: Theme.of(context).copyWith(
+                                  colorScheme: const ColorScheme.dark(
+                                    primary: Color(0xFFD1B26F),
+                                    onPrimary: Colors.white,
+                                    surface: Color(0xFF1F2937),
+                                    onSurface: Colors.white,
+                                  ),
+                                ),
+                                child: child!,
+                              );
+                            },
+                          );
+                          if (picked != null) {
+                            controller.setDate(picked);
+                          }
 
-          // Event Grid
-          Obx(() {
-            return Expanded(
-              child: controller.isEventsLoading.value
-                  ? Center(child: CircularProgressIndicator())
-                  : controller.events.isEmpty
-                  ? const Center(
-                      child: Text(
-                        "No events found",
-                        style: TextStyle(color: Colors.white70),
-                      ),
-                    )
-                  : GridView.builder(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 2,
-                        vertical: 8,
-                      ),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 8,
-                            mainAxisSpacing: 12,
-                            childAspectRatio: 0.7,
+                          // if (picked != null) {
+                          //   setState(() => _selectedDate = picked);
+                          // }
+                          // await eventProvider.getEventListSearch(
+                          //   _selectedDate.toString(),
+                          //   _searchQuery,
+                          // );
+                        },
+                        child: Container(
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade900,
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(12),
+                              bottomLeft: Radius.circular(12),
+                            ),
                           ),
-                      itemCount: controller.events.length,
-                      itemBuilder: (context, index) {
-                        final event = controller.events[index];
-                        return _EventCard(
-                          onTap: () async {
-                            context.push("/event-detail", extra: event);
-                          },
-                          date: "",
-                          image: event.images!.isEmpty
-                              ? ''
-                              : event.images!.first.imageUrl!,
-                          title: event.eventName ?? "",
-                          location: event.venue?.name ?? "",
-                          country: event.currency ?? "",
-                        );
-                      },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                'lib/assets/icons/calendar.svg',
+                                colorFilter: const ColorFilter.mode(
+                                  Colors.white,
+                                  BlendMode.srcIn,
+                                ),
+                                width: 20,
+                                height: 20,
+                              ),
+                              const SizedBox(width: 4),
+                              Obx(
+                                () => Text(
+                                  controller.filters.value.date == null
+                                      ? "Date"
+                                      : "${controller.filters.value.date}",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    height: 1.2,
+                                  ),
+                                ),
+                              ),
+                              Obx(() {
+                                if (controller.filters.value.date == null) {
+                                  return const SizedBox.shrink();
+                                }
+                                return IconButton(
+                                  icon: const Icon(
+                                    Icons.close,
+                                    color: Colors.white,
+                                  ),
+                                  iconSize: 18,
+                                  onPressed: () => controller.setDate(null),
+                                );
+                              }),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
-            );
-          }),
-        ],
-      ),
+
+                    // Search bar
+                    Expanded(
+                      flex: 3,
+                      child: Container(
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade900,
+                          borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(12),
+                            bottomRight: Radius.circular(12),
+                          ),
+                        ),
+                        child: TextField(
+                          style: const TextStyle(color: Colors.white),
+                          decoration: const InputDecoration(
+                            hintText: 'Search events...',
+                            hintStyle: TextStyle(
+                              color: Colors.grey,
+                              height: 1.2,
+                            ),
+                            prefixIcon: Icon(
+                              Icons.search,
+                              color: Colors.white,
+                              size: 22,
+                            ),
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(vertical: 14),
+                          ),
+                          onChanged: (value) async {
+                            controller.setQuery(value);
+                            // setState(() => _searchQuery = value);
+                            // await eventProvider.getEventListSearch(
+                            //   _selectedDate.toString(),
+                            //   _searchQuery,
+                            // );
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Event Grid
+              Obx(() {
+                return Expanded(
+                  child: controller.isEventsLoading.value
+                      ? Center(child: CircularProgressIndicator())
+                      : controller.events.isEmpty
+                      ? const Center(
+                          child: Text(
+                            "No events found",
+                            style: TextStyle(color: Colors.white70),
+                          ),
+                        )
+                      : GridView.builder(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 2,
+                            vertical: 8,
+                          ),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 8,
+                                mainAxisSpacing: 12,
+                                childAspectRatio: 0.7,
+                              ),
+                          itemCount: controller.events.length,
+                          itemBuilder: (context, index) {
+                            final event = controller.events[index];
+                            return _EventCard(
+                              onTap: () async {
+                                context.push("/event-detail", extra: event);
+                              },
+                              date: "",
+                              image: event.images!.isEmpty
+                                  ? ''
+                                  : event.images!.first.imageUrl!,
+                              title: event.eventName ?? "",
+                              location: event.venue?.name ?? "",
+                              country: event.currency ?? "",
+                            );
+                          },
+                        ),
+                );
+              }),
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -285,7 +273,7 @@ class _EventCard extends StatelessWidget {
                           : AppUrls.imageUrl + image,
                       height: 160,
                       width: double.infinity,
-                      fit: BoxFit.fill,
+                      fit: BoxFit.cover,
 
                       errorBuilder: (context, error, stackTrace) {
                         debugPrint("❌ Image load failed: $error");

@@ -3,19 +3,10 @@ import 'dart:core';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:mingly/src/application/venues/model/venues_model.dart';
-import 'package:mingly/src/components/custom_loading_dialog.dart';
 import 'package:mingly/src/components/helpers.dart';
 import 'package:mingly/src/constant/app_urls.dart';
-import 'package:mingly/src/screens/protected/berverages/widget/menu_card.dart';
-import 'package:mingly/src/screens/protected/event_list_screen/events_provider.dart';
-import 'package:mingly/src/screens/protected/venue_detail_screen/controller/venue_detail_controller.dart';
-import 'package:mingly/src/screens/protected/venue_detail_screen/menu_card.dart';
-import 'package:mingly/src/screens/protected/venue_list_screen/venue_provider.dart';
-import 'package:provider/provider.dart';
 
 class VenueDetailScreen extends StatelessWidget {
   final VenuesModel venue;
@@ -40,18 +31,6 @@ class VenueDetailScreen extends StatelessWidget {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: false,
-        // actions: [
-        //   InkWell(
-        //     onTap: () {},
-        //     child: DecoratedBox(
-        //       decoration: BoxDecoration(
-        //         color: Colors.white,
-        //         shape: BoxShape.circle,
-        //       ),
-        //       child: const Icon(Icons.star_border, color: Colors.black),
-        //     ),
-        //   ),
-        // ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -105,7 +84,7 @@ class VenueDetailScreen extends StatelessWidget {
                   children: [
                     InkWell(
                       onTap: () {
-                        //provider.toggleMenuList();
+                        context.push('/event-list', extra: venue.id);
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -244,114 +223,9 @@ class VenueDetailScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
-
-                  // const SizedBox(height: 8),
-                  // Obx(() {
-                  //   return controller.eventsList.isEmpty
-                  //       ? Container()
-                  //       : Column(
-                  //           children: List.generate(
-                  //             controller.eventsList.length,
-                  //             (index) {
-                  //               return InkWell(
-                  //                 onTap: () async {
-                  //                   context.push(
-                  //                     "/event-detail",
-                  //                     extra: controller.eventsList[index],
-                  //                   );
-                  //                 },
-                  //                 child: _PopularEventCard(
-                  //                   image:
-                  //                       controller
-                  //                                   .eventsList[index]
-                  //                                   .images
-                  //                                   ?.isEmpty ==
-                  //                               true ||
-                  //                           controller
-                  //                                   .eventsList[index]
-                  //                                   .images
-                  //                                   ?.firstOrNull
-                  //                                   ?.imageUrl ==
-                  //                               null
-                  //                       ? "https://www.directmobilityonline.co.uk/assets/img/noimage.png"
-                  //                       : "${AppUrls.imageUrl}${eventProvider.eventsListVenueWise[index].images!.first.imageUrl}",
-                  //                   name: eventProvider
-                  //                       .eventsListVenueWise[index]
-                  //                       .eventName
-                  //                       .toString(),
-                  //                 ),
-                  //               );
-                  //             },
-                  //           ),
-                  //         );
-                  // }),
                   const SizedBox(height: 32),
                 ],
               ),
-
-              //event list and other info
-              // provider.isMenuList == false
-              //     ? provider.venueMenuList.isEmpty
-              //     ? Center(child: Text("No menu available"))
-              //     : Column(
-              //         children: List.generate(provider.venueMenuList.length, (
-              //           index,
-              //         ) {
-              //           final item = provider.venueMenuList[index];
-              //           return MenuCardVenue(
-              //             item: item,
-              //             onTap: () {
-              //               // Example: navigate to detail page or show details modal.
-              //               showDialog(
-              //                 context: context,
-              //                 builder: (_) => AlertDialog(
-              //                   title: Text(item.name!),
-              //                   content: Column(
-              //                     mainAxisSize: MainAxisSize.min,
-              //                     crossAxisAlignment: CrossAxisAlignment.center,
-              //                     children: [
-              //                       Image.network(
-              //                         AppUrls.imageUrl + item.image!,
-              //                         width: 120,
-              //                         height: 120,
-              //                         fit: BoxFit.cover,
-              //                         errorBuilder:
-              //                             (context, error, stackTrace) =>
-              //                                 Container(
-              //                                   width: 120,
-              //                                   height: 120,
-              //                                   color: Colors.grey[500],
-              //                                   child: const Icon(
-              //                                     Icons.image_not_supported,
-              //                                   ),
-              //                                 ),
-              //                       ),
-              //                       const SizedBox(height: 8),
-              //                       Text(item.description!),
-              //                       const SizedBox(height: 8),
-              //                       Text('Quantity: ${item.quantity}'),
-              //                       Text(
-              //                         'Price: ${double.parse(item.price!).toStringAsFixed(2)}',
-              //                       ),
-              //                     ],
-              //                   ),
-              //                   actions: [
-              //                     TextButton(
-              //                       onPressed: () =>
-              //                           Navigator.of(context).pop(),
-              //                       child: const Text('Close'),
-              //                     ),
-              //                   ],
-              //                 ),
-              //               );
-              //             },
-              //           );
-              //         }),
-              //       ),
-              // provider.venueMenuList.isEmpty && provider.isMenuList
-              //     ? SizedBox(height: 32)
-              //     : const SizedBox(),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Row(

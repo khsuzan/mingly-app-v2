@@ -47,7 +47,8 @@ class HomeController extends GetxController {
 
   Future<void> fetchHomeData() async {
     isRefreshing.value = true;
-    await fetchFeaturedVenues();
+    await fetchFeaturedSection();
+    
     await fetchFeaturedVenues();
     await fetchTopSpenders();
     await fetchRecommendationEvents();

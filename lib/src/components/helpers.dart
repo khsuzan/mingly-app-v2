@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:mingly/src/components/buttons.dart';
 import 'package:intl/intl.dart';
 import 'inputs.dart';
@@ -175,7 +176,6 @@ String formatDateTime(String utcString) {
   }
 }
 
-
 Future<void> openMapToAddress(String destinationAddress) async {
   // Step 1: Get permission
   LocationPermission permission = await Geolocator.checkPermission();
@@ -225,5 +225,35 @@ class NoImage extends StatelessWidget {
       height: double.infinity,
       fit: BoxFit.cover,
     );
+  }
+}
+
+abstract class GetxScreen<T extends GetxController> extends StatefulWidget {
+  final T Function() controller;
+  const GetxScreen({required this.controller, super.key});
+
+  Widget build(BuildContext context, T controller);
+
+  
+}
+
+class _GetxScreenState<T extends GetxController> extends State<GetxScreen<T>> {
+  late T controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.put(widget.controller(), permanent: false);
+  }
+
+  @override
+  void dispose() {
+    Get.delete<T>();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.build(context, controller);
   }
 }

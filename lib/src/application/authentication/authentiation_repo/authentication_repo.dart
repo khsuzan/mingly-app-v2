@@ -2,6 +2,8 @@ import 'package:flutter/widgets.dart';
 import 'package:mingly/src/api_service/api_service.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 
+import '../model/login_response.dart';
+
 class AuthenticationRepo {
   final ApiService _apiService;
 
@@ -13,10 +15,10 @@ class AuthenticationRepo {
     return response;
   }
 
-  Future<Map<String, dynamic>> login(Map<String, String> map) async {
+  Future<LoginResponse> login(Map<String, String> map) async {
     final response = await _apiService.postDataRegular(AppUrls.login, map);
     debugPrint("Response from login: $response");
-    return response;
+    return LoginResponse.fromJson(response);
   }
 
   Future<Map<String, dynamic>> loginGoogle(Map<String, String> map) async {

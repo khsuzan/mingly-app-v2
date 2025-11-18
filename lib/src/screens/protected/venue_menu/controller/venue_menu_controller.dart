@@ -10,6 +10,7 @@ class VenueMenuController extends GetxController {
   VenueMenuController({required this.venueId});
 
   final menuList = <VenueMenuModel>[].obs;
+  final isVenueMenuLoading = false.obs;
 
   final VenuesRepo venueRepo = VenuesRepo();
 
@@ -21,20 +22,19 @@ class VenueMenuController extends GetxController {
 
   Future<void> fetchVenueMenu() async {
     try {
-      //TODO: venueid need to dynamic
-      final menu = await venueRepo.getVenueMenu(6);
+      isVenueMenuLoading.value = true;
+      final menu = await venueRepo.getVenueMenu(venueId);
       menuList.value = menu;
+      isVenueMenuLoading.value = false;
     } catch (e, stack) {
+      isVenueMenuLoading.value = false;
       debugPrint("Error fetching venue menu: $e");
       debugPrintStack(stackTrace: stack);
     }
   }
 
   void checkoutToPayment(BuildContext context) {
-    try {
-      
-    } catch (e) {
-      
-    }
+    //TODO: checkout issue fix
+    try {} catch (e) {}
   }
 }
