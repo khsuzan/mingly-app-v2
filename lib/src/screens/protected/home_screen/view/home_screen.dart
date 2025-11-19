@@ -10,6 +10,7 @@ import 'package:get/get.dart' show Obx;
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mingly/src/components/custom_snackbar.dart';
+import 'package:mingly/src/components/helpers.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 import 'package:mingly/src/screens/protected/home_screen/controller/home_controller.dart';
 import 'package:share_plus/share_plus.dart';
@@ -131,10 +132,7 @@ class HomeScreen extends StatelessWidget {
                                         width: double.infinity,
                                         height: double.infinity,
                                         errorBuilder: (context, error, stackTrace) {
-                                          return Image.network(
-                                            'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
-                                            fit: BoxFit.cover,
-                                          );
+                                          return NoImage();
                                         },
                                       );
                                     } else {

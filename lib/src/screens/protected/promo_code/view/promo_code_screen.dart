@@ -19,7 +19,6 @@ class PromoCodeScreen extends StatelessWidget {
           appBar: AppBar(
             elevation: 0,
             backgroundColor: theme.colorScheme.surface,
-            automaticallyImplyLeading: false,
             title: Text(
               'Promo Codes',
               style: TextStyle(

@@ -102,7 +102,7 @@ class HomeController extends GetxController {
     try {
       final response = await homeRepo.getRecommendation();
       debugPrint('Recommendation Events Response: $response');
-      recommendationEvents.value = response;
+      recommendationEvents.value = response.take(3).toList();
     } catch (e, stack) {
       debugPrint('Error fetching recommendation events: $e');
       debugPrintStack(stackTrace: stack);

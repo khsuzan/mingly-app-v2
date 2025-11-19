@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mingly/src/application/profile/model/profile_model.dart';
 import 'package:mingly/src/application/profile/repo/profile_repo.dart';
+import 'package:mingly/src/components/custom_snackbar.dart';
 
 import '../../../../../components/custom_loading_dialog.dart';
 
@@ -14,20 +15,37 @@ class EditProfileController extends GetxController {
   final nameController = TextEditingController();
   final phoneController = TextEditingController();
   final addressController = TextEditingController();
-  final formKey = GlobalKey<FormState>();
 
   Rxn<File> imageFile = Rxn<File>(null);
   RxMap<String, dynamic> countryCityData = RxMap<String, dynamic>({});
-  RxString selectedCountry = "".obs;
+  RxnString selectedCountry = RxnString(null);
+  final isProfileInfoLoading = false.obs;
 
   final profileRepo = ProfileRepo();
 
-  final profile = ProfileModel().obs;
+  final profile = PersonalInformation().obs;
 
   @override
   void onInit() {
     super.onInit();
+    fetchProfile();
     loadCountryCityData();
+  }
+
+  Future<void> fetchProfile() async {
+    try {
+      isProfileInfoLoading.value = true;
+      final response = await profileRepo.fetchProfile();
+      profile.value = response.data!;
+      nameController.text = response.data?.fullName ?? '';
+      phoneController.text = response.data?.mobile ?? '';
+      addressController.text = response.data?.address ?? '';
+    } catch (e) {
+      // Get.snackbar('Error', 'Failed to load profile: $e',
+      //     snackPosition: SnackPosition.BOTTOM);
+    } finally {
+      isProfileInfoLoading.value = false;
+    }
   }
 
   Future<void> pickImage() async {
@@ -50,7 +68,37 @@ class EditProfileController extends GetxController {
   }
 
   void onCountryChanged(String? value) {
-    selectedCountry.value = value ?? "";
+    selectedCountry.value = value;
+  }
+
+  void updateProfile(BuildContext context) async {
+    final name = nameController.text.trim();
+    final phone = phoneController.text.trim();
+    final address = addressController.text.trim();
+    if (name.isEmpty && phone.isEmpty && address.isEmpty) {
+      CustomSnackbar.show(
+        context,
+        message: 'Please fill out at least one field',
+      );
+      return;
+    }
+    try {
+      LoadingDialog.show(context);
+      final Map<String, dynamic> data = {};
+      if (name.isNotEmpty) data["full_name"] = name;
+      if (address.isNotEmpty) data["address"] = address;
+      if (phone.isNotEmpty) data["mobile"] = phone;
+      final status = await profileRepo.updateProfile(data, imageFile.value);
+      if (context.mounted) {
+        LoadingDialog.hide(context);
+        CustomSnackbar.show(context, message: 'Profile updated successfully');
+      }
+    } catch (e) {
+      if (context.mounted) {
+        LoadingDialog.hide(context);
+      }
+      debugPrint('Error updating profile: $e');
+    }
   }
 
   @override
@@ -60,16 +108,5 @@ class EditProfileController extends GetxController {
     addressController.dispose();
     imageFile.value = null;
     super.onClose();
-  }
-
-  void updateProfile(BuildContext context) async {
-    try {
-      LoadingDialog.show(context);
-      final status = await profileRepo.updateProfile();
-      LoadingDialog.hide(context);
-    } catch (e) {
-      LoadingDialog.hide(context);
-      debugPrint('Error updating profile: $e');
-    }
   }
 }

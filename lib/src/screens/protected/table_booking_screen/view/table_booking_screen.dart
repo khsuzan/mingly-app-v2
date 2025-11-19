@@ -228,6 +228,7 @@ class TableBookingScreen extends StatelessWidget {
                         ),
                       );
                     }
+                    final selectedTables = controller.selectedTables;
                     return Wrap(
                       spacing: 8,
                       runSpacing: 8,
@@ -250,6 +251,9 @@ class TableBookingScreen extends StatelessWidget {
                             // table: table,
                             price: table.price ?? '',
                             priceUnit: "\$",
+                            selected: selectedTables.any(
+                              (t) => t.id == controller.filteredList[index].id,
+                            ),
                             onClicked: () {
                               if (isAvailable) {
                                 controller.toggleTableSelection(table);
@@ -513,6 +517,7 @@ class _TableSlotButton extends StatelessWidget {
   final String priceUnit;
   final Tables? table;
   final bool available;
+  final bool selected;
   final VoidCallback? onClicked;
   const _TableSlotButton({
     required this.id,
@@ -520,68 +525,63 @@ class _TableSlotButton extends StatelessWidget {
     required this.price,
     this.priceUnit = "\$",
     required this.available,
+    required this.selected,
     this.table,
     this.onClicked,
   });
 
   @override
   Widget build(BuildContext context) {
-    // final eventProvider = context.watch<EventsProvider>();
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: available ? Colors.green : const Color(0xFFAFAFAF),
-        foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-      ),
-      onPressed: () {
-        onClicked?.call();
-        if (available == false) {
-          //   CustomSnackbar.show(
-          //     context,
-          //     message: "Table already booked.",
-          //     backgroundColor: Colors.red,
-          //   );
-          // } else if (available) {
-          //   List<String> parts = eventProvider
-          //       .tableTicketModel
-          //       .sessionInfo!
-          //       .sessionStart!
-          //       .split(':');
-          //   print("Data show" + parts.length.toString());
-          //   String formate = "${parts[0]}:${parts[1]}";
-
-          //   eventProvider.selecteTableBooking(
-          //     table.tableId!,
-          //     eventProvider.selectedTableTime,
-          //     table.id!,
-          //   );
-          //   eventProvider.selectedTable(table);
-        }
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 14.sp,
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w500,
+    return Stack(
+      fit: StackFit.loose,
+      children: [
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: available ? Colors.green : const Color(0xFFAFAFAF),
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+          ),
+          onPressed: () {
+            onClicked?.call();
+          },
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14.sp,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              Text(
+                "$priceUnit$price",
+                style: TextStyle(
+                  color: Colors.white54,
+                  fontSize: 10.sp,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (selected)
+          Positioned(
+            top: 0,
+            right: 0,
+            child: Icon(
+              Icons.check_circle,
+              color: Colors.yellow.shade700,
+              size: 20,
             ),
           ),
-          Text(
-            "$priceUnit$price",
-            style: TextStyle(
-              color: Colors.white54,
-              fontSize: 10.sp,
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
+      ],
     );
   }
 }

@@ -53,7 +53,7 @@ class _Leaderboard extends StatelessWidget {
   final bool isLoading;
   final List<LeaderBoardModel> list;
   const _Leaderboard({this.isLoading = false, this.list = const []});
-  
+
   Color _rankColor(int index) {
     switch (index) {
       case 0:
@@ -91,11 +91,7 @@ class _Leaderboard extends StatelessWidget {
             ],
           ),
           padding: EdgeInsets.all(8.r),
-          child: Icon(
-            Icons.emoji_events,
-            color: Colors.white,
-            size: 18.sp,
-          ),
+          child: Icon(Icons.emoji_events, color: Colors.white, size: 18.sp),
         ),
         SizedBox(height: 6.h),
         Text(
@@ -109,6 +105,7 @@ class _Leaderboard extends StatelessWidget {
       ],
     );
   }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading) {

@@ -64,7 +64,6 @@ class ProfileProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-
   Orders? selectedOrder;
   void selectedOrderHistory(String id) {
     selectedOrder = orderHistoryModel.orders!.firstWhere(
