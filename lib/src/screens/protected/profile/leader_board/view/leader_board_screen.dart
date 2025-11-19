@@ -156,7 +156,7 @@ class _Leaderboard extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8.r),
                   child: Image.network(
-                    AppUrls.imageUrlNgrok + item.avatar.toString(),
+                    AppUrls.imageUrlApp + item.avatar.toString(),
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Image.network(
                       'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',

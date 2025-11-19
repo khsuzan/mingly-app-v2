@@ -3,10 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'package:mingly/src/application/events/model/events_model.dart';
 import 'package:mingly/src/screens/auth/email_verification_screen/email_verification_screen.dart';
 import 'package:mingly/src/screens/auth/login_screen/view/login_screen.dart';
-import 'package:mingly/src/screens/auth/otp_verification_screen/otp_verfication_forgot_password.dart';
+import 'package:mingly/src/screens/auth/otp_verification_forgot/otp_verfication_forgot_password.dart';
 import 'package:mingly/src/screens/auth/otp_verification_screen/otp_verification_screen.dart';
 import 'package:mingly/src/screens/auth/password_reset_screen/password_reset_screen.dart';
-import 'package:mingly/src/screens/auth/signup_screen/signup_screen.dart';
+import 'package:mingly/src/screens/auth/signup_screen/view/signup_screen.dart';
 import 'package:mingly/src/screens/auth/welcome_screen/welcome_screen.dart'
     show WelcomeScreen;
 import 'package:mingly/src/screens/protected/berverages/view/beverages_screen.dart';
@@ -23,7 +23,7 @@ import 'package:mingly/src/screens/protected/landing_page.dart/landing_page.dart
 import 'package:mingly/src/screens/protected/membership_screen/membership_screen.dart';
 import 'package:mingly/src/screens/protected/my_booking/view/my_booking_screen.dart';
 import 'package:mingly/src/screens/protected/my_menu/view/my_menu_screen.dart';
-import 'package:mingly/src/screens/protected/notification_screen/notification_screen.dart';
+import 'package:mingly/src/screens/protected/notification_screen/view/notification_screen.dart';
 import 'package:mingly/src/screens/protected/payment/payment_screen.dart';
 import 'package:mingly/src/screens/protected/payment/payment_table.dart';
 import 'package:mingly/src/screens/protected/personal_info_screen/personal_info_screen.dart';
@@ -77,7 +77,7 @@ class AppRouter {
         ),
         GoRoute(
           path: '/otp-verification',
-          builder: (context, state) => const OTPVerificationScreen(),
+          builder: (context, state) => OTPVerificationScreen(email: state.extra as String),
         ),
         GoRoute(
           path: '/otp-verification-forgot-password',

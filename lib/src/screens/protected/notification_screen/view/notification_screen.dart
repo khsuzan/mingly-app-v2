@@ -1,91 +1,94 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:mingly/src/components/helpers.dart';
-import 'package:mingly/src/screens/protected/notification_screen/notification_provider.dart';
-import 'package:provider/provider.dart';
+
+import '../controller/notification_controller.dart';
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => NotificationProvider()..getNotificationData(),
-      child: Layout(),
-    );
-  }
-}
-
-class Layout extends StatelessWidget {
-  const Layout({super.key});
-
-  @override
-  Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final provider = context.watch<NotificationProvider>();
-    return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: theme.colorScheme.surface,
-        automaticallyImplyLeading: false,
-        title: Text(
-          'Notifications',
-          style: TextStyle(
-            color: theme.colorScheme.primary,
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w600,
+    // final provider = context.watch<NotificationProvider>();
+    return GetBuilder<NotificationController>(
+      init: NotificationController(),
+      builder: (controller) {
+        return Scaffold(
+          backgroundColor: theme.colorScheme.surface,
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: theme.colorScheme.surface,
+            automaticallyImplyLeading: false,
+            title: Text(
+              'Notifications',
+              style: TextStyle(
+                color: theme.colorScheme.primary,
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            centerTitle: true,
           ),
-        ),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-        child: RefreshIndicator(
-          onRefresh: () => provider.getNotificationData(),
-          child: provider.isLoading
-              ? CustomScrollView(
-                  slivers: [
-                    SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          color: theme.colorScheme.primary,
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+            child: RefreshIndicator(
+              onRefresh: () => controller.getNotificationData(),
+              child: Obx(() {
+                if (controller.isLoading.value) {
+                  return CustomScrollView(
+                    slivers: [
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: theme.colorScheme.primary,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                )
-              : SingleChildScrollView(
+                    ],
+                  );
+                }
+                if (controller.notifications.isEmpty) {
+                  return CustomScrollView(
+                    slivers: [
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Center(
+                          child: Text(
+                            " No Notifications Found",
+                            style: theme.textTheme.titleMedium,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }
+                return SingleChildScrollView(
                   child: SafeArea(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: List.generate(
-                        provider.notificationModel.notifications?.length ?? 0,
+                        controller.notifications.length,
                         (index) => _NotificationItem(
                           icon: Icons.calendar_today,
-                          title: provider
-                              .notificationModel
-                              .notifications![index]
-                              .title
+                          title: controller.notifications[index].title
                               .toString(),
-                          subtitle: provider
-                              .notificationModel
-                              .notifications![index]
-                              .message
+                          subtitle: controller.notifications[index].message
                               .toString(),
-                          date: provider
-                              .notificationModel
-                              .notifications![index]
-                              .createdAt
+                          date: controller.notifications[index].createdAt
                               .toString(),
                         ),
                       ),
                     ),
                   ),
-                ),
-        ),
-      ),
+                );
+              }),
+            ),
+          ),
+        );
+      },
     );
   }
 }

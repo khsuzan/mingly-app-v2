@@ -37,7 +37,7 @@ class EditProfileScreen extends StatelessWidget {
                           ? FileImage(controller.imageFile.value!)
                           : (controller.profile.value.avatar != null
                                     ? NetworkImage(
-                                        AppUrls.imageUrlNgrok +
+                                        AppUrls.imageUrlApp +
                                             controller.profile.value.avatar!,
                                       )
                                     : null)

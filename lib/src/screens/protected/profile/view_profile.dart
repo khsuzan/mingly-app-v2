@@ -92,7 +92,7 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                       ? FileImage(_imageFile!)
                       : (profileProvider.profileModel.data!.avatar != null
                                 ? NetworkImage(
-                                    AppUrls.imageUrlNgrok +
+                                    AppUrls.imageUrlApp +
                                         profileProvider
                                             .profileModel
                                             .data!

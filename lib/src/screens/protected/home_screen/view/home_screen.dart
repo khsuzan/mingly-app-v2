@@ -127,22 +127,18 @@ class HomeScreen extends StatelessWidget {
                                       debugPrint("profile image $avatar");
                                       // Avatar available
                                       return Image.network(
-                                        AppUrls.imageUrlNgrok + avatar,
+                                        AppUrls.imageUrlApp + avatar,
                                         fit: BoxFit.cover,
                                         width: double.infinity,
                                         height: double.infinity,
-                                        errorBuilder: (context, error, stackTrace) {
-                                          return NoImage();
-                                        },
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                              return NoImage();
+                                            },
                                       );
                                     } else {
                                       // Avatar not available — show fallback asset
-                                      return Image.asset(
-                                        'lib/assets/images/dummy_profile.jpg',
-                                        fit: BoxFit.cover,
-                                        width: double.infinity,
-                                        height: double.infinity,
-                                      );
+                                      return NoImage();
                                     }
                                   }),
                                 ),
@@ -218,7 +214,7 @@ class HomeScreen extends StatelessWidget {
                                                       .imageUrl
                                                       .toString(),
                                             ),
-                                            fit: BoxFit.fill,
+                                            fit: BoxFit.cover,
                                           ),
                                         ),
                                       ),
@@ -700,7 +696,7 @@ class _Leaderboard extends StatelessWidget {
                               backgroundColor: Colors.grey.shade800,
                               child: ClipOval(
                                 child: Image.network(
-                                  AppUrls.imageUrlNgrok +
+                                  AppUrls.imageUrlApp +
                                       data[1].avatar.toString(),
                                   errorBuilder: (context, error, stackTrace) =>
                                       Image.network(
@@ -711,7 +707,9 @@ class _Leaderboard extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              data[1].fullName.toString(),
+                              (data[1].fullName?.trim().isEmpty ?? true)
+                                  ? 'Unknown'
+                                  : data[1].fullName!.trim(),
                               style: TextStyle(
                                 color: Theme.of(
                                   context,
@@ -752,7 +750,7 @@ class _Leaderboard extends StatelessWidget {
                         child: ClipOval(
                           child: Image.network(
                             (data.isNotEmpty && data[0].avatar != null)
-                                ? AppUrls.imageUrlNgrok + data[0].avatar!
+                                ? AppUrls.imageUrlApp + data[0].avatar!
                                 : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) =>
@@ -765,7 +763,9 @@ class _Leaderboard extends StatelessWidget {
                       ),
 
                       Text(
-                        data[0].fullName ?? "",
+                       (data[0].fullName?.trim().isEmpty ?? true)
+                                  ? 'Unknown'
+                                  : data[0].fullName!.trim(),
                         style: TextStyle(
                           color: Theme.of(
                             context,
@@ -806,7 +806,7 @@ class _Leaderboard extends StatelessWidget {
                         child: ClipOval(
                           child: Image.network(
                             (data[2].avatar != null)
-                                ? AppUrls.imageUrlNgrok + data[2].avatar!
+                                ? AppUrls.imageUrlApp + data[2].avatar!
                                 : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) =>
@@ -818,7 +818,9 @@ class _Leaderboard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        data.isEmpty ? "N/A" : data[2].fullName.toString(),
+                        (data[2].fullName?.trim().isEmpty ?? true)
+                                  ? 'Unknown'
+                                  : data[2].fullName!.trim(),
                         style: TextStyle(
                           color: Theme.of(
                             context,
@@ -873,7 +875,7 @@ class _Leaderboard extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8.r),
                         child: Image.network(
-                          AppUrls.imageUrlNgrok + data[index].avatar.toString(),
+                          AppUrls.imageUrlApp + data[index].avatar.toString(),
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) =>
                               Image.network(

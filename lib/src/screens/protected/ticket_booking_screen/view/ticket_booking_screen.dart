@@ -123,15 +123,9 @@ class TicketBookingScreen extends StatelessWidget {
                   Obx(() {
                     return SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFD1B26F),
-                          foregroundColor: Colors.black,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                        ),
+                      child: PrimaryButton(
+                        text:
+                            'Buy Tickets (\$${controller.totalPrice.value.toStringAsFixed(2)})',
                         onPressed: () {
                           context.push(
                             "/booking-confirmation",
@@ -145,9 +139,6 @@ class TicketBookingScreen extends StatelessWidget {
                             ),
                           );
                         },
-                        child: Text(
-                          'Buy Tickets (\$${controller.totalPrice.value.toStringAsFixed(2)})',
-                        ),
                       ),
                     );
                   }),

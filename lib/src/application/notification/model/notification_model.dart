@@ -7,16 +7,16 @@ class NotificationModel {
     if (json['notifications'] != null) {
       notifications = <Notifications>[];
       json['notifications'].forEach((v) {
-        notifications!.add(new Notifications.fromJson(v));
+        notifications!.add(Notifications.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.notifications != null) {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (notifications != null) {
       data['notifications'] =
-          this.notifications!.map((v) => v.toJson()).toList();
+          notifications!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -41,12 +41,12 @@ class Notifications {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['title'] = this.title;
-    data['message'] = this.message;
-    data['is_read'] = this.isRead;
-    data['created_at'] = this.createdAt;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['title'] = title;
+    data['message'] = message;
+    data['is_read'] = isRead;
+    data['created_at'] = createdAt;
     return data;
   }
 }

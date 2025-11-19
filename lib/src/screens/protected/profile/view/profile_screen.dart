@@ -78,7 +78,7 @@ class ProfileScreen extends StatelessWidget {
                                                       "lib/assets/images/noimage.png",
                                                     )
                                                   : NetworkImage(
-                                                          AppUrls.imageUrlNgrok +
+                                                          AppUrls.imageUrlApp +
                                                               controller
                                                                   .profile
                                                                   .value

@@ -1,10 +1,11 @@
 class AppUrls {
-  static String baseUrl = "http://192.168.0.147:8900/app/api/v1";
-  // static String baseUrl = "https://api.dockploy.72-60-211-160.sslip.io/app/api/v1";
-  static String imageUrl = "http://192.168.0.147:8000";
+  static String baseUrl = "https://api.dockploy.72-60-211-160.sslip.io/app/api/v1";
+  static String imageUrl = "https://api.admin.dockploy.72-60-211-160.sslip.io";
+  static String imageUrlApp = "https://api.dockploy.72-60-211-160.sslip.io";
 
-  // static String baseUrl = "https://080aadaa0adf.ngrok-free.app/app/api/v1";
-  static String imageUrlNgrok = "http://192.168.0.147:8900";
+  // static String baseUrl = "http://10.10.13.11:8900/app/api/v1";
+  // static String imageUrl = "http://10.10.13.11:8000";
+  // static String imageUrlApp = "http://10.10.13.11:8900";
   //authentication
   static String login = "/auth/login/";
   static String loginGoogle = "/google/login/";

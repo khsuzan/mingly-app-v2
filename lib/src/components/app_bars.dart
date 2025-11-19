@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mingly/src/screens/protected/home_screen/view/home_screen.dart';
 import 'package:mingly/src/screens/protected/my_booking/view/my_booking_screen.dart';
-import 'package:mingly/src/screens/protected/notification_screen/notification_screen.dart';
+import 'package:mingly/src/screens/protected/notification_screen/view/notification_screen.dart';
 import 'package:mingly/src/screens/protected/profile/view/profile_screen.dart';
 
 class CustomBottomNavigationBar extends StatefulWidget {

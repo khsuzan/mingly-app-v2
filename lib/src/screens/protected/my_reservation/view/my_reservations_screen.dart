@@ -52,7 +52,12 @@ class MyReservationsScreen extends StatelessWidget {
                     slivers: [
                       SliverFillRemaining(
                         hasScrollBody: false,
-                        child: Center(child: Text("No orders found")),
+                        child: Center(
+                          child: Text(
+                            "No orders found",
+                            style: theme.textTheme.titleMedium,
+                          ),
+                        ),
                       ),
                     ],
                   );

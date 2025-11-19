@@ -47,7 +47,7 @@ class ViewProfileScreen extends StatelessWidget {
                             (profile?.avatar != null &&
                                 profile!.avatar!.isNotEmpty)
                             ? NetworkImage(
-                                AppUrls.imageUrlNgrok + profile.avatar!,
+                                AppUrls.imageUrlApp + profile.avatar!,
                               )
                             : null,
                         child:

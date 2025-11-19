@@ -49,4 +49,9 @@ class LeaderBoardModel {
     data['target_points'] = this.targetPoints;
     return data;
   }
+
+  @override
+  String toString() {
+    return 'LeaderBoardModel{id: $id, email: $email, isActive: $isActive, fullName: $fullName, avatar: $avatar, googleImage: $googleImage, membershipStatus: $membershipStatus, points: $points, currentPoints: $currentPoints, targetPoints: $targetPoints}';
+  }
 }
