@@ -1,7 +1,7 @@
 class AppUrls {
-  static String baseUrl = "https://api.dockploy.72-60-211-160.sslip.io/app/api/v1";
-  static String imageUrl = "https://api.admin.dockploy.72-60-211-160.sslip.io";
-  static String imageUrlApp = "https://api.dockploy.72-60-211-160.sslip.io";
+  static String baseUrl = "https://admin.mingly.org/app/api/v1";
+  static String imageUrl = "https://backendapi.mingly.org";
+  static String imageUrlApp = "https://admin.mingly.org";
 
   // static String baseUrl = "http://10.10.13.11:8900/app/api/v1";
   // static String imageUrl = "http://10.10.13.11:8000";
@@ -36,7 +36,8 @@ class AppUrls {
   static String getTableTicket = "/table-availability/";
   static String tableBook = "/book-table/";
 
-  static String getTableTickets = "/event_tickets/:id/table/?slot_start=:time&date=:date";
+  static String getTableTickets =
+      "/event_tickets/:id/table/?slot_start=:time&date=:date";
   //top leader board
   static String featuredSection = "/featured-images/";
   //top leader board
@@ -68,11 +69,10 @@ class AppUrls {
   static String pointHistory = "/my-point-transactions/";
 
   static String myReservation = "/my-reservations/";
-  
-  static String bookReservation = "/reserve-venue/:venueId/";
-  
-  static String bookingOrders = "/my-bookings/";
 
+  static String bookReservation = "/reserve-venue/:venueId/";
+
+  static String bookingOrders = "/my-bookings/";
 
   static String getOrderHistory = "/order-history/";
 
