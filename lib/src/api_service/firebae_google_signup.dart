@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class FirebaseServices {
@@ -12,6 +13,7 @@ class FirebaseServices {
       final GoogleSignInAccount? gUser = await _googleSignIn.signIn();
       if (gUser == null) {
         // User cancelled the sign-in
+        debugPrint("User cancelled the Google sign-in");
         return null;
       }
 
@@ -28,11 +30,11 @@ class FirebaseServices {
       final userCredential = await _auth.signInWithCredential(credential);
 
       // Get the Firebase ID token (JWT)
-      final idToken = await userCredential.user;
-      print("id toke === >  $idToken");
+      final idToken = userCredential.user;
+      debugPrint("id toke === >  $idToken");
       return idToken;
     } catch (e) {
-      print('Google Sign-In error: $e');
+      debugPrint('Google Sign-In error: $e');
       rethrow;
     }
   }

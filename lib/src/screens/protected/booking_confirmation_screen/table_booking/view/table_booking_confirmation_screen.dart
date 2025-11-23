@@ -19,9 +19,6 @@ class TableBookingConfirmationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    // final controller = TableBookingConfirmationController();
-    // final eventProvider = context.watch<EventsProvider>();
-    // final venueProvider = context.watch<VenueProvider>();
     final event = info.event;
     final eventDetail = info.eventDetail;
     final tickets = info.tickets;
@@ -290,15 +287,8 @@ class TableBookingConfirmationScreen extends StatelessWidget {
                   ),
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFD1B26F),
-                        foregroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                      ),
+                    child: PrimaryButton(
+                      text: 'Proceed',
                       onPressed: () {
                         if (event.id == null) {
                           CustomSnackbar.show(
@@ -317,7 +307,6 @@ class TableBookingConfirmationScreen extends StatelessWidget {
                           event.venue!.id!,
                         );
                       },
-                      child: const Text('Proceed'),
                     ),
                   ),
                   SizedBox(height: 10),

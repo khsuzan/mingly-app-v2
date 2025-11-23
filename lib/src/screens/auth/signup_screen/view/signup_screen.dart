@@ -51,7 +51,7 @@ class SignupScreen extends StatelessWidget {
                     controller: controller.emailController,
                     hintText: "Enter Email",
                     prefixSvg: SvgPicture.asset(
-                      'lib/assets/icons/profile.svg',
+                      'lib/assets/icons/people.svg',
                       width: 24,
                       height: 24,
                       colorFilter: ColorFilter.mode(

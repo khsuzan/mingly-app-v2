@@ -133,6 +133,7 @@ class Ticket {
   final String seatNumber;
   final double unitPrice;
   final double subtotal;
+  final int? quantity;
   final double totalAmount;
   final String status;
 
@@ -141,6 +142,7 @@ class Ticket {
     required this.seatNumber,
     required this.unitPrice,
     required this.subtotal,
+    required this.quantity,
     required this.totalAmount,
     required this.status,
   });
@@ -149,6 +151,7 @@ class Ticket {
     return Ticket(
       ticketId: (json['ticket_id'] as num).toInt(),
       seatNumber: json['seat_number'] as String,
+      quantity: ((json['quantity'] ?? 0) as num).toInt(),
       unitPrice: (json['unit_price'] as num).toDouble(),
       subtotal: (json['subtotal'] as num).toDouble(),
       totalAmount: (json['total_amount'] as num).toDouble(),
@@ -163,6 +166,7 @@ class TableReservation {
   final int? tableId;
   final String? name;
   final int? quantity;
+  final String? description;
   final double? unitPrice;
   final double? subtotal;
   final double? totalAmount;
@@ -172,6 +176,7 @@ class TableReservation {
     this.tableId,
     this.name,
     this.quantity,
+    this.description,
     this.unitPrice,
     this.subtotal,
     this.totalAmount,
@@ -183,7 +188,7 @@ class TableReservation {
       tableId: json['table_id'] == null
           ? null
           : (json['table_id'] as num).toInt(),
-      name: json['name'] as String?,
+      name: json['title'] as String?,
       quantity: json['quantity'] == null
           ? null
           : (json['quantity'] as num).toInt(),
@@ -197,6 +202,7 @@ class TableReservation {
           ? null
           : (json['total_amount'] as num).toDouble(),
       status: json['status'] as String?,
+      description: json['description'] as String?,
     );
   }
 }

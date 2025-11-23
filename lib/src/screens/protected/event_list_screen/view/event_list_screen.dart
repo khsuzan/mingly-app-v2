@@ -176,48 +176,77 @@ class EventListScreen extends StatelessWidget {
                 ),
 
                 // Event Grid
-                Obx(() {
-                  return Expanded(
-                    child: controller.isEventsLoading.value
-                        ? Center(child: CircularProgressIndicator())
-                        : controller.events.isEmpty
-                        ? const Center(
-                            child: Text(
-                              "No events found",
-                              style: TextStyle(color: Colors.white70),
-                            ),
-                          )
-                        : GridView.builder(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 2,
-                              vertical: 8,
-                            ),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  crossAxisSpacing: 8,
-                                  mainAxisSpacing: 12,
-                                  childAspectRatio: 0.7,
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      controller.fetchEvents();
+                      return Future.value();
+                    },
+                    child: Obx(() {
+                      if (controller.isEventsLoading.value) {
+                        return CustomScrollView(
+                          slivers: [
+                            SliverFillRemaining(
+                              hasScrollBody: false,
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  color: theme.colorScheme.primary,
                                 ),
-                            itemCount: controller.events.length,
-                            itemBuilder: (context, index) {
-                              final event = controller.events[index];
-                              return _EventCard(
-                                onTap: () async {
-                                  context.push("/event-detail", extra: event);
-                                },
-                                date: "",
-                                image: event.images!.isEmpty
-                                    ? ''
-                                    : event.images!.first.imageUrl!,
-                                title: event.eventName ?? "",
-                                location: event.venue?.name ?? "",
-                                country: event.currency ?? "",
-                              );
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                      if (controller.events.isEmpty) {
+                        return CustomScrollView(
+                          slivers: [
+                            SliverFillRemaining(
+                              hasScrollBody: false,
+                              child: Center(
+                                child: Text(
+                                  "No events found",
+                                  style: TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 16.sp,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                      return GridView.builder(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 2,
+                          vertical: 8,
+                        ),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 8,
+                              mainAxisSpacing: 12,
+                              childAspectRatio: 0.7,
+                            ),
+                        itemCount: controller.events.length,
+                        itemBuilder: (context, index) {
+                          final event = controller.events[index];
+                          return _EventCard(
+                            onTap: () async {
+                              context.push("/event-detail", extra: event);
                             },
-                          ),
-                  );
-                }),
+                            date: "",
+                            image: event.images!.isEmpty
+                                ? ''
+                                : event.images!.first.imageUrl!,
+                            title: event.eventName ?? "",
+                            location: event.venue?.name ?? "",
+                            country: event.currency ?? "",
+                          );
+                        },
+                      );
+                    }),
+                  ),
+                ),
               ],
             ),
           ),

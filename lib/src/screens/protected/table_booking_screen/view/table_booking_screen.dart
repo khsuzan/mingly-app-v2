@@ -21,8 +21,6 @@ class TableBookingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    // final eventProvider = context.watch<EventsProvider>();
-    // final venueProvider = context.watch<VenueProvider>();
     return GetX<TableBookingController>(
       init: TableBookingController(eventId: event.id.toString()),
       builder: (controller) => Scaffold(

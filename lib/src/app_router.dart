@@ -7,7 +7,7 @@ import 'package:mingly/src/screens/auth/otp_verification_forgot/otp_verfication_
 import 'package:mingly/src/screens/auth/otp_verification_screen/otp_verification_screen.dart';
 import 'package:mingly/src/screens/auth/password_reset_screen/password_reset_screen.dart';
 import 'package:mingly/src/screens/auth/signup_screen/view/signup_screen.dart';
-import 'package:mingly/src/screens/auth/welcome_screen/welcome_screen.dart'
+import 'package:mingly/src/screens/auth/welcome_screen/views/welcome_screen.dart'
     show WelcomeScreen;
 import 'package:mingly/src/screens/protected/berverages/view/beverages_screen.dart';
 import 'package:mingly/src/screens/protected/booking_confirmation_screen/table_booking/view/table_booking_confirmation_screen.dart';
@@ -43,6 +43,7 @@ import 'package:mingly/src/screens/protected/venue_list_screen/view/venue_list_s
 import 'package:mingly/src/screens/protected/venue_menu/view/venue_menu_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'application/booking/booking_list.dart';
 import 'application/booking/ticket_booking.dart';
 import 'application/payment/model/payment_from.dart';
 import 'application/venues/model/venues_model.dart';
@@ -50,6 +51,8 @@ import 'screens/protected/my_reservation/view/my_reservations_screen.dart';
 import 'screens/protected/payment/view/payment_stripe_screen.dart';
 import 'screens/protected/promo_code/view/promo_code_screen.dart';
 import 'screens/protected/reserve_venue/view/venue_reserve_screen.dart';
+import 'screens/protected/table_booking_detail/view/table_booking_detail_screen.dart';
+import 'screens/protected/ticket_booking_detail/view/ticket_booking_detail_screen.dart';
 
 class AppRouter {
   static Future<GoRouter> createRouter() async {
@@ -77,7 +80,8 @@ class AppRouter {
         ),
         GoRoute(
           path: '/otp-verification',
-          builder: (context, state) => OTPVerificationScreen(email: state.extra as String),
+          builder: (context, state) =>
+              OTPVerificationScreen(email: state.extra as String),
         ),
         GoRoute(
           path: '/otp-verification-forgot-password',
@@ -249,6 +253,17 @@ class AppRouter {
             GoRoute(
               path: '/my-bookings',
               builder: (context, state) => const MyBookingsScreen(),
+            ),
+
+            GoRoute(
+              path: '/ticket-booking-detail',
+              builder: (context, state) =>
+                  TicketBookingDetail(booking: state.extra as BookingOrder),
+            ),
+            GoRoute(
+              path: '/table-booking-detail',
+              builder: (context, state) =>
+                  TableBookingDetail(booking: state.extra as BookingOrder),
             ),
             GoRoute(
               path: '/my-reservations',

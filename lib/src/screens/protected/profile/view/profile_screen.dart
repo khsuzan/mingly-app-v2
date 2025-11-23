@@ -175,7 +175,7 @@ class ProfileScreen extends StatelessWidget {
                               children: [
                                 Obx(() {
                                   return Text(
-                                    '${controller.profile.value.currentPoints} /',
+                                    '${controller.profile.value.currentPoints ?? ''} /',
                                     style: TextStyle(
                                       color: const Color(0xFFFFFAE5),
                                       fontSize: 24,
@@ -187,7 +187,7 @@ class ProfileScreen extends StatelessWidget {
                                 }),
                                 Obx(() {
                                   return Text(
-                                    '${controller.profile.value.targetPoints} IDR',
+                                    '${controller.profile.value.targetPoints ?? ''} IDR',
                                     style: TextStyle(
                                       color: const Color(0xFFB1A39E),
                                       fontSize: 12,

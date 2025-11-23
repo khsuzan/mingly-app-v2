@@ -78,16 +78,17 @@ class VenueReserveController extends GetxController {
     LoadingDialog.show(context);
     try {
       await reservationRepo.requestReservation(reservationData, venueId);
+
       if (context.mounted) {
+        LoadingDialog.hide(context);
         CustomSnackbar.show(
           context,
           message:
               "We have received your reservation request. Thank you!. We will get back to you soon.",
         );
-        context.pushReplacement("/my-reservations");
-      }
-      if (context.mounted) {
-        LoadingDialog.hide(context);
+        context.pop();
+        context.push("/my-reservations");
+        return;
       }
     } catch (e, stack) {
       if (context.mounted) {

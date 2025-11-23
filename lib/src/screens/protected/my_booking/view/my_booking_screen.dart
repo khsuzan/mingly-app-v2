@@ -95,16 +95,13 @@ class MyBookingsScreen extends StatelessWidget {
                         totalAmount: item.totalAmount,
                         currency: item.currency,
                         venueId: item.event.venue.id,
-                        ticketsCount: item.tickets.length,
+                        ticketsCount: item.tickets.firstOrNull?.quantity ?? 0,
                         tablesCount: item.tables.length,
                         onTicketsClick: () {
-                          CustomSnackbar.show(
-                            context,
-                            message: "Added to favourites (mock action)",
-                          );
+                          context.push('/ticket-booking-detail', extra: item);
                         },
                         onTablesClick: () {
-                          context.push('/booked-table');
+                          context.push('/table-booking-detail', extra: item);
                         },
                         onVenueMenuClick: () {
                           context.push(
@@ -335,9 +332,7 @@ class _BookingOrderCard extends StatelessWidget {
                       Expanded(
                         child: TextButton(
                           onPressed: () {
-                            // navigate to booking tickets for this order
-                            // route: /booking-tickets/{orderNumber}
-                            context.push('/booking-tickets/$orderNumber');
+                            onTicketsClick?.call();
                           },
                           style: TextButton.styleFrom(
                             foregroundColor: ticketsCount > 0
@@ -378,9 +373,7 @@ class _BookingOrderCard extends StatelessWidget {
                         child: TextButton(
                           onPressed: tablesCount > 0
                               ? () {
-                                  // navigate to tables for this order
-                                  // route: /booking-tables/{orderNumber}
-                                  context.push('/booking-tables/$orderNumber');
+                                  onTablesClick?.call();
                                 }
                               : () {
                                   CustomSnackbar.show(

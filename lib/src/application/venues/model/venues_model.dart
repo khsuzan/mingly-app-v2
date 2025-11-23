@@ -86,6 +86,11 @@ class VenuesModel {
     if (json['meta'] != null) {
       openingHours = OpeningHours.fromJson(json['meta']);
     }
+    
+    @override
+    String toString() {
+      return 'VenuesModel{id: $id, name: $name, description: $description}';
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -169,4 +174,5 @@ class OpeningHours {
     data['opening_days'] = openingDays;
     return data;
   }
+
 }

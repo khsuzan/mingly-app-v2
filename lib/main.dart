@@ -60,6 +60,7 @@ class GlobalApp extends StatelessWidget {
             appBarTheme: const AppBarTheme(
               backgroundColor: lightBackground,
               foregroundColor: Colors.white,
+              iconTheme: IconThemeData(color: primary),
               elevation: 0,
             ),
             textTheme: const TextTheme(
