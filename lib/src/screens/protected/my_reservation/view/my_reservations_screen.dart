@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
-import 'package:mingly/src/components/custom_snackbar.dart';
 
 import '../../../../constant/app_urls.dart';
 import '../controller/my_reservations_controller.dart';
@@ -28,16 +26,15 @@ class MyReservationsScreen extends StatelessWidget {
           ),
           body: SafeArea(
             child: RefreshIndicator(
-              onRefresh: () async {
-                await controller.fetchReservations();
-                return Future.delayed(Duration(seconds: 1));
+              onRefresh: () {
+                controller.fetchReservations();
+                return Future.delayed(Duration(seconds: 500));
               },
               child: Obx(() {
                 if (controller.isLoading.value) {
                   return CustomScrollView(
                     slivers: [
                       SliverFillRemaining(
-                        hasScrollBody: false,
                         child: Center(
                           child: CircularProgressIndicator(
                             color: theme.colorScheme.primary,

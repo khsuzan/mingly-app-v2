@@ -12,106 +12,115 @@ class VenueReserveScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final controller = Get.put(VenueReserveController());
-    return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: theme.colorScheme.surface,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => context.pop(),
-        ),
-        title: Text(
-          'Reserve Venue',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: false,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                venue.name ?? '',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22,
+    return GetBuilder<VenueReserveController>(
+      init: VenueReserveController(),
+      builder: (controller) {
+        return Scaffold(
+          backgroundColor: theme.colorScheme.surface,
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: theme.colorScheme.surface,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => context.pop(),
+            ),
+            title: Text(
+              'Reserve Venue',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            centerTitle: false,
+          ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  venue.name ?? '',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Reservation Request',
-                style: TextStyle(
-                  color: Colors.white70,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16,
+                const SizedBox(height: 8),
+                Text(
+                  'Reservation Request',
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 24),
-              // Date Picker
-              Text('Date', style: TextStyle(color: Colors.white70)),
-              const SizedBox(height: 8),
-              _DatePickerField(
-                onDateSelected: (date) {
-                  controller.updateDate(date);
-                },
-              ),
-              const SizedBox(height: 16),
-              // Person Count
-              Text('Person Count', style: TextStyle(color: Colors.white70)),
-              const SizedBox(height: 8),
-              _PersonCountField(
-                onCountChanged: (count) => controller.updatePersonCount(count),
-              ),
-              const SizedBox(height: 16),
-              // From Time
-              Text('From Time', style: TextStyle(color: Colors.white70)),
-              const SizedBox(height: 8),
-              _TimePickerField(
-                label: 'From Time',
-                onTimeSelected: (time) {
-                  controller.updateFromTime(time);
-                },
-              ),
-              const SizedBox(height: 16),
-              // To Time
-              Text('To Time', style: TextStyle(color: Colors.white70)),
-              const SizedBox(height: 8),
-              _TimePickerField(
-                label: 'To Time',
-                onTimeSelected: (time) {
-                  controller.updateToTime(time);
-                },
-              ),
-              const SizedBox(height: 32),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.colorScheme.primary,
-                    foregroundColor: Colors.black,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                const SizedBox(height: 24),
+                // Date Picker
+                Text('Date', style: TextStyle(color: Colors.white70)),
+                const SizedBox(height: 8),
+                _DatePickerField(
+                  onDateSelected: (date) {
+                    controller.updateDate(date);
+                  },
+                ),
+                const SizedBox(height: 16),
+                // Person Count
+                Text('Person Count', style: TextStyle(color: Colors.white70)),
+                const SizedBox(height: 8),
+                _PersonCountField(
+                  onCountChanged: (count) =>
+                      controller.updatePersonCount(count),
+                ),
+                const SizedBox(height: 16),
+                // From Time
+                Text('From Time', style: TextStyle(color: Colors.white70)),
+                const SizedBox(height: 8),
+                _TimePickerField(
+                  label: 'From Time',
+                  onTimeSelected: (time) {
+                    controller.updateFromTime(time);
+                  },
+                ),
+                const SizedBox(height: 16),
+                // To Time
+                Text('To Time', style: TextStyle(color: Colors.white70)),
+                const SizedBox(height: 8),
+                _TimePickerField(
+                  label: 'To Time',
+                  onTimeSelected: (time) {
+                    controller.updateToTime(time);
+                  },
+                ),
+                const SizedBox(height: 32),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: theme.colorScheme.primary,
+                      foregroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: () {
+                      controller.requestForReserveVenue(context, venue.id);
+                    },
+                    child: const Text(
+                      'Request a Reservation',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
-                  onPressed: () {
-                    controller.requestForReserveVenue(context, venue.id);
-                  },
-                  child: const Text(
-                    'Request a Reservation',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

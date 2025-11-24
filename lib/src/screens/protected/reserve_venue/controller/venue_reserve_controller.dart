@@ -75,8 +75,8 @@ class VenueReserveController extends GetxController {
       );
       return;
     }
-    LoadingDialog.show(context);
     try {
+      LoadingDialog.show(context);
       await reservationRepo.requestReservation(reservationData, venueId);
 
       if (context.mounted) {
@@ -87,15 +87,13 @@ class VenueReserveController extends GetxController {
               "We have received your reservation request. Thank you!. We will get back to you soon.",
         );
         context.pop();
-        context.push("/my-reservations");
-        return;
       }
     } catch (e, stack) {
+      debugPrint("Error making reservations: $e");
+      debugPrintStack(stackTrace: stack);
       if (context.mounted) {
         LoadingDialog.hide(context);
       }
-      debugPrint("Error making reservations: $e");
-      debugPrintStack(stackTrace: stack);
     }
   }
 }

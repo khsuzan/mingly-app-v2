@@ -81,7 +81,7 @@ class HomeController extends GetxController {
     try {
       final response = await homeRepo.getPopularEvents();
       debugPrint('Popular Events Response: $response');
-      popularEvents.assignAll(response);
+      popularEvents.value = response;
     } catch (e) {
       debugPrint('Error fetching popular events: $e');
     }

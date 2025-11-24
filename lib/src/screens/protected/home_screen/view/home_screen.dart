@@ -495,9 +495,7 @@ class HomeScreen extends StatelessWidget {
                                   return InkWell(
                                     onTap: () => context.push('/venue-detail'),
                                     child: _RecommendationCard(
-                                      image: image != null
-                                          ? "${AppUrls.imageUrl}$image"
-                                          : 'https://via.placeholder.com/150', // fallback image
+                                      image: image, // fallback image
                                       title: controller
                                           .recommendationEvents[index]
                                           .eventName!,
@@ -559,23 +557,19 @@ class PopularEvents extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return events.isEmpty
-        ? SizedBox()
-        : Column(
-            children: List.generate(events.length, (index) {
-              final event = events[index];
-              final image = event.images?.firstOrNull;
-              return EventCardBig(
-                imageUrl: image == null
-                    ? null
-                    : "${AppUrls.imageUrl}${image.imageUrl!}",
-                name: event.eventName,
-                onTap: () {
-                  context.push("/event-detail", extra: event);
-                },
-              );
-            }),
-          );
+    return Column(
+      children: List.generate(events.length, (index) {
+        final event = events[index];
+        final image = event.images?.firstOrNull?.imageUrl;
+        return EventCardBig(
+          imageUrl: image,
+          name: event.eventName,
+          onTap: () {
+            context.push("/event-detail", extra: event);
+          },
+        );
+      }),
+    );
   }
 }
 
@@ -763,9 +757,9 @@ class _Leaderboard extends StatelessWidget {
                       ),
 
                       Text(
-                       (data[0].fullName?.trim().isEmpty ?? true)
-                                  ? 'Unknown'
-                                  : data[0].fullName!.trim(),
+                        (data[0].fullName?.trim().isEmpty ?? true)
+                            ? 'Unknown'
+                            : data[0].fullName!.trim(),
                         style: TextStyle(
                           color: Theme.of(
                             context,
@@ -819,8 +813,8 @@ class _Leaderboard extends StatelessWidget {
                       ),
                       Text(
                         (data[2].fullName?.trim().isEmpty ?? true)
-                                  ? 'Unknown'
-                                  : data[2].fullName!.trim(),
+                            ? 'Unknown'
+                            : data[2].fullName!.trim(),
                         style: TextStyle(
                           color: Theme.of(
                             context,
@@ -958,39 +952,14 @@ class _RecommendationCard extends StatelessWidget {
               children: [
                 SizedBox(
                   height: 140,
-                  child: image != null
-                      ? Image.network(
-                          "https://www.directmobilityonline.co.uk/assets/img/noimage.png",
-                          fit: BoxFit.cover,
-                        )
-                      : Image.network(
-                          AppUrls.imageUrl + image!,
-                          fit: BoxFit.contain,
+                  child: Image.network(
+                    AppUrls.imageUrl + image!,
+                    fit: BoxFit.cover,
 
-                          errorBuilder: (context, error, stackTrace) {
-                            if (error is NetworkImageLoadException &&
-                                error.statusCode == 404) {
-                              if (kDebugMode) {
-                                print(
-                                  "image error " + error.statusCode.toString(),
-                                );
-                              }
-                              return Container(
-                                width: 120,
-                                height: 120,
-                                color: Colors.grey[500],
-                                child: const Icon(Icons.image_not_supported),
-                              );
-                            } else {
-                              return Container(
-                                width: 120,
-                                height: 120,
-                                color: Colors.grey[500],
-                                child: const Icon(Icons.image_not_supported),
-                              );
-                            }
-                          },
-                        ),
+                    errorBuilder: (context, error, stackTrace) {
+                      return NoImage();
+                    },
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(12),

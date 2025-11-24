@@ -55,6 +55,8 @@ android {
     // If no release keystore is found, the release build will fall back to the
     // debug keystore so you don't need to uncomment anything for local debugging.
     signingConfigs {
+        getByName("debug") {
+        }
         create("release") {
             if (keystorePropertiesFile.exists()) {
                 keyAlias = keystoreProperties["keyAlias"] as String
@@ -69,15 +71,13 @@ android {
     }
 
     buildTypes {
-        release {
-            // If we loaded a release keystore file, use that signing config;
-            // otherwise fall back to the debug signing config so local runs still work.
-            // signingConfig = if (keystorePropertiesFile.exists()) {
-            //     signingConfigs.getByName("release")
-            // } else {
-            //     signingConfigs.getByName("debug")
-            // }
+        getByName("debug") {
             signingConfig = signingConfigs.getByName("debug")
+        }
+
+        getByName("release") {
+            // ALWAYS use release config
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 

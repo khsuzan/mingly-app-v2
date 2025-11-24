@@ -263,7 +263,7 @@ class ProfileScreen extends StatelessWidget {
                     _ProfileMenuItem(
                       icon: Icons.book_online,
                       title: 'My Reservation',
-                      onTap: () => context.push("/my-reservations"),
+                      onTap: () => context.push("/my-reservation"),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
