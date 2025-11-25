@@ -377,23 +377,28 @@ class HomeScreen extends StatelessWidget {
                                           .featuredVenues[index]
                                           .images
                                           ?.firstOrNull;
-                                      return InkWell(
-                                        onTap: () {
-                                          context.push(
-                                            "/venue-detail",
-                                            extra: controller
-                                                .featuredVenues[index],
-                                          );
-                                        },
-                                        child: VenueCardSmall(
-                                          image: image == null
-                                              ? null
-                                              : "${AppUrls.imageUrl}${image.imageUrl!}",
-                                          title: controller
-                                              .featuredVenues[index]
-                                              .name!,
-                                          location:
-                                              '${controller.featuredVenues[index].address}\n${controller.featuredVenues[index].city}, ${controller.featuredVenues[index].country}',
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 8.0,
+                                        ),
+                                        child: InkWell(
+                                          onTap: () {
+                                            context.push(
+                                              "/venue-detail",
+                                              extra: controller
+                                                  .featuredVenues[index],
+                                            );
+                                          },
+                                          child: VenueCardSmall(
+                                            image: image == null
+                                                ? null
+                                                : "${AppUrls.imageUrl}${image.imageUrl!}",
+                                            title: controller
+                                                .featuredVenues[index]
+                                                .name!,
+                                            location:
+                                                '${controller.featuredVenues[index].address}\n${controller.featuredVenues[index].city}, ${controller.featuredVenues[index].country}',
+                                          ),
                                         ),
                                       );
                                     },
@@ -698,6 +703,7 @@ class _Leaderboard extends StatelessWidget {
                                 child: Image.network(
                                   AppUrls.imageUrlApp +
                                       data[1].avatar.toString(),
+                                  fit: BoxFit.cover,
                                   errorBuilder: (context, error, stackTrace) =>
                                       Image.network(
                                         'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
@@ -763,9 +769,9 @@ class _Leaderboard extends StatelessWidget {
                       ),
 
                       Text(
-                       (data[0].fullName?.trim().isEmpty ?? true)
-                                  ? 'Unknown'
-                                  : data[0].fullName!.trim(),
+                        (data[0].fullName?.trim().isEmpty ?? true)
+                            ? 'Unknown'
+                            : data[0].fullName!.trim(),
                         style: TextStyle(
                           color: Theme.of(
                             context,
@@ -819,8 +825,8 @@ class _Leaderboard extends StatelessWidget {
                       ),
                       Text(
                         (data[2].fullName?.trim().isEmpty ?? true)
-                                  ? 'Unknown'
-                                  : data[2].fullName!.trim(),
+                            ? 'Unknown'
+                            : data[2].fullName!.trim(),
                         style: TextStyle(
                           color: Theme.of(
                             context,

@@ -39,11 +39,16 @@ class PrimaryButton extends StatelessWidget {
     );
   }
 }
+
 class PrimaryButtonSmall extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
 
-  const PrimaryButtonSmall({super.key, required this.text, required this.onPressed});
+  const PrimaryButtonSmall({
+    super.key,
+    required this.text,
+    required this.onPressed,
+  });
   @override
   Widget build(BuildContext context) {
     final onPrimary = Theme.of(context).colorScheme.onPrimary;
@@ -207,20 +212,18 @@ Future<void> openMapToAddress(String destinationAddress) async {
       throw 'Location permission denied';
     }
   }
-
-  // Step 2: Get current position
-  Position position = await Geolocator.getCurrentPosition();
-
-  // Step 3: Create the URL
-  final Uri googleMapUrl = Uri.parse(
-    'https://www.google.com/maps/dir/?api=1'
-    '&origin=${position.latitude},${position.longitude}'
-    '&destination=${Uri.encodeComponent(destinationAddress)}'
-    '&travelmode=driving',
-  );
-
-  // Step 4: Try opening in external app first, fallback to browser
   try {
+    // Step 2: Get current position
+    Position position = await Geolocator.getCurrentPosition();
+
+    // Step 3: Create the URL
+    final Uri googleMapUrl = Uri.parse(
+      'https://www.google.com/maps/dir/?api=1'
+      '&origin=${position.latitude},${position.longitude}'
+      '&destination=${Uri.encodeComponent(destinationAddress)}'
+      '&travelmode=driving',
+    );
+    // Step 4: Try opening in external app first, fallback to browser
     final launched = await launchUrl(
       googleMapUrl,
       mode: LaunchMode.externalApplication,
@@ -231,8 +234,9 @@ Future<void> openMapToAddress(String destinationAddress) async {
       await launchUrl(googleMapUrl, mode: LaunchMode.inAppBrowserView);
     }
   } catch (e) {
+    debugPrint('Error getting location or launching map: $e');
     // ultimate fallback
-    await launchUrl(googleMapUrl, mode: LaunchMode.platformDefault);
+    // await launchUrl(googleMapUrl, mode: LaunchMode.platformDefault);
   }
 }
 
@@ -255,8 +259,6 @@ abstract class GetxScreen<T extends GetxController> extends StatefulWidget {
   const GetxScreen({required this.controller, super.key});
 
   Widget build(BuildContext context, T controller);
-
-  
 }
 
 class _GetxScreenState<T extends GetxController> extends State<GetxScreen<T>> {
