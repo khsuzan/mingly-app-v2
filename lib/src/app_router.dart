@@ -266,8 +266,9 @@ class AppRouter {
                   TableBookingDetail(booking: state.extra as BookingOrder),
             ),
             GoRoute(
-              path: '/my-reservations',
-              builder: (context, state) => const MyReservationsScreen(),
+              path: '/my-reservation',
+
+              builder: (context, state) => MyReservationsScreen(),
             ),
             GoRoute(
               path: '/my-favorites',

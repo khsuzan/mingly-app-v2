@@ -96,15 +96,11 @@ class EventCardBig extends StatelessWidget {
               children: [
                 SizedBox(
                   height: 160,
-                  child: imageUrl == null || imageUrl!.isEmpty
-                      ? Image.network(
-                          "https://www.directmobilityonline.co.uk/assets/img/noimage.png",
-                          fit: BoxFit.cover,
-                        )
-                      : Image.network(
-                          AppUrls.imageUrl + imageUrl!,
-                          fit: BoxFit.contain,
-                        ),
+                  child: Image.network(
+                    AppUrls.imageUrl + imageUrl!,
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) => NoImage(),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(12),
