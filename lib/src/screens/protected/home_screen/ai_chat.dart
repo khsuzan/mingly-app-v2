@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:markdown_widget/markdown_widget.dart';
 import 'package:mingly/src/api_service/api_service.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_html/flutter_html.dart';
+
+import '../../../../main.dart';
 
 class AiChatScreen extends StatefulWidget {
   const AiChatScreen({super.key});
@@ -83,7 +85,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
 
   Widget buildMessageBubble(Map<String, dynamic> msg) {
     bool isUser = msg["role"] == "user";
-    Color bubbleColor = isUser ? Colors.blue.shade100 : Colors.grey.shade200;
+    Color bubbleColor = isUser ? GlobalApp.primary.withAlpha(10) : GlobalApp.primary.withAlpha(100);
     Alignment align = isUser ? Alignment.centerRight : Alignment.centerLeft;
 
     return Align(
@@ -105,28 +107,25 @@ class _AiChatScreenState extends State<AiChatScreen> {
                 : const Radius.circular(12),
           ),
         ),
-        child: SelectableText(
-          msg["text"],
-          style: const TextStyle(
-            fontSize: 15,
-            color: Colors.black87,
-            height: 1.4,
-          ),
-        ),
+        child: buildMarkdown(msg["text"]),
       ),
     );
+  }
+
+  Widget buildMarkdown(String text) {
+    return Column(children: MarkdownGenerator().buildWidgets(text));
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      appBar:  AppBar(
+      appBar: AppBar(
         elevation: 0,
         backgroundColor: theme.colorScheme.surface,
         title: Text(
           'AI Assistant',
-          style: TextStyle( 
+          style: TextStyle(
             color: theme.colorScheme.primary,
             fontSize: 18.sp,
             fontWeight: FontWeight.w600,
@@ -158,32 +157,38 @@ class _AiChatScreenState extends State<AiChatScreen> {
             ),
 
           // Input field
-          SafeArea(
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              color: Theme.of(context).colorScheme.primary,
+          Container(
+            padding: const EdgeInsets.all(10),
+            color: Theme.of(context).colorScheme.primary.withAlpha(10),
+            child: SafeArea(
               child: Row(
                 children: [
                   Expanded(
                     child: TextField(
                       controller: _messageController,
-                      style: const TextStyle(color: Colors.black87),
+                      style: TextStyle(color: theme.colorScheme.primary),
                       cursorColor: Colors.black,
                       decoration: InputDecoration(
                         hintText: "Type your message...",
-                        hintStyle: const TextStyle(color: Colors.black),
+                        hintStyle: TextStyle(color: theme.colorScheme.primary),
 
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide(color: Colors.black),
+                          borderSide: BorderSide(
+                            color: theme.colorScheme.primary,
+                          ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide(color: Colors.black),
+                          borderSide: BorderSide(
+                            color: theme.colorScheme.primary,
+                          ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide(color: Colors.black),
+                          borderSide: BorderSide(
+                            color: theme.colorScheme.primary,
+                          ),
                         ),
                         contentPadding: const EdgeInsets.symmetric(
                           vertical: 10,
@@ -196,7 +201,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
                   const SizedBox(width: 8),
                   IconButton(
                     onPressed: sendMessage,
-                    icon: const Icon(Icons.send, color: Colors.black),
+                    icon: Icon(Icons.send, color: theme.colorScheme.primary),
                   ),
                 ],
               ),

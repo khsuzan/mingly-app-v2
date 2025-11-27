@@ -83,29 +83,38 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(height: 4.h),
-                                Row(
-                                  children: [
-                                    SvgPicture.asset(
-                                      'lib/assets/icons/location.svg',
-                                      colorFilter: const ColorFilter.mode(
-                                        Color(0xFFD1B26F),
-                                        BlendMode.srcIn,
+                                InkWell(
+                                  onTap: () async {
+                                    final location = await context.push(
+                                      '/country-list',
+                                    );
+                                    if (location != null) {
+                                      controller.setLocation(
+                                        location as String,
+                                      );
+                                    }
+                                  },
+                                  child: Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        'lib/assets/icons/location.svg',
+                                        colorFilter: const ColorFilter.mode(
+                                          Color(0xFFD1B26F),
+                                          BlendMode.srcIn,
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(width: 4.w),
-                                    Obx(
-                                      () => Text(
-                                        controller
-                                                .profile
-                                                .value
-                                                .data
-                                                ?.address ??
-                                            'Tap to select',
-                                        style: theme.textTheme.bodyMedium
-                                            ?.copyWith(color: Colors.white),
+                                      SizedBox(width: 4.w),
+                                      Obx(
+                                        () => Text(
+                                          controller.userLocation.value.isEmpty
+                                              ? 'Tap to select'
+                                              : controller.userLocation.value,
+                                          style: theme.textTheme.bodyMedium
+                                              ?.copyWith(color: Colors.white),
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
@@ -390,9 +399,7 @@ class HomeScreen extends StatelessWidget {
                                             );
                                           },
                                           child: VenueCardSmall(
-                                            image: image == null
-                                                ? null
-                                                : "${AppUrls.imageUrl}${image.imageUrl!}",
+                                            image: image?.imageUrl,
                                             title: controller
                                                 .featuredVenues[index]
                                                 .name!,
@@ -497,6 +504,16 @@ class HomeScreen extends StatelessWidget {
                                       .images
                                       ?.firstOrNull
                                       ?.imageUrl;
+                                  final location =
+                                      controller
+                                          .recommendationEvents[index]
+                                          .venue!
+                                          .address ??
+                                      controller
+                                          .recommendationEvents[index]
+                                          .venue!
+                                          .city ??
+                                      "";
                                   return InkWell(
                                     onTap: () => context.push('/venue-detail'),
                                     child: _RecommendationCard(
@@ -504,12 +521,7 @@ class HomeScreen extends StatelessWidget {
                                       title: controller
                                           .recommendationEvents[index]
                                           .eventName!,
-                                      location:
-                                          controller
-                                              .recommendationEvents[index]
-                                              .venue!
-                                              .city ??
-                                          "",
+                                      location: location,
                                       tag: 'Gold member',
                                       onTap: () {
                                         context.push(
@@ -703,6 +715,8 @@ class _Leaderboard extends StatelessWidget {
                                         'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
                                         fit: BoxFit.cover,
                                       ),
+                                  width: double.infinity,
+                                  height: double.infinity,
                                 ),
                               ),
                             ),
@@ -758,6 +772,8 @@ class _Leaderboard extends StatelessWidget {
                                   'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
                                   fit: BoxFit.cover,
                                 ),
+                            width: double.infinity,
+                            height: double.infinity,
                           ),
                         ),
                       ),
@@ -814,6 +830,8 @@ class _Leaderboard extends StatelessWidget {
                                   'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
                                   fit: BoxFit.cover,
                                 ),
+                            width: double.infinity,
+                            height: double.infinity,
                           ),
                         ),
                       ),
@@ -827,6 +845,8 @@ class _Leaderboard extends StatelessWidget {
                           ).colorScheme.onSurface.withAlpha(182),
                           fontSize: 13.sp,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       Text(
                         data.isEmpty ? "N/A" : data[2].points.toString(),
@@ -882,6 +902,8 @@ class _Leaderboard extends StatelessWidget {
                                 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
                                 fit: BoxFit.cover,
                               ),
+                          width: double.infinity,
+                          height: double.infinity,
                         ),
                       ),
                     ),
@@ -959,7 +981,7 @@ class _RecommendationCard extends StatelessWidget {
                 SizedBox(
                   height: 140,
                   child: Image.network(
-                    AppUrls.imageUrl + image!,
+                    AppUrls.imageUrl + (image ?? ""),
                     fit: BoxFit.cover,
 
                     errorBuilder: (context, error, stackTrace) {
@@ -982,7 +1004,7 @@ class _RecommendationCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'THU 26 May, 09:00 - FRI 27 May, 10:00',
+                        location,
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.onSurface,
                         ),
@@ -1024,32 +1046,7 @@ class _RecommendationCard extends StatelessWidget {
                               ],
                             ),
                           ),
-                          Expanded(
-                            flex: 30,
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.primary
-                                      .withAlpha((255 * 0.1).toInt()),
-                                  borderRadius: BorderRadius.circular(4.r),
-                                ),
-                                child: Text(
-                                  'Free',
-                                  style: TextStyle(
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.primary,
-                                    fontSize: 12.sp,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+                          Expanded(flex: 30, child: SizedBox()),
                         ],
                       ),
                     ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:mingly/src/components/helpers.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 
 import '../controller/edit_profile_controller.dart';
@@ -121,8 +122,8 @@ class EditProfileScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Obx(() {
-                    if (controller.isProfileInfoLoading.value) {
-                      return const Center(child: CircularProgressIndicator());
+                    if (controller.isProfileInfoLoading.value || controller.selectedCountry.value == null) {
+                      return SizedBox();
                     }
                     final initialValue =
                         controller.selectedCountry.value ??
@@ -166,25 +167,11 @@ class EditProfileScreen extends StatelessWidget {
                 // Save Button
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(
+                  child: PrimaryButton(
+                    text: 'Update Profile',
                     onPressed: () {
                       controller.updateProfile(context);
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFFFFAE5),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: const Text(
-                      "Save Changes",
-                      style: TextStyle(
-                        color: Color(0xFF2E2D2C),
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
                   ),
                 ),
               ],

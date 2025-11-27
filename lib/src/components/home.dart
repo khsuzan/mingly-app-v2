@@ -35,7 +35,7 @@ class VenueCardSmall extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 child: (image == null || image!.isEmpty)
                     ? const NoImage()
-                    : Image.network(image!, fit: BoxFit.cover),
+                    : Image.network(AppUrls.imageUrl + image!, fit: BoxFit.cover),
               ),
             ),
             SizedBox(width: 16),

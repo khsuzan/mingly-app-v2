@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
-import 'package:mingly/src/application/promo_code/model/promo_code_model.dart';
 import 'package:mingly/src/components/custom_snackbar.dart';
 import 'package:mingly/src/screens/protected/booking_confirmation_screen/ticket_booking/controller/booking_confirmation_controller.dart';
 
@@ -19,7 +17,7 @@ class BookingConfirmationScreen extends StatelessWidget {
     final eventDetail = info.eventDetail;
     final tickets = info.tickets;
     return GetBuilder<TicketBookingConfirmationController>(
-      init: TicketBookingConfirmationController(event: event),
+      init: TicketBookingConfirmationController(event: event, tickets: tickets),
       builder: (controller) {
         return Scaffold(
           backgroundColor: theme.colorScheme.surface,
@@ -133,10 +131,13 @@ class BookingConfirmationScreen extends StatelessWidget {
                                 'Total',
                                 style: TextStyle(color: Colors.white),
                               ),
-                              Text(
-                                controller.getTotalPrice(tickets),
-                                style: TextStyle(color: Colors.white),
-                              ),
+                              Obx(() {
+                                return Text(
+                                  controller.getTicketPriceInTotal.value
+                                      .toStringAsFixed(2),
+                                  style: TextStyle(color: Colors.white),
+                                );
+                              }),
                             ],
                           ),
                         ],
@@ -155,35 +156,6 @@ class BookingConfirmationScreen extends StatelessWidget {
                         ),
                       ),
                       SizedBox(width: 12),
-                      InkWell(
-                        onTap: () async {
-                          final code = await context.push<PromoCodeModel?>(
-                            '/promo-code',
-                          );
-                          if (code != null) {
-                            controller.promoCodeController?.text =
-                                code.code ?? "";
-                            controller.storePromoCode(code);
-                          }
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: theme.colorScheme.primary.withAlpha(25),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 2,
-                          ),
-                          child: Text(
-                            'My Promo Codes',
-                            style: TextStyle(
-                              color: theme.colorScheme.primary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -251,7 +223,24 @@ class BookingConfirmationScreen extends StatelessWidget {
                                 style: TextStyle(color: Colors.white),
                               ),
                               Text(
-                                controller.getTotalPrice(tickets),
+                                controller.getTicketPriceInTotal.value
+                                    .toStringAsFixed(2),
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Service Fee  (10%)',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              Text(
+                                controller.getServiceFee.value.toStringAsFixed(
+                                  2,
+                                ),
                                 style: TextStyle(color: Colors.white),
                               ),
                             ],
@@ -286,12 +275,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                               ),
                               Obx(() {
                                 return Text(
-                                  (double.parse(
-                                            controller.getTotalPrice(tickets),
-                                          ) -
-                                          controller.promoValue.value)
-                                      .toString(),
-
+                                  controller.getTotalPrice.value,
                                   style: TextStyle(
                                     color: theme.colorScheme.primary,
                                     fontWeight: FontWeight.bold,

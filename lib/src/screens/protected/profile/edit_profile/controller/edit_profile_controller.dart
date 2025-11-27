@@ -37,6 +37,7 @@ class EditProfileController extends GetxController {
       isProfileInfoLoading.value = true;
       final response = await profileRepo.fetchProfile();
       profile.value = response.data!;
+      selectedCountry.value = response.data?.address;
       nameController.text = response.data?.fullName ?? '';
       phoneController.text = response.data?.mobile ?? '';
       addressController.text = response.data?.address ?? '';
@@ -68,6 +69,7 @@ class EditProfileController extends GetxController {
   }
 
   void onCountryChanged(String? value) {
+    addressController.text = value ?? '';
     selectedCountry.value = value;
   }
 

@@ -165,6 +165,18 @@ String formatTimeToAmPm(String time24) {
     return time24;
   }
 }
+String formatHourMinuteToAmPm(String time24) {
+  try {
+    // Parse input time (24-hour format)
+    DateTime dateTime = DateFormat("HH:mm").parse(time24);
+
+    // Convert to 12-hour format with AM/PM
+    return DateFormat("hh:mm a").format(dateTime);
+  } catch (e) {
+    // In case of invalid input, return original
+    return time24;
+  }
+}
 
 String formatDate(String isoString) {
   try {

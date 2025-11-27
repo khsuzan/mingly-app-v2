@@ -10,7 +10,6 @@ import 'package:mingly/src/components/helpers.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../components/home.dart';
-import '../../../../constant/app_urls.dart';
 import '../controller/event_detail_controller.dart';
 import '../widget/carousel_slider.dart';
 
@@ -100,6 +99,7 @@ class EventDetailScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Icon(
                               Icons.location_on,
@@ -107,9 +107,11 @@ class EventDetailScreen extends StatelessWidget {
                               size: 18,
                             ),
                             SizedBox(width: 4),
-                            Text(
-                              event.venue?.city ?? "",
-                              style: TextStyle(color: Colors.white70),
+                            Expanded(
+                              child: Text(
+                                "${event.venue?.address} ${event.venue?.city}",
+                                style: TextStyle(color: Colors.white70),
+                              ),
                             ),
                           ],
                         ),
@@ -213,9 +215,7 @@ class EventDetailScreen extends StatelessWidget {
                               );
                             },
                             child: VenueCardSmall(
-                              image: image == null
-                                  ? null
-                                  : "${AppUrls.imageUrl}${image.imageUrl!}",
+                              image: image?.imageUrl,
                               title: controller.venue.value!.name!,
                               location:
                                   '${controller.venue.value!.address}\n${controller.venue.value!.city}, ${controller.venue.value!.country}',

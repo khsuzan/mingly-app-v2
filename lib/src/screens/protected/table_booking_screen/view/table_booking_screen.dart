@@ -125,20 +125,6 @@ class TableBookingScreen extends StatelessWidget {
                       ),
                     );
                   }),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Description',
-                    style: TextStyle(
-                      color: Color(0xFFD1B26F),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    controller.detail.value.description.toString(),
-                    style: TextStyle(color: Colors.white70),
-                  ),
-
                   const SizedBox(height: 24),
                   const Text(
                     'Select a time you like',
@@ -334,51 +320,39 @@ class TableBookingScreen extends StatelessWidget {
                   const SizedBox(height: 24),
                   Obx(() {
                     final detail = controller.detail.value;
-                    return SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFD1B26F),
-                          foregroundColor: Colors.black,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                        ),
-                        onPressed: () {
-                          if (controller.selectedTables.isEmpty) {
-                            CustomSnackbar.show(
-                              context,
-                              message: "Please select at least one table.",
-                              backgroundColor: Colors.red,
-                            );
-                            return;
-                          }
-                          context.push(
-                            "/table-booking-confirmation",
-                            extra: TicketBookInfoArg(
-                              event: event,
-                              eventDetail: detail,
-                              tickets: controller.selectedTables
-                                  .map((t) {
-                                    return TicketBuyingInfo(
-                                      ticketId: t.id,
-                                      quantity: 1,
-                                      ticketTitle: t.title ?? "",
-                                      totalTicketQty: t.totalTicketQty ?? 0,
-                                      unitPrice:
-                                          double.tryParse(t.price ?? '0') ??
-                                          0.0,
-                                    );
-                                  })
-                                  .where((t) => t.quantity > 0)
-                                  .toList(),
-                              promoCode: '',
-                            ),
+                    return PrimaryButton(
+                      text: 'Proceed',
+                      onPressed: () {
+                        if (controller.selectedTables.isEmpty) {
+                          CustomSnackbar.show(
+                            context,
+                            message: "Please select at least one table.",
+                            backgroundColor: Colors.red,
                           );
-                        },
-                        child: const Text('Proceed'),
-                      ),
+                          return;
+                        }
+                        context.push(
+                          "/table-booking-confirmation",
+                          extra: TicketBookInfoArg(
+                            event: event,
+                            eventDetail: detail,
+                            tickets: controller.selectedTables
+                                .map((t) {
+                                  return TicketBuyingInfo(
+                                    ticketId: t.id,
+                                    quantity: 1,
+                                    ticketTitle: t.title ?? "",
+                                    totalTicketQty: t.totalTicketQty ?? 0,
+                                    unitPrice:
+                                        double.tryParse(t.price ?? '0') ?? 0.0,
+                                  );
+                                })
+                                .where((t) => t.quantity > 0)
+                                .toList(),
+                            promoCode: '',
+                          ),
+                        );
+                      },
                     );
                   }),
                   const SizedBox(height: 24),

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mingly/src/components/couttry_city_widget.dart';
+import 'package:mingly/src/components/helpers.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 import 'package:mingly/src/screens/protected/venue_list_screen/controller/venue_list_controller.dart';
 
@@ -167,7 +168,7 @@ class VenueListScreen extends StatelessWidget {
                                   location: venue.city ?? '',
                                   time: venue.openingHours == null
                                       ? ""
-                                      : "${venue.openingHours!.open} - ${venue.openingHours!.close}",
+                                      : "${formatHourMinuteToAmPm(venue.openingHours!.open ?? "")} - ${formatHourMinuteToAmPm(venue.openingHours!.close ?? "")}",
                                 );
                               },
                             ),
@@ -213,13 +214,17 @@ class _VenueCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(8)),
-                  child: Image.network(
-                    image,
-                    height: 140,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
+                SizedBox(
+                  height: 140,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(8)),
+                    child: Image.network(
+                      image,
+                      height: 140,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => NoImage(),
+                    ),
                   ),
                 ),
                 Padding(

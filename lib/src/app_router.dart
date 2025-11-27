@@ -47,6 +47,7 @@ import 'application/booking/booking_list.dart';
 import 'application/booking/ticket_booking.dart';
 import 'application/payment/model/payment_from.dart';
 import 'application/venues/model/venues_model.dart';
+import 'screens/protected/country_list/view/country_list_screen.dart';
 import 'screens/protected/my_reservation/view/my_reservations_screen.dart';
 import 'screens/protected/payment/view/payment_stripe_screen.dart';
 import 'screens/protected/promo_code/view/promo_code_screen.dart';
@@ -227,6 +228,11 @@ class AppRouter {
         GoRoute(
           path: '/order-history-details',
           builder: (context, state) => OrderDetailsPage(),
+        ),
+
+        GoRoute(
+          path: '/country-list',
+          builder: (context, state) => const CountryListScreen(),
         ),
         // Shell routing for protected pages
         ShellRoute(

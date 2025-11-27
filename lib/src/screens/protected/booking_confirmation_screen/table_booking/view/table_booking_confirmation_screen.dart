@@ -23,7 +23,7 @@ class TableBookingConfirmationScreen extends StatelessWidget {
     final eventDetail = info.eventDetail;
     final tickets = info.tickets;
     return GetX<TableBookingConfirmationController>(
-      init: TableBookingConfirmationController(),
+      init: TableBookingConfirmationController(tickets: tickets),
       builder: (controller) {
         return Scaffold(
           backgroundColor: theme.colorScheme.surface,
@@ -105,113 +105,53 @@ class TableBookingConfirmationScreen extends StatelessWidget {
                     tableCount: tickets.length.toString(),
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    'Promo Code',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Promo Code',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(width: 12),
+                    ],
                   ),
                   const SizedBox(height: 8),
-                  if (!controller.promoCodeApplied.value)
-                    Row(
-                      children: [
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () async {
-                              final promoCode = await context.push<String?>(
-                                '/promo-code',
-                              );
-                              if (promoCode != null) {
-                                controller.setPromoCode(promoCode);
-                              }
-                            },
-                            child: IgnorePointer(
-                              child: TextField(
-                                onChanged: (value) {
-                                  // eventProvider.getPromoCode(value);
-                                  // eventProvider.calculateTotalAmountWithPromo(value);
-                                },
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: Colors.grey.shade900,
-                                  prefixIcon: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: SvgPicture.asset(
-                                      "lib/assets/icons/Promo.svg",
-                                    ),
-                                  ),
-                                  hintText: 'Enter promo code',
-                                  hintStyle: const TextStyle(
-                                    color: Colors.white54,
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 0,
-                                    horizontal: 8,
-                                  ),
-                                ),
-                                style: const TextStyle(color: Colors.white),
-                              ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          focusNode: controller.promoFocusNode,
+                          controller: controller.promoCodeController,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.grey.shade900,
+                            prefixIcon: const Icon(
+                              Icons.card_giftcard,
+                              color: Colors.white54,
                             ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: Colors.black,
-                            shape: RoundedRectangleBorder(
+                            hintText: 'Enter promo code',
+                            hintStyle: const TextStyle(color: Colors.white54),
+                            border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide.none,
                             ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 16,
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 0,
+                              horizontal: 8,
                             ),
                           ),
-                          onPressed: () {
-                            controller.applyPromoCode();
-                            //eventProvider.addPromoValue();
-                          },
-                          child: const Text('Apply'),
+                          style: const TextStyle(color: Colors.white),
                         ),
-                      ],
-                    ),
-                  if (controller.promoCodeApplied.value)
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            onChanged: (value) {},
-                            readOnly: true,
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.grey.shade900,
-                              prefixIcon: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: SvgPicture.asset(
-                                  "lib/assets/icons/Promo.svg",
-                                ),
-                              ),
-                              hintText: 'Enter promo code',
-                              hintStyle: const TextStyle(color: Colors.white54),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide: BorderSide.none,
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                vertical: 0,
-                                horizontal: 8,
-                              ),
-                            ),
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        ElevatedButton(
+                      ),
+                      const SizedBox(width: 8),
+                      Obx(() {
+                        final label = controller.promoCodeApplied.value
+                            ? 'Applied'
+                            : 'Apply';
+                        return ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.grey.shade900,
                             foregroundColor: theme.colorScheme.primary,
@@ -220,16 +160,21 @@ class TableBookingConfirmationScreen extends StatelessWidget {
                             ),
                             padding: const EdgeInsets.symmetric(
                               horizontal: 24,
-                              vertical: 16,
+                              vertical: 14,
                             ),
                           ),
                           onPressed: () {
-                            controller.applyPromoCode();
+                            if (controller.promoCodeApplied.value) {
+                              return;
+                            }
+                            controller.promoFocusNode.unfocus();
+                            controller.applyPromoCode(context);
                           },
-                          child: const Text('Applied'),
-                        ),
-                      ],
-                    ),
+                          child: Text(label),
+                        );
+                      }),
+                    ],
+                  ),
                   const SizedBox(height: 16),
                   Card(
                     color: Colors.grey.shade900,
@@ -248,7 +193,24 @@ class TableBookingConfirmationScreen extends StatelessWidget {
                                 style: TextStyle(color: Colors.white),
                               ),
                               Text(
-                                "\$${tickets.map((e) => e.unitPrice).reduce((value, element) => value + element)}",
+                                controller.getTicketPriceInTotal.value
+                                    .toStringAsFixed(2),
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Service Fee  (10%)',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              Text(
+                                controller.getServiceFee.value.toStringAsFixed(
+                                  2,
+                                ),
                                 style: TextStyle(color: Colors.white),
                               ),
                             ],
@@ -261,24 +223,35 @@ class TableBookingConfirmationScreen extends StatelessWidget {
                                 'Promo',
                                 style: TextStyle(color: Colors.white),
                               ),
-                              Text(
-                                "${0}",
-                                style: TextStyle(color: Colors.white),
-                              ),
+                              Obx(() {
+                                return Text(
+                                  '-${controller.promoValue.value}',
+                                  style: TextStyle(color: Colors.white),
+                                );
+                              }),
                             ],
                           ),
                           const SizedBox(height: 4),
+                          Divider(color: Colors.white24),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
                                 'Grand Total',
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(
+                                  color: theme.colorScheme.primary,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                              Text(
-                                "\$${tickets.map((e) => e.unitPrice).reduce((value, element) => value + element)}",
-                                style: TextStyle(color: Colors.white),
-                              ),
+                              Obx(() {
+                                return Text(
+                                  controller.getTotalPrice.value,
+                                  style: TextStyle(
+                                    color: theme.colorScheme.primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                );
+                              }),
                             ],
                           ),
                         ],
@@ -301,7 +274,9 @@ class TableBookingConfirmationScreen extends StatelessWidget {
                           context,
                           TicketBooking(
                             items: tickets,
-                            promoCode: info.promoCode,
+                            promoCode: controller.promo.value.code != null
+                                ? controller.promo.value.code!
+                                : '',
                           ).toJson(),
                           event.id!,
                           event.venue!.id!,

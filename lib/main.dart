@@ -22,11 +22,11 @@ void main() async {
 class GlobalApp extends StatelessWidget {
   final GoRouter router;
   const GlobalApp({super.key, required this.router});
+  static const Color primary = Color(0xFFD1B26F); // Gold
 
   @override
   Widget build(BuildContext context) {
     // Define app colors
-    const Color primary = Color(0xFFD1B26F); // Gold
     const Color primaryLight = Color(0xFFFCECC2); // Light Gold
     const Color backgroundPrimary = Color(0xFF181818); // Dark background
     const Color lightBackground = Color(0xFF232323); // Lighter dark

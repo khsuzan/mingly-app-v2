@@ -12,13 +12,15 @@ import '../../../../../application/payment/model/payment_from.dart';
 
 class TicketBookingConfirmationController extends GetxController {
   final EventsModel event;
-  TicketBookingConfirmationController({required this.event});
+  List<TicketBuyingInfo> tickets;
+  TicketBookingConfirmationController({
+    required this.event,
+    required this.tickets,
+  });
 
   final eventRepo = EventsRepo();
 
   final promo = PromoCodeModel().obs;
-
-  RxDouble promoValue = 0.0.obs;
 
   TextEditingController? promoCodeController = TextEditingController();
 
@@ -56,10 +58,29 @@ class TicketBookingConfirmationController extends GetxController {
     }
   }
 
-  String getTotalPrice(List<TicketBuyingInfo> tickets) {
-    return tickets
-        .fold<double>(0.0, (prev, t) => prev + (t.unitPrice * t.quantity))
-        .toStringAsFixed(2);
+  // subtotal price
+  RxDouble get getTicketPriceInTotal {
+    return double.parse(
+      tickets
+          .fold<double>(0.0, (prev, t) => prev + (t.unitPrice * t.quantity))
+          .toStringAsFixed(2),
+    ).obs;
+  }
+
+  RxDouble get getServiceFee {
+    return double.parse(
+      (getTicketPriceInTotal.value * 0.1).toStringAsFixed(2),
+    ).obs;
+  }
+
+  RxDouble promoValue = 0.0.obs;
+
+  RxString get getTotalPrice {
+    return (getTicketPriceInTotal.value +
+            getServiceFee.value -
+            promoValue.value)
+        .toStringAsFixed(2)
+        .obs;
   }
 
   void storePromoCode(PromoCodeModel code) {

@@ -55,6 +55,7 @@ class EventsModel {
 class Venue {
   int? id;
   String? name;
+  String? address;
   String? city;
   int? capacity;
 
@@ -63,6 +64,7 @@ class Venue {
   Venue.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
+    address = json['address'];
     city = json['city'];
     capacity = json['capacity'];
   }
@@ -71,6 +73,7 @@ class Venue {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['name'] = name;
+    data['address'] = address;
     data['city'] = city;
     data['capacity'] = capacity;
     return data;

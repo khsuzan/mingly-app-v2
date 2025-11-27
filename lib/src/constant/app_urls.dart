@@ -26,6 +26,7 @@ class AppUrls {
   static String eventSessions = "/event/:id/sessions/";
   static String ticketList = "/event_tickets/";
   static String buyTicket = "/book_ticket/:eventId/";
+  static String verifyPromoCode = "/verify-promocode/";
   static String continuePayment = "/book_ticket/continue/";
   //bottles
   static String getBottle = "/all-bottles/";

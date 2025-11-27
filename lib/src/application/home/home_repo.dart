@@ -64,15 +64,14 @@ class HomeRepo {
     return response;
   }
 
-  Future<List<EventsModel>> getRecommendation() async {
+  Future<List<EventsModel>> getRecommendation(String location) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    final response = await ApiService().getData(
-      AppUrls.getRecomendedEvent,
+    final response = await ApiService().getListOrThrow(
+      "${AppUrls.getRecomendedEvent}?location=$location",
       authToken: preferences.getString("authToken"),
     );
-    
-      print("Test++" + response['recommended_events'].length.toString());
-    return response['recommended_events'].map<EventsModel>((e) {
+
+    return response.map<EventsModel>((e) {
       return EventsModel.fromJson(e);
     }).toList();
   }

@@ -5,6 +5,7 @@ import 'package:mingly/src/api_service/api_service.dart';
 import 'package:mingly/src/application/events/model/event_details_model.dart';
 import 'package:mingly/src/application/events/model/event_ticket_model.dart';
 import 'package:mingly/src/application/events/model/events_model.dart';
+import 'package:mingly/src/application/promo_code/model/promo_code_model.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -109,6 +110,18 @@ class EventsRepo {
       authToken: preferences.getString("authToken"),
     );
     return response;
+  }
+
+  Future<PromoCodeModel> verifyPromoCode(
+    Map<String, dynamic> data,
+  ) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final response = await ApiService().postDataOrThrow(
+      AppUrls.verifyPromoCode,
+      data,
+      authToken: preferences.getString("authToken"),
+    );
+    return PromoCodeModel.fromJson(response);
   }
 
   Future<TicketBookingSuccess> continuePaymentEventTicket(

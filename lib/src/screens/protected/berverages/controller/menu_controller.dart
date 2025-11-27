@@ -24,7 +24,7 @@ class FoodMenuController extends GetxController {
       final response = await venuesRepo.getVenueMenu(id);
       foodMenu.value = response;
     } catch (e) {
-      debugPrint('Error fetching food menu: $e');
+      debugPrint('Error fetching menu: $e');
     }
   }
 

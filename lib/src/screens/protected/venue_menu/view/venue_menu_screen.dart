@@ -30,7 +30,7 @@ class VenueMenuScreen extends StatelessWidget {
               onPressed: () => Navigator.of(context).pop(),
             ),
             title: const Text(
-              'Food Menu',
+              'Menu',
               style: TextStyle(color: Colors.white),
             ),
           ),

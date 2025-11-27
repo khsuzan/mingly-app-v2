@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mingly/src/application/events/model/events_model.dart';
@@ -5,6 +6,7 @@ import 'package:mingly/src/application/home/home_repo.dart';
 import 'package:mingly/src/application/home/model/featured_model.dart';
 import 'package:mingly/src/application/profile/model/profile_model.dart';
 import 'package:mingly/src/application/profile/repo/profile_repo.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../application/home/model/leader_board_model.dart';
 import '../../../../application/venues/model/venues_model.dart';
@@ -24,11 +26,16 @@ class HomeController extends GetxController {
   final RxList<LeaderBoardModel> topSpendersList = <LeaderBoardModel>[].obs;
   final RxList<EventsModel> recommendationEvents = <EventsModel>[].obs;
 
+  RxString userLocation = ''.obs;
+
   @override
   void onInit() {
     super.onInit();
     fetchProfileInfo();
     fetchHomeData();
+    fetchUserLocationShared();
+
+    ever(userLocation, fetchRecommendationEvents.call);
   }
 
   Future<void> fetchProfileInfo() async {
@@ -50,7 +57,7 @@ class HomeController extends GetxController {
     await fetchFeaturedSection();
     await fetchFeaturedVenues();
     await fetchTopSpenders();
-    await fetchRecommendationEvents();
+    await fetchRecommendationEvents(userLocation.value);
     isRefreshing.value = false;
     debugPrint('Home data fetch completed');
   }
@@ -98,14 +105,34 @@ class HomeController extends GetxController {
     }
   }
 
-  Future<void> fetchRecommendationEvents() async {
+  Future<void> fetchRecommendationEvents(String location) async {
+    if (location.isEmpty) {
+      debugPrint('Location is empty, skipping recommendation fetch');
+      recommendationEvents.clear();
+      return;
+    }
     try {
-      final response = await homeRepo.getRecommendation();
+      final response = await homeRepo.getRecommendation(location);
       debugPrint('Recommendation Events Response: $response');
       recommendationEvents.value = response.take(3).toList();
     } catch (e, stack) {
       debugPrint('Error fetching recommendation events: $e');
       debugPrintStack(stackTrace: stack);
     }
+  }
+
+  void setLocation(String location) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('user_location', location);
+    userLocation.value = location;
+  }
+
+  void fetchUserLocationShared() {
+    SharedPreferences.getInstance().then((prefs) {
+      String? location = prefs.getString('user_location');
+      if (location != null && location.isNotEmpty) {
+        userLocation.value = location;
+      }
+    });
   }
 }
