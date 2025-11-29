@@ -20,7 +20,7 @@ import 'package:mingly/src/screens/protected/favourite/view/favourite_screen.dar
 import 'package:mingly/src/screens/protected/home_screen/ai_chat.dart';
 import 'package:mingly/src/screens/protected/home_screen/view/home_screen.dart';
 import 'package:mingly/src/screens/protected/landing_page.dart/landing_page.dart';
-import 'package:mingly/src/screens/protected/membership_screen/membership_screen.dart';
+import 'package:mingly/src/screens/protected/membership_screen/view/membership_screen.dart';
 import 'package:mingly/src/screens/protected/my_booking/view/my_booking_screen.dart';
 import 'package:mingly/src/screens/protected/my_menu/view/my_menu_screen.dart';
 import 'package:mingly/src/screens/protected/notification_screen/view/notification_screen.dart';
@@ -234,6 +234,10 @@ class AppRouter {
           path: '/country-list',
           builder: (context, state) => const CountryListScreen(),
         ),
+        GoRoute(
+          path: '/my-reservation',
+          builder: (context, state) => MyReservationsScreen(),
+        ),
         // Shell routing for protected pages
         ShellRoute(
           builder: (context, state, child) => LandingPage(child: child),
@@ -270,11 +274,6 @@ class AppRouter {
               path: '/table-booking-detail',
               builder: (context, state) =>
                   TableBookingDetail(booking: state.extra as BookingOrder),
-            ),
-            GoRoute(
-              path: '/my-reservation',
-
-              builder: (context, state) => MyReservationsScreen(),
             ),
             GoRoute(
               path: '/my-favorites',

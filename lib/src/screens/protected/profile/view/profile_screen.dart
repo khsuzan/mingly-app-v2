@@ -274,15 +274,15 @@ class ProfileScreen extends StatelessWidget {
                       title: 'Point History',
                       onTap: () => context.push("/point-history"),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Container(height: 1, color: Colors.white24),
-                    ),
-                    _ProfileMenuItem(
-                      icon: Icons.card_giftcard,
-                      title: 'Promo Code',
-                      onTap: () => context.push("/promo-code"),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    //   child: Container(height: 1, color: Colors.white24),
+                    // ),
+                    // _ProfileMenuItem(
+                    //   icon: Icons.card_giftcard,
+                    //   title: 'Promo Code',
+                    //   onTap: () => context.push("/promo-code"),
+                    // ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Container(height: 1, color: Colors.white24),

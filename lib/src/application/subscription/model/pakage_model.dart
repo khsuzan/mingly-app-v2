@@ -1,24 +1,62 @@
 class PakageModel {
-  String? name;
+  int? id;
+  String? productName;
   double? price;
+  String? currency;
+  String? interval;
   String? description;
-  String? benefits;
+  List<String>? features;
+  String? tier;
+  int? position;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
-  PakageModel({this.name, this.price, this.description, this.benefits});
+  PakageModel({
+    this.id,
+    this.productName,
+    this.price,
+    this.currency,
+    this.interval,
+    this.description,
+    this.features,
+    this.tier,
+    this.position,
+    this.createdAt,
+    this.updatedAt,
+  });
 
-  PakageModel.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    price = json['price'];
-    description = json['description'];
-    benefits = json['benefits'];
-  }
+  factory PakageModel.fromJson(Map<String, dynamic> json) {
+    double? _parsePrice(dynamic p) {
+      if (p == null) return null;
+      if (p is num) return p.toDouble();
+      if (p is String) return double.tryParse(p.replaceAll(',', ''));
+      return null;
+    }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['name'] = this.name;
-    data['price'] = this.price;
-    data['description'] = this.description;
-    data['benefits'] = this.benefits;
-    return data;
+    DateTime? _parseDate(dynamic d) {
+      if (d == null) return null;
+      if (d is DateTime) return d;
+      return DateTime.tryParse(d.toString());
+    }
+
+    int? _parseInt(dynamic v) {
+      if (v == null) return null;
+      if (v is int) return v;
+      return int.tryParse(v.toString());
+    }
+
+    return PakageModel(
+      id: _parseInt(json['id']),
+      productName: json['product_name']?.toString(),
+      price: _parsePrice(json['price']),
+      currency: json['currency']?.toString(),
+      interval: json['interval']?.toString(),
+      description: json['description']?.toString(),
+      features: json['features'] != null ? List<String>.from(json['features']) : null,
+      tier: json['tier']?.toString(),
+      position: _parseInt(json['position']),
+      createdAt: _parseDate(json['created_at']),
+      updatedAt: _parseDate(json['updated_at']),
+    );
   }
 }

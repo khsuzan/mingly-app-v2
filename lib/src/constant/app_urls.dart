@@ -3,7 +3,7 @@ class AppUrls {
   // static String imageUrl = "https://backendapi.mingly.org";
   // static String imageUrlApp = "https://admin.mingly.org";
 
-  static String baseUrl = "http://10.10.13.11:8900/app/api/v1";
+  static String baseUrl = "http://192.168.0.147:8900/app/api/v1";
   static String imageUrl = "https://backendapi.mingly.org";
   static String imageUrlApp = "https://admin.mingly.org";
   //authentication
@@ -45,7 +45,7 @@ class AppUrls {
   static String leaderBoard = "/top-spenders/";
 
   //subscription
-  static String pakageget = "/membership/packages/";
+  static String memberships = "/stripe/membership/packages/";
 
   static String updagradePlan = "/membership/upgrade/";
 

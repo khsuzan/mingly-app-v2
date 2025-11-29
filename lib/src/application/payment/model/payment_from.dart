@@ -9,4 +9,4 @@ class PaymentFromArg {
   });
 }
 
-enum FromScreen { ticketBooking, tableBooking, menuBooking }
+enum FromScreen { ticketBooking, tableBooking, menuBooking , reservationPayment }

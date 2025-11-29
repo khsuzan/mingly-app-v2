@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../components/helpers.dart';
 import '../../../../constant/app_urls.dart';
 import '../controller/my_reservations_controller.dart';
 
@@ -28,7 +29,7 @@ class MyReservationsScreen extends StatelessWidget {
             child: RefreshIndicator(
               onRefresh: () {
                 controller.fetchReservations();
-                return Future.delayed(Duration(seconds: 500));
+                return Future.delayed(Duration(milliseconds: 500));
               },
               child: Obx(() {
                 if (controller.isLoading.value) {
@@ -83,7 +84,14 @@ class MyReservationsScreen extends StatelessWidget {
                         currency: item.currency,
                         venueId: item.venue?.id,
                         onVenueMenuClick: () {},
-                        onPaymentsClick: () {},
+                        onPaymentsClick: () {
+                          //TODO: implement payment flow
+                          // controller.payForReservation(context, {
+                          //   "reservation_id": item.id,
+                          //   "amount": item.totalAmount,
+                          //   "currency": item.currency,
+                          // }, item.id, item.venue?.id ?? 0);
+                        },
                       ),
                     );
                   },
@@ -177,29 +185,17 @@ class _ReservationOrderCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Order number and date row
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                "Order: ${orderNumber ?? '-'}",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: theme.colorScheme.onSurface
-                                      .withOpacity(0.7),
-                                ),
-                              ),
-                            ),
-                            Text(
-                              date ?? '',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: theme.colorScheme.onSurface.withOpacity(
-                                  0.6,
-                                ),
-                              ),
-                            ),
-                          ],
+                        Text(
+                          "Order: ${orderNumber ?? '-'}",
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurface.withOpacity(0.7),
+                          ),
+                        ),
+                        Text(
+                          formatDate(date ?? ''),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurface.withOpacity(0.6),
+                          ),
                         ),
                         const SizedBox(height: 6),
                         // Event title
@@ -221,42 +217,8 @@ class _ReservationOrderCard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 8),
+
                         // Total price and status
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "${currency ?? ''} ${(totalAmount ?? 0.0).toStringAsFixed(2)}",
-                              style: theme.textTheme.bodyLarge?.copyWith(
-                                color: theme.colorScheme.primary,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            // status chip
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color:
-                                    (status ?? '').toLowerCase() == 'confirmed'
-                                    ? Colors.green.shade100
-                                    : (status ?? '').toLowerCase() == 'pending'
-                                    ? Colors.orange.shade100
-                                    : Colors.red.shade100,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text(
-                                (status ?? 'unknown').toUpperCase(),
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
                       ],
                     ),
                   ),
@@ -264,9 +226,80 @@ class _ReservationOrderCard extends StatelessWidget {
                 // Favorite icon
               ],
             ),
-
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // status chip
+                if (status == 'pending' && paymentStatus == 'pending')
+                  Container(
+                    margin: const EdgeInsets.only(left: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.yellow.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      'Not Confirmed Yet',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: Colors.yellow,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                else if (status == 'confirmed' && paymentStatus == 'pending')
+                  Container(
+                    margin: const EdgeInsets.only(left: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.orange.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      'Pending Payment',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: Colors.orange,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                else if (status == 'confirmed' && paymentStatus == 'paid')
+                  Container(
+                    margin: const EdgeInsets.only(left: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.green.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      'Confirmed',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: Colors.green,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                else
+                  Text(""),
+                Text(
+                  "${currency ?? ''} ${(totalAmount ?? 0.0).toStringAsFixed(2)}",
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: theme.colorScheme.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 8),
             const Divider(height: 1, color: Colors.white24),
-
             // Bottom row: Tickets | Tables | Menu
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6),
@@ -302,10 +335,15 @@ class _ReservationOrderCard extends StatelessWidget {
                   // Tables
                   Expanded(
                     child: TextButton(
-                      onPressed: onPaymentsClick,
+                      onPressed: () {
+                        if (status == 'confirmed' &&
+                            paymentStatus == 'pending') {
+                          onPaymentsClick?.call();
+                        }
+                      },
                       style: TextButton.styleFrom(
                         foregroundColor:
-                            pendingStatusText(paymentStatus) == "Unpaid"
+                            status == 'confirmed' && paymentStatus == 'pending'
                             ? theme.colorScheme.onSurface
                             : theme.colorScheme.onSurface.withOpacity(0.5),
                       ),
@@ -314,7 +352,9 @@ class _ReservationOrderCard extends StatelessWidget {
                         children: [
                           Icon(
                             Icons.payment,
-                            color: pendingStatusText(paymentStatus) == "Unpaid"
+                            color:
+                                status == 'confirmed' &&
+                                    paymentStatus == 'pending'
                                 ? theme.colorScheme.primary
                                 : theme.colorScheme.onSurface.withOpacity(0.5),
                           ),
@@ -323,7 +363,8 @@ class _ReservationOrderCard extends StatelessWidget {
                             "Pay Now",
                             style: theme.textTheme.bodySmall?.copyWith(
                               color:
-                                  pendingStatusText(paymentStatus) == "Unpaid"
+                                  status == 'confirmed' &&
+                                      paymentStatus == 'pending'
                                   ? theme.colorScheme.primary
                                   : theme.colorScheme.onSurface.withOpacity(
                                       0.5,
@@ -362,6 +403,15 @@ class _ReservationOrderCard extends StatelessWidget {
                 ],
               ),
             ),
+            if (status == 'confirmed' && paymentStatus == 'pending') ...[
+              Divider(color: theme.colorScheme.primary.withAlpha(50)),
+              Text(
+                'Pay now to confirm your reservation',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.primary,
+                ),
+              ),
+            ],
           ],
         ),
       ),
