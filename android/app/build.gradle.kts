@@ -89,6 +89,10 @@ android {
         println("Gradle: No release keystore found; release builds will fall back to debug signing locally.")
     }
 }
+dependencies {
+  implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
+  implementation("com.google.firebase:firebase-analytics")
+}
 
 flutter {
     source = "../.."

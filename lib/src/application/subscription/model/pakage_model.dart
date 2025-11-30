@@ -1,3 +1,15 @@
+class UserPackageModel{
+  final PakageModel? data;
+  UserPackageModel({this.data});
+
+  factory UserPackageModel.fromJson(Map<String, dynamic> json) {
+    return UserPackageModel(
+      data: json['data'] != null ? PakageModel.fromJson(json['data']) : null,
+    );
+  }
+}
+
+
 class PakageModel {
   int? id;
   String? productName;

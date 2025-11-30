@@ -31,28 +31,47 @@ class EditProfileScreen extends StatelessWidget {
                 GestureDetector(
                   onTap: controller.pickImage,
                   child: Obx(() {
-                    return CircleAvatar(
-                      radius: 50,
-                      backgroundColor: const Color(0xFF3A3937),
-                      backgroundImage: controller.imageFile.value != null
-                          ? FileImage(controller.imageFile.value!)
-                          : (controller.profile.value.avatar != null
-                                    ? NetworkImage(
-                                        AppUrls.imageUrlApp +
-                                            controller.profile.value.avatar!,
-                                      )
-                                    : null)
-                                as ImageProvider?,
-                      child:
-                          controller.imageFile.value == null &&
-                              controller.profile.value.avatar == null
-                          ? const Icon(
+                    final hasFile = controller.imageFile.value != null;
+                    final hasAvatar =
+                        controller.profile.value.avatar != null &&
+                        controller.profile.value.avatar!.isNotEmpty;
+                    if (hasFile) {
+                      return CircleAvatar(
+                        radius: 50,
+                        backgroundColor: const Color(0xFF3A3937),
+                        backgroundImage: FileImage(controller.imageFile.value!),
+                      );
+                    } else if (hasAvatar) {
+                      return CircleAvatar(
+                        radius: 50,
+                        backgroundColor: const Color(0xFF3A3937),
+                        backgroundImage: null,
+                        child: ClipOval(
+                          child: Image.network(
+                            AppUrls.imageUrlApp +
+                                controller.profile.value.avatar!,
+                            fit: BoxFit.cover,
+                            width: 100,
+                            height: 100,
+                            errorBuilder: (context, error, stackTrace) => Icon(
                               Icons.camera_alt,
                               color: Colors.white,
                               size: 35,
-                            )
-                          : null,
-                    );
+                            ),
+                          ),
+                        ),
+                      );
+                    } else {
+                      return CircleAvatar(
+                        radius: 50,
+                        backgroundColor: const Color(0xFF3A3937),
+                        child: const Icon(
+                          Icons.camera_alt,
+                          color: Colors.white,
+                          size: 35,
+                        ),
+                      );
+                    }
                   }),
                 ),
                 const SizedBox(height: 20),
@@ -122,8 +141,59 @@ class EditProfileScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Obx(() {
-                    if (controller.isProfileInfoLoading.value || controller.selectedCountry.value == null) {
-                      return SizedBox();
+                    if (controller.isProfileInfoLoading.value) {
+                      // Show a read-only input field with a loading indicator
+                      return Stack(
+                        alignment: Alignment.centerRight,
+                        children: [
+                          TextFormField(
+                            readOnly: true,
+                            enabled: true,
+                            decoration: InputDecoration(
+                              labelText: 'Country',
+                              labelStyle: const TextStyle(
+                                color: Color(0xFFFAE7E7),
+                              ),
+                              filled: true,
+                              fillColor: Colors.grey.shade900,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: const BorderSide(
+                                  color: Color(0xFFFFFAE5),
+                                  width: 0.5,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: const BorderSide(
+                                  color: Color(0xFFFFFAE5),
+                                  width: 0.5,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: const BorderSide(
+                                  color: Color(0xFFFFFAE5),
+                                  width: 1,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 16),
+                            child: SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Color(0xFFD1B26F),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
                     }
                     final initialValue =
                         controller.selectedCountry.value ??

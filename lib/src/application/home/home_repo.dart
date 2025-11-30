@@ -54,16 +54,6 @@ class HomeRepo {
     return response.map((e) => AdsImage.fromJson(e)).toList();
   }
 
-  Future<Map<String, dynamic>> updagradePlan(Map<String, dynamic> data) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    final response = await ApiService().postData(
-      AppUrls.updagradePlan,
-      data,
-      authToken: preferences.getString("authToken"),
-    );
-    return response;
-  }
-
   Future<List<EventsModel>> getRecommendation(String location) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final response = await ApiService().getListOrThrow(

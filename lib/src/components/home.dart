@@ -98,7 +98,7 @@ class EventCardBig extends StatelessWidget {
                   height: 160,
                   child: Image.network(
                     AppUrls.imageUrl + imageUrl!,
-                    fit: BoxFit.contain,
+                    fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => NoImage(),
                   ),
                 ),

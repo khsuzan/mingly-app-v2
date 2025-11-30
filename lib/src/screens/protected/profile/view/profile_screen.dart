@@ -3,12 +3,19 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mingly/src/components/custom_dialog.dart';
-import 'package:mingly/src/components/helpers.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 import 'package:mingly/src/screens/protected/profile/controller/profile_controller.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
+  String _beautifyTier(String? tier) {
+    if (tier == null) return '';
+    return tier
+        .replaceAll('_', ' ')
+        .split(' ')
+        .map((w) => w.isNotEmpty ? w[0].toUpperCase() + w.substring(1) : '')
+        .join(' ');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +105,9 @@ class ProfileScreen extends StatelessWidget {
                                               return Text(
                                                 name ?? "",
                                                 style: TextStyle(
-                                                  color: const Color(0xFFFFFAE5),
+                                                  color: const Color(
+                                                    0xFFFFFAE5,
+                                                  ),
                                                   fontSize: 16,
                                                   fontFamily: 'Lato',
                                                   fontWeight: FontWeight.w600,
@@ -148,15 +157,14 @@ class ProfileScreen extends StatelessWidget {
                               children: [
                                 Obx(() {
                                   return Text(
-                                    controller.profile.value.membershipStatus ??
-                                        "N/A",
+                                    _beautifyTier(controller.profile.value.membershipStatus),
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   );
                                 }),
-            
+
                                 Obx(() {
                                   return Text(
                                     controller.profile.value.points.toString(),
@@ -259,7 +267,7 @@ class ProfileScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Container(height: 1, color: Colors.white24),
                     ),
-            
+
                     _ProfileMenuItem(
                       icon: Icons.book_online,
                       title: 'My Reservation',

@@ -62,7 +62,7 @@ class VenueDetailScreen extends StatelessWidget {
                               AppUrls.imageUrl +
                                   venue.images![index].imageUrl.toString(),
                             ),
-                            fit: BoxFit.fill,
+                            fit: BoxFit.cover,
                           ),
                         ),
                       );

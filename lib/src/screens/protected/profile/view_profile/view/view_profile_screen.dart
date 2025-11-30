@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get/get.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 
+import '../../../../../components/custom_snackbar.dart';
 import '../controller/view_profile_controller.dart';
 
 class ViewProfileScreen extends StatelessWidget {
@@ -51,7 +53,8 @@ class ViewProfileScreen extends StatelessWidget {
                               )
                             : null,
                         child:
-                            (profile?.avatar == null || profile!.avatar!.isEmpty)
+                            (profile?.avatar == null ||
+                                profile!.avatar!.isEmpty)
                             ? Icon(Icons.person, color: Colors.white, size: 40)
                             : null,
                       ),
@@ -84,7 +87,7 @@ class ViewProfileScreen extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text(
-                                    profile?.membershipStatus ?? 'Member',
+                                    _beautifyTier(profile?.membershipStatus),
                                     style: TextStyle(
                                       color: primary,
                                       fontWeight: FontWeight.w600,
@@ -276,18 +279,28 @@ class ViewProfileScreen extends StatelessWidget {
                           ],
                         ),
                         const Spacer(),
-                        IconButton(
-                          onPressed: () {
+                        InkWell(
+                          onTap: () {
                             Clipboard.setData(
-                              ClipboardData(text: profile?.referralCode ?? ''),
-                            );
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Referral code copied'),
+                              ClipboardData(
+                                text: profile?.referralCode == null
+                                    ? ""
+                                    : profile?.referralCode ?? "",
                               ),
                             );
+                            CustomSnackbar.show(
+                              context,
+                              message:
+                                  "Code copied: ${profile?.referralCode ?? ""}",
+                            );
                           },
-                          icon: Icon(Icons.copy, color: primary),
+                          child: SvgPicture.asset(
+                            'lib/assets/icons/copy.svg',
+                            colorFilter: const ColorFilter.mode(
+                              Color(0xFFD1B26F),
+                              BlendMode.srcIn,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -334,5 +347,14 @@ class ViewProfileScreen extends StatelessWidget {
         );
       },
     );
+  }
+
+  String _beautifyTier(String? tier) {
+    if (tier == null) return '';
+    return tier
+        .replaceAll('_', ' ')
+        .split(' ')
+        .map((w) => w.isNotEmpty ? w[0].toUpperCase() + w.substring(1) : '')
+        .join(' ');
   }
 }

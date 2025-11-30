@@ -306,11 +306,23 @@ class HomeScreen extends StatelessWidget {
                                   InkWell(
                                     onTap: () {
                                       Clipboard.setData(
-                                        ClipboardData(text: 'XUYB895EW'),
+                                        ClipboardData(
+                                          text:
+                                              controller.profile.value.data ==
+                                                  null
+                                              ? ""
+                                              : controller
+                                                        .profile
+                                                        .value
+                                                        .data!
+                                                        .referralCode ??
+                                                    "",
+                                        ),
                                       );
                                       CustomSnackbar.show(
                                         context,
-                                        message: "Code copied: 'XUYB895EW'",
+                                        message:
+                                            "Code copied: ${controller.profile.value.data == null ? "" : controller.profile.value.data!.referralCode ?? ""}",
                                       );
                                     },
                                     child: SvgPicture.asset(
@@ -492,6 +504,58 @@ class HomeScreen extends StatelessWidget {
                             );
                           }),
                           Obx(() {
+                            // If location is not selected, prompt user to select location before showing recommendations
+                            if (controller.userLocation.value.isEmpty) {
+                              return Padding(
+                                padding: const EdgeInsets.all(24.0),
+                                child: Center(
+                                  child: Column(
+                                    children: [
+                                      Divider(
+                                        color: theme.colorScheme.primary
+                                            .withAlpha(51),
+                                        thickness: 1,
+                                      ),
+                                      SizedBox(height: 12),
+                                      Text(
+                                        'Select your location to view recommendations',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      SizedBox(height: 12),
+                                      ElevatedButton.icon(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Color(0xFFD1B26F),
+                                          foregroundColor: Colors.black,
+                                        ),
+                                        onPressed: () async {
+                                          final location = await context.push(
+                                            '/country-list',
+                                          );
+                                          if (location != null) {
+                                            controller.setLocation(
+                                              location as String,
+                                            );
+                                          }
+                                        },
+                                        icon: Icon(
+                                          Icons.location_on,
+                                          color: Colors.black,
+                                        ),
+                                        label: Text(
+                                          'Select Location',
+                                          style: TextStyle(color: Colors.black),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }
                             if (controller.recommendationEvents.isEmpty) {
                               return SizedBox();
                             }

@@ -112,7 +112,7 @@ class _EventCarouselSliderState extends State<EventCarouselSlider> {
                 image: img != null && img.imageUrl != null
                     ? DecorationImage(
                         image: NetworkImage(AppUrls.imageUrl + img.imageUrl!),
-                        fit: BoxFit.fill,
+                        fit: BoxFit.cover,
                       )
                     : null,
               ),

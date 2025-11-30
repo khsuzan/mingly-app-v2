@@ -290,10 +290,10 @@ class _BookingOrderCard extends StatelessWidget {
                   // Favorite icon
                 ],
               ),
-
+              if(status.toLowerCase() != 'cancelled')
               const Divider(height: 1, color: Colors.white24),
 
-              if (paymentStatus.toLowerCase() != 'paid')
+              if (paymentStatus.toLowerCase() != 'paid' && status.toLowerCase() != 'cancelled')
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Row(

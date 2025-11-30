@@ -25,7 +25,7 @@ class LoadingDialog {
                   "lib/assets/images/mingly_logo.png",
                   width: 40,
                   height: 40,
-                  fit: BoxFit.fill,
+                  fit: BoxFit.contain,
                   errorBuilder: (context, error, stackTrace) {
                     // Fallback icon if image doesn't load
                     return Container(

@@ -82,14 +82,24 @@ class _StripePaymentWebViewState extends State<StripePaymentWebView> {
             if (request.url.contains(successUrlPattern)) {
               _showSuccessSnackBar();
               widget.onSuccess?.call();
-              if (widget.arg.fromScreen == FromScreen.ticketBooking) {
-                context.go('/my-bookings');
-              } else if (widget.arg.fromScreen == FromScreen.tableBooking) {
-                context.go('/my-bookings');
+              // Remove all previous routes and push the target route as the new root
+              if (widget.arg.fromScreen == FromScreen.ticketBooking ||
+                  widget.arg.fromScreen == FromScreen.tableBooking) {
+                context.go('/home');
+                context.push('/my-bookings');
               } else if (widget.arg.fromScreen == FromScreen.menuBooking) {
-                context.go('/my-menu');
+                context.go('/home');
+                context.push('/my-menu');
+              } else if (widget.arg.fromScreen ==
+                  FromScreen.reservationPayment) {
+                context.go('/home');
+                context.push('/my-reservation');
+              } else if (widget.arg.fromScreen ==
+                  FromScreen.membershipPayment) {
+                context.go('/home');
+                context.push('/membership');
               }
-
+              // All previous routes including /payment are removed from the stack
               return NavigationDecision.prevent;
             }
 
