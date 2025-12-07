@@ -163,39 +163,28 @@ class VenueDetailScreen extends StatelessWidget {
                     style: TextStyle(color: Colors.white70),
                   ),
                   const SizedBox(height: 16),
-                  if (venue.openingHours?.openingDays?.isNotEmpty == true)
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.access_time,
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.access_time,
+                        color: theme.colorScheme.primary,
+                        size: 20,
+                      ),
+                      SizedBox(width: 8),
+                      Text(
+                        'Opening Hours',
+                        style: TextStyle(
                           color: theme.colorScheme.primary,
-                          size: 20,
+                          fontWeight: FontWeight.bold,
                         ),
-                        SizedBox(width: 8),
-                        Text(
-                          'Opening',
-                          style: TextStyle(
-                            color: theme.colorScheme.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  if (venue.openingHours?.openingDays?.isNotEmpty == true)
-                    const SizedBox(height: 4),
-                  if (venue.openingHours?.openingDays?.isNotEmpty == true)
-                    Row(
-                      children: [
-                        Text('Friday', style: TextStyle(color: Colors.white70)),
-                        SizedBox(width: 16),
-                        Text(
-                          venue.openingHours == null
-                              ? ""
-                              : "${venue.openingHours!.open} - ${venue.openingHours!.close}",
-                          style: TextStyle(color: Colors.white70),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    "${formatHourMinuteToAmPm(venue.openingHours?.open ?? "")} - ${formatHourMinuteToAmPm(venue.openingHours?.close ?? "")}",
+                    style: TextStyle(color: Colors.white70),
+                  ),
                   const SizedBox(height: 16),
                   Row(
                     children: [
@@ -223,9 +212,32 @@ class VenueDetailScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 32),
                 ],
               ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Icon(
+                    Icons.description,
+                    color: theme.colorScheme.primary,
+                    size: 20,
+                  ),
+                  SizedBox(width: 8),
+                  Text(
+                    'Description',
+                    style: TextStyle(
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Text(
+                venue.description ?? '',
+                style: TextStyle(color: Colors.white70),
+              ),
+              const SizedBox(height: 32),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Row(

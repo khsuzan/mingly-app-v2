@@ -166,9 +166,7 @@ class VenueListScreen extends StatelessWidget {
                                       : "${AppUrls.imageUrl}${venue.images!.first.imageUrl!}",
                                   title: venue.name ?? '',
                                   location: venue.city ?? '',
-                                  time: venue.openingHours == null
-                                      ? ""
-                                      : "${formatHourMinuteToAmPm(venue.openingHours!.open ?? "")} - ${formatHourMinuteToAmPm(venue.openingHours!.close ?? "")}",
+                                  time: "${formatHourMinuteToAmPm(venue.openingHours?.open ?? "")} - ${formatHourMinuteToAmPm(venue.openingHours?.close ?? "")}",
                                 );
                               },
                             ),
