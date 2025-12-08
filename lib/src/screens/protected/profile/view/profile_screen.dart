@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mingly/src/components/custom_dialog.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 import 'package:mingly/src/screens/protected/profile/controller/profile_controller.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -157,7 +158,9 @@ class ProfileScreen extends StatelessWidget {
                               children: [
                                 Obx(() {
                                   return Text(
-                                    _beautifyTier(controller.profile.value.membershipStatus),
+                                    _beautifyTier(
+                                      controller.profile.value.membershipStatus,
+                                    ),
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
@@ -282,15 +285,17 @@ class ProfileScreen extends StatelessWidget {
                       title: 'Point History',
                       onTap: () => context.push("/point-history"),
                     ),
-                    // Padding(
-                    //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    //   child: Container(height: 1, color: Colors.white24),
-                    // ),
-                    // _ProfileMenuItem(
-                    //   icon: Icons.card_giftcard,
-                    //   title: 'Promo Code',
-                    //   onTap: () => context.push("/promo-code"),
-                    // ),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Container(height: 1, color: Colors.white24),
+                    ),
+
+                    _ProfileMenuItem(
+                      icon: Icons.question_answer,
+                      title: 'FAQ',
+                      onTap: _launchURL,
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Container(height: 1, color: Colors.white24),
@@ -309,6 +314,15 @@ class ProfileScreen extends StatelessWidget {
         );
       },
     );
+  }
+
+  void _launchURL() async {
+    final url = Uri.parse('https://www.mingly.org/faq');
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
 

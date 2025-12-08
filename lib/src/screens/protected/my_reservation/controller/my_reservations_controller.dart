@@ -36,23 +36,20 @@ class MyReservationsController extends GetxController {
   Future<void> payForReservation(
     BuildContext context,
     Map<String, dynamic> data,
-    int eventId,
-    int venueId,
   ) async {
     LoadingDialog.show(context);
     try {
-      //TODO: implement payment flow
-      // final response = await reservationRepo.makePayment(data);
-      // if (context.mounted) {
-      //   context.push(
-      //     "/payment-screen",
-      //     extra: PaymentFromArg(
-      //       url: response.checkoutUrl,
-      //       venueId: venueId,
-      //       fromScreen: FromScreen.reservationPayment,
-      //     ),
-      //   );
-      // }
+      final response = await reservationRepo.makePayment(data);
+      if (context.mounted) {
+        context.push(
+          "/payment-screen",
+          extra: PaymentFromArg(
+            url: response.checkoutUrl,
+            venueId: null,
+            fromScreen: FromScreen.reservationPayment,
+          ),
+        );
+      }
       if (context.mounted) {
         LoadingDialog.hide(context);
       }

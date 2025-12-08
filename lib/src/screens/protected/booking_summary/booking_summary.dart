@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mingly/src/components/custom_loading_dialog.dart';
 import 'package:mingly/src/components/custom_snackbar.dart';
 import 'package:mingly/src/components/helpers.dart';
 import 'package:mingly/src/screens/protected/booking_summary/widget/custom_confirm_dialog.dart';
 import 'package:mingly/src/screens/protected/event_list_screen/events_provider.dart';
-import 'package:mingly/src/screens/protected/my_menu/bottle_provider.dart';
 import 'package:mingly/src/screens/protected/payment/payment_stripe_table.dart';
 import 'package:mingly/src/screens/protected/venue_list_screen/venue_provider.dart';
 import 'package:provider/provider.dart';
@@ -80,7 +78,8 @@ class BookingSummary extends StatelessWidget {
                           style: TextStyle(color: Colors.white),
                         ),
                         Text(
-                          'Open gate at ${formatDate(eventProvider.eventDetailsModel.sessionStartTime.toString())}',
+                          //TODO: keep the time
+                          'Open gate at ',
                           style: TextStyle(
                             color: const Color(0xFFB1A39E),
                             fontSize: 12,

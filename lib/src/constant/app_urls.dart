@@ -28,7 +28,8 @@ class AppUrls {
   static String ticketList = "/event_tickets/";
   static String buyTicket = "/book_ticket/:eventId/";
   static String verifyPromoCode = "/verify-promocode/";
-  static String continuePayment = "/book_ticket/continue/";
+  static String continuePayment = "/book_ticket/payment/";
+  static String continueReservationPayment = "/reserve-venue/payment/";
   //bottles
   static String getBottle = "/all-bottles/";
   static String myMenu = "/my-menu-orders/";

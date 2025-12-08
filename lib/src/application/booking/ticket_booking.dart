@@ -21,11 +21,16 @@ class TicketBookInfoArg {
   final EventDetailsModel eventDetail;
   final List<TicketBuyingInfo> tickets;
   final String promoCode;
+  final dynamic session; // Selected session from SessionSelectionSheet
+  final String? selectedDate; // Selected booking date (format: "Jan 31, 2025")
+
   TicketBookInfoArg({
     required this.event,
     required this.eventDetail,
     required this.tickets,
     required this.promoCode,
+    this.session,
+    this.selectedDate,
   });
 }
 

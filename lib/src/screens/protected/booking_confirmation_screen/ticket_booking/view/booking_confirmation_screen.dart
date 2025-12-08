@@ -54,7 +54,8 @@ class BookingConfirmationScreen extends StatelessWidget {
                       Icon(Icons.calendar_today, color: Colors.white),
                       SizedBox(width: 8),
                       Text(
-                        formatDayAndDate(eventDetail.firstSessionDate ?? ""),
+                        //TODO: keep the date
+                        "formatDayAndDate(eventDetail.firstSessionDate ?? "")",
                         style: TextStyle(color: Colors.white),
                       ),
                     ],

@@ -22,7 +22,6 @@ class _StripePaymentWebViewState extends State<StripePaymentWebView> {
   bool hasShownError = false; // Prevent duplicate error messages
 
   // Use the actual URL from your backend/Stripe success redirect
-  // final String successUrlPattern = 'https://chasethecashsa.com/status=success';
   final String successUrlPattern = "success/";
   final String cancelUrlPattern = "cancel";
   // Professional SnackBar helper methods
@@ -86,7 +85,7 @@ class _StripePaymentWebViewState extends State<StripePaymentWebView> {
               if (widget.arg.fromScreen == FromScreen.ticketBooking ||
                   widget.arg.fromScreen == FromScreen.tableBooking) {
                 context.go('/home');
-                context.push('/my-bookings');
+                context.push('/venue-menu', extra: widget.arg.venueId);
               } else if (widget.arg.fromScreen == FromScreen.menuBooking) {
                 context.go('/home');
                 context.push('/my-menu');

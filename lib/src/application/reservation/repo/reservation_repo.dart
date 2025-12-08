@@ -7,6 +7,8 @@ import 'package:mingly/src/constant/app_urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
+import '../../booking/reservation_success.dart';
+
 class ReservationRepo {
   Future<List<ReservationModelResponse>> getReservations() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -59,5 +61,16 @@ class ReservationRepo {
       debugPrint(" Error: $e");
       return {"success": false, "error": e.toString()};
     }
+  }
+  Future<ReservationCheckoutSuccess> makePayment(
+    Map<String, dynamic> data,
+  ) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final response = await ApiService().postDataOrThrow(
+      AppUrls.continueReservationPayment,
+      data,
+      authToken: preferences.getString("authToken"),
+    );
+    return ReservationCheckoutSuccess.fromJson(response);
   }
 }

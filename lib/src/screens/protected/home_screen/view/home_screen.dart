@@ -463,7 +463,7 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  'Top 10 spenders',
+                                  'Ultra VIP 10',
                                   style: theme.textTheme.bodyMedium?.copyWith(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,

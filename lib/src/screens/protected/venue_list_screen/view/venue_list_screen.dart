@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -166,7 +168,8 @@ class VenueListScreen extends StatelessWidget {
                                       : "${AppUrls.imageUrl}${venue.images!.first.imageUrl!}",
                                   title: venue.name ?? '',
                                   location: venue.city ?? '',
-                                  time: "${formatHourMinuteToAmPm(venue.openingHours?.open ?? "")} - ${formatHourMinuteToAmPm(venue.openingHours?.close ?? "")}",
+                                  openTime: venue.openingHours?.open ?? "",
+                                  closingTime: venue.openingHours?.close ?? "",
                                 );
                               },
                             ),
@@ -187,14 +190,16 @@ class _VenueCard extends StatelessWidget {
   final String image;
   final String title;
   final String location;
-  final String time;
+  final String openTime;
+  final String closingTime;
   final Function()? onTap;
 
   const _VenueCard({
     required this.image,
     required this.title,
     required this.location,
-    required this.time,
+    required this.openTime,
+    required this.closingTime,
     required this.onTap,
   });
 
@@ -249,20 +254,7 @@ class _VenueCard extends StatelessWidget {
                               style: const TextStyle(color: Colors.white70),
                             ),
                           ),
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.access_time,
-                                color: Colors.white54,
-                                size: 16,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                time,
-                                style: const TextStyle(color: Colors.white70),
-                              ),
-                            ],
-                          ),
+                          openCloseTimeWidget(context: context),
                         ],
                       ),
                       const SizedBox(height: 8),
@@ -273,6 +265,98 @@ class _VenueCard extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget openCloseTimeWidget({required BuildContext context}) {
+    // Always return a Widget. If values missing show a simple dash.
+    if (openTime.isEmpty || closingTime.isEmpty) {
+      return const Text('-', style: TextStyle(color: Colors.white70));
+    }
+
+    // Helpers to detect & parse JSON schedule strings
+    Map<String, dynamic>? tryParseJson(String s) {
+      try {
+        final trimmed = s.trim();
+        if ((trimmed.startsWith('{') && trimmed.endsWith('}')) ||
+            (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
+          return jsonDecode(trimmed) as Map<String, dynamic>?;
+        }
+      } catch (_) {
+        // ignore parse errors
+      }
+      return null;
+    }
+
+    final openMap = tryParseJson(openTime);
+    final closeMap = tryParseJson(closingTime);
+
+    // Formatter for map schedules into multi-line tooltip
+    String scheduleFromMap(Map<String, dynamic> m) {
+      try {
+        final lines = m.entries.map((e) {
+          final day = e.key.toString();
+          final value = e.value?.toString() ?? '';
+          // If value looks like a time, format it; otherwise show raw
+          final formatted = value.isNotEmpty
+              ? (value.contains(':') ? formatHourMinuteToAmPm(value) : value)
+              : '';
+          return '${day[0].toUpperCase()}${day.substring(1)}: $formatted';
+        }).toList();
+        return lines.join('\n');
+      } catch (_) {
+        return m.toString();
+      }
+    }
+
+    // Build the display text (non-tooltip) for the compact widget
+    String compactDisplay;
+    if (openMap != null || closeMap != null) {
+      // If either side is a map, show a short label and expose full schedule in tooltip
+      compactDisplay = 'View schedule';
+    } else {
+      compactDisplay =
+          '${formatHourMinuteToAmPm(openTime)} - ${formatHourMinuteToAmPm(closingTime)}';
+    }
+
+    // Tooltip content: prefer map representations if available, otherwise the compact text
+    String tooltipText;
+    if (openMap != null || closeMap != null) {
+      final parts = <String>[];
+      if (openMap != null) parts.add('Open:\n${scheduleFromMap(openMap)}');
+      if (closeMap != null) parts.add('Close:\n${scheduleFromMap(closeMap)}');
+      tooltipText = parts.join('\n\n');
+    } else {
+      tooltipText = compactDisplay;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primary.withAlpha(20),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.access_time,
+            size: 14,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          const SizedBox(width: 6),
+          Tooltip(
+            message: tooltipText,
+            child: Text(
+              compactDisplay,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.primary,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

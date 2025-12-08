@@ -81,12 +81,15 @@ class TableBookingScreen extends StatelessWidget {
                       Icon(Icons.access_time, color: Color(0xFFD1B26F)),
                       SizedBox(width: 8),
                       Text(
-                        "  ${controller.detail.value.sessionStartTime.toString()} - ${controller.detail.value.sessionEndTime.toString()}",
+                        //TODO
+                        "",
+                        // "  ${controller.detail.value.sessionStartTime.toString()} - ${controller.detail.value.sessionEndTime.toString()}",
                         style: TextStyle(color: Colors.white),
                       ),
 
                       Text(
-                        "  ${controller.detail.value.firstSessionDate.toString()}",
+                        "",
+                        // "  ${controller.detail.value.firstSessionDate.toString()}",
                         style: TextStyle(color: Colors.white),
                       ),
                     ],
