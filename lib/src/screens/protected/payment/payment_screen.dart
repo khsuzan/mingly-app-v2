@@ -113,24 +113,24 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 8),
                 ),
                 onPressed: () async {
-                  LoadingDialog.show(context);
-                  final status = await eventProvider.buyTicketEvent(
-                    eventProvider
-                        .buildOrderRequest(
-                          promoCode: eventProvider.promoCode ?? "",
-                        )
-                        .toJson(),
-                    eventProvider.selectEventModel.id.toString(),
-                  );
-                  LoadingDialog.hide(context);
+                  // LoadingDialog.show(context);
+                  // final status = await eventProvider.buyTicketEvent(
+                  //   eventProvider
+                  //       .buildOrderRequest(
+                  //         promoCode: eventProvider.promoCode ?? "",
+                  //       )
+                  //       .toJson(),
+                  //   eventProvider.selectEventModel.id.toString(),
+                  // );
+                  // LoadingDialog.hide(context);
 
-                  if (status != null) {
-                    showCustomConfirmDialogEventTicket(
-                      context,
-                      eventProvider.selectedTickets.length.toString(),
-                      status["message"],
-                    );
-                  }
+                  // if (status != null) {
+                  //   showCustomConfirmDialogEventTicket(
+                  //     context,
+                  //     eventProvider.selectedTickets.length.toString(),
+                  //     status["message"],
+                  //   );
+                  // }
 
                   // context.push('/booking-summary');
                 },

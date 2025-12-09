@@ -249,44 +249,44 @@ class BookingSummary extends StatelessWidget {
               ],
             ),
 
-            Container(
-              width: double.infinity,
+            // Container(
+            //   width: double.infinity,
 
-              decoration: BoxDecoration(color: const Color(0xFF2E2D2C)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14.0,
-                      vertical: 10,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: List.generate(
-                        eventProvider.menuList.length,
-                        (index) => Column(
-                          children: [
-                            MenuItemCard(
-                              menuName: venueProvider.getMenuName(
-                                eventProvider.menuList[index].id!,
-                              ),
-                              price:
-                                  "\$${venueProvider.getMenuPrice(eventProvider.menuList[index].id!)}",
-                              quantity: "2",
-                              subtotal:
-                                  "\$${venueProvider.getMenuPrice(eventProvider.menuList[index].id!)}",
-                            ),
-                            if (index != eventProvider.menuList.length - 1)
-                              Divider(),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            //   decoration: BoxDecoration(color: const Color(0xFF2E2D2C)),
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.start,
+            //     children: [
+            //       Padding(
+            //         padding: const EdgeInsets.symmetric(
+            //           horizontal: 14.0,
+            //           vertical: 10,
+            //         ),
+            //         child: Column(
+            //           crossAxisAlignment: CrossAxisAlignment.start,
+            //           children: List.generate(
+            //             eventProvider.menuList.length,
+            //             (index) => Column(
+            //               children: [
+            //                 MenuItemCard(
+            //                   menuName: venueProvider.getMenuName(
+            //                     eventProvider.menuList[index].id!,
+            //                   ),
+            //                   price:
+            //                       "\$${venueProvider.getMenuPrice(eventProvider.menuList[index].id!)}",
+            //                   quantity: "2",
+            //                   subtotal:
+            //                       "\$${venueProvider.getMenuPrice(eventProvider.menuList[index].id!)}",
+            //                 ),
+            //                 if (index != eventProvider.menuList.length - 1)
+            //                   Divider(),
+            //               ],
+            //             ),
+            //           ),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
 
             // SizedBox(height: 24),
             //

@@ -4,80 +4,67 @@ import 'package:mingly/src/application/venues/model/venues_model.dart';
 import 'package:mingly/src/application/venues/repo/venues_repo.dart';
 
 class VenueProvider extends ChangeNotifier {
-  List<VenuesModel> venuesList = [];
-  List<VenuesModel> venuesFeaturedList = [];
-  List<VenueMenuModel> venueMenuList = [];
+  // List<VenuesModel> venuesList = [];
+  // List<VenuesModel> venuesFeaturedList = [];
+  // List<VenueMenuModel> venueMenuList = [];
 
-  Future<void> getVenuesList() async {
-    final response = await VenuesRepo().getVenues("");
+  // Future<void> getVenuesList() async {
+  //   final response = await VenuesRepo().getVenues("");
 
-    if (response.isNotEmpty) {
-      List<VenuesModel> data = response;
-      venuesList.clear();
-      for (var e in data) {
-        venuesList.add(e);
-      }
-    }
-    notifyListeners();
-  }
+  //   if (response.isNotEmpty) {
+  //     List<VenuesModel> data = response;
+  //     venuesList.clear();
+  //     for (var e in data) {
+  //       venuesList.add(e);
+  //     }
+  //   }
+  //   notifyListeners();
+  // }
 
-  Future<void> getFeaturedVenuesList() async {
-    final response = await VenuesRepo().getFeaturedVenues();
+  // Future<void> getFeaturedVenuesList() async {
+  //   final response = await VenuesRepo().getFeaturedVenues();
 
-    if (response.isNotEmpty) {
-      List<VenuesModel> data = response;
-      venuesFeaturedList.clear();
-      for (var e in data) {
-        venuesFeaturedList.add(e);
-      }
-    }
-    notifyListeners();
-  }
+  //   if (response.isNotEmpty) {
+  //     List<VenuesModel> data = response;
+  //     venuesFeaturedList.clear();
+  //     for (var e in data) {
+  //       venuesFeaturedList.add(e);
+  //     }
+  //   }
+  //   notifyListeners();
+  // }
 
-  Future<void> getVenueMenuList(int venueId) async {
-    final response = await VenuesRepo().getVenueMenu(venueId);
+  // String getVenueId(String name) {
+  //   try {
+  //     final venue = venuesList.firstWhere(
+  //       (venue) => venue.name == name,
+  //       orElse: () => VenuesModel(id: 0),
+  //     );
+  //     return venue.id.toString();
+  //   } catch (e) {
+  //     return '';
+  //   }
+  // }
 
-    if (response.isNotEmpty) {
-      List<VenueMenuModel> data = response;
-      venueMenuList.clear();
-      for (var e in data) {
-        venueMenuList.add(e);
-      }
-    }
-    notifyListeners();
-  }
+  // VenuesModel selectedVenueData = VenuesModel(id: 0);
 
-  String getVenueId(String name) {
-    try {
-      final venue = venuesList.firstWhere(
-        (venue) => venue.name == name,
-        orElse: () => VenuesModel(id: 0),
-      );
-      return venue.id.toString();
-    } catch (e) {
-      return '';
-    }
-  }
+  // var isMenuList = false;
+  // void toggleMenuList() {
+  //   isMenuList = !isMenuList;
+  //   notifyListeners();
+  // }
 
-  VenuesModel selectedVenueData = VenuesModel(id: 0);
+  // void selectedVenue(int? id) {
+  //   selectedVenueData = VenuesModel(id: 0);
+  //   selectedVenueData = venuesList.firstWhere((venue) => venue.id == id);
+  //   notifyListeners();
+  // }
 
-  var isMenuList = false;
-  void toggleMenuList() {
-    isMenuList = !isMenuList;
-    notifyListeners();
-  }
+  // String getMenuName(int id) {
+  //   return venueMenuList.firstWhere((e) => e.id == id).name.toString();
+  // }
 
-  void selectedVenue(int? id) {
-    selectedVenueData = VenuesModel(id: 0);
-    selectedVenueData = venuesList.firstWhere((venue) => venue.id == id);
-    notifyListeners();
-  }
-
-  String getMenuName(int id) {
-    return venueMenuList.firstWhere((e) => e.id == id).name.toString();
-  }
-
-  String getMenuPrice(int id) {
-    return venueMenuList.firstWhere((e) => e.id == id).price.toString();
-  }
+  // String getMenuPrice(int id) {
+  //   return venueMenuList.firstWhere((e) => e.id == id).price.toString();
+  // }
 }

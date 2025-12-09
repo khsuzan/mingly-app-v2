@@ -39,12 +39,18 @@ class VenueMenuScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: RefreshIndicator(
                 onRefresh: () {
-                  controller.fetchVenueMenu();
-                  return Future.delayed(Duration(seconds: 1));
+                  controller.fetchData();
+                  return Future.delayed(Duration(seconds: 500));
                 },
                 child: Obx(() {
                   if (controller.isVenueMenuLoading.value) {
-                    return const Center(child: CircularProgressIndicator());
+                    return CustomScrollView(
+                      slivers: [
+                        SliverFillRemaining(
+                          child: Center(child: CircularProgressIndicator()),
+                        ),
+                      ],
+                    );
                   }
                   final list = controller.menuList;
                   if (list.isEmpty) {

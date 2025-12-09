@@ -45,14 +45,24 @@ class VenuesRepo {
   Future<List<VenueMenuModel>> getVenueMenu(int venueId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final response = await ApiService().getList(
-      "/venue/$venueId/menues/",
+      "${AppUrls.menuList}?venue_id=$venueId",
       authToken: prefs.getString("authToken") ?? "",
     );
     return response.map((e) => VenueMenuModel.fromJson(e)).toList();
   }
+  Future<List<String>> getVenueMenuCategories() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final response = await ApiService().getList(
+      AppUrls.menuListCategory,
+      authToken: prefs.getString("authToken") ?? "",
+    );
+    return response.map<String>((e) => e.toString()).toList();
+  }
 
   /// Create an order (my menu checkout)
-  Future<MenuCreateResponse> createMyMenuOrder(Map<String, dynamic> payload) async {
+  Future<MenuCreateResponse> createMyMenuOrder(
+    Map<String, dynamic> payload,
+  ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final auth = prefs.getString("authToken") ?? "";
     final response = await ApiService().postDataRegular(

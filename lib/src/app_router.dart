@@ -168,11 +168,6 @@ class AppRouter {
           builder: (context, state) => const EventDetailsScreenOne(),
         ),
         GoRoute(
-          path: '/beverages',
-          builder: (context, state) =>
-              BeveragesScreen(venueId: state.extra as int),
-        ),
-        GoRoute(
           path: '/payment',
           builder: (context, state) => PaymentMethodScreen(),
         ),

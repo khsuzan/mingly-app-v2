@@ -12,6 +12,7 @@ class VenueMenuController extends GetxController {
   final int venueId;
   VenueMenuController({required this.venueId});
 
+  final categories = <String>['All'].obs;
   final menuList = <VenueMenuModel>[].obs;
   final isVenueMenuLoading = false.obs;
 
@@ -20,7 +21,24 @@ class VenueMenuController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchVenueMenu();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    isVenueMenuLoading.value = true;
+    await fetchVenueMenuCategories();
+    await fetchVenueMenu();
+    isVenueMenuLoading.value = false;
+  }
+
+  Future<void> fetchVenueMenuCategories() async {
+    try {
+      final response = await venueRepo.getVenueMenuCategories();
+      categories.value = response;
+    } catch (e, stack) {
+      debugPrint("Error fetching venue menu: $e");
+      debugPrintStack(stackTrace: stack);
+    }
   }
 
   Future<void> fetchVenueMenu() async {
