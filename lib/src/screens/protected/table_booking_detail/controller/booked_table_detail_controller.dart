@@ -4,12 +4,12 @@ import 'package:get/get.dart';
 import '../../../../application/events/model/event_details_model.dart';
 import '../../../../application/events/repo/events_repo.dart';
 
-class TableBookingController extends GetxController {
+class BookedTableDetailController extends GetxController {
   final detail = EventDetailsModel().obs;
   final EventsRepo eventsRepo = EventsRepo();
 
   final String id;
-  TableBookingController({required this.id});
+  BookedTableDetailController({required this.id});
   @override
   void onInit() {
     super.onInit();

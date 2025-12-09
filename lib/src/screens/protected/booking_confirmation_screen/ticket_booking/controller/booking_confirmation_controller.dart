@@ -25,14 +25,26 @@ class TicketBookingConfirmationController extends GetxController {
   TextEditingController? promoCodeController = TextEditingController();
 
   Future<void> buyTicketEvent(
-    BuildContext context,
-    Map<String, dynamic> data,
-    int eventId,
-    int venueId,
-  ) async {
-    LoadingDialog.show(context);
+    BuildContext context, {
+    required List<TicketBuyingInfo> items,
+    required String bookingDate,
+    required String promoCode,
+    required EventsModel event,
+  }) async {
     try {
-      final response = await eventRepo.buyEventTicket(data, eventId);
+      int eventId = event.id!;
+      int venueId = event.venue!.id!;
+
+      LoadingDialog.show(context);
+
+      final response = await eventRepo.buyEventTicket(
+        TicketBooking(
+          items: items,
+          promoCode: promoCode,
+          bookingDate: bookingDate,
+        ).toJson(),
+        eventId,
+      );
       TicketBookingSuccess ticketBookingSuccess = TicketBookingSuccess.fromJson(
         response,
       );

@@ -36,7 +36,7 @@ class MyBookingController extends GetxController {
     }
   }
 
-  Future<void> continueBooking(BuildContext context, String orderNumber) async {
+  Future<void> continueBooking(BuildContext context, String orderNumber, int? venueId) async {
     LoadingDialog.show(context);
     try {
       final response = await eventsRepo.continuePaymentEventTicket({
@@ -47,6 +47,7 @@ class MyBookingController extends GetxController {
           "/payment-screen",
           extra: PaymentFromArg(
             url: response.checkoutUrl,
+            venueId: venueId,
             fromScreen: FromScreen.ticketBooking,
           ),
         );

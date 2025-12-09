@@ -18,10 +18,10 @@ class HomeRepo {
     return response.map((e) => LeaderBoardModel.fromJson(e)).toList();
   }
 
-  Future<List<VenuesModel>> getFeaturedVenues() async {
+  Future<List<VenuesModel>> getFeaturedVenues(String location) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final response = await ApiService().getList(
-      '${AppUrls.venuesUrl}?featured=true',
+      "${AppUrls.venuesUrl}?featured=true&location=$location",
       authToken: preferences.getString("authToken"),
     );
     return response.map((e) => VenuesModel.fromJson(e)).toList();

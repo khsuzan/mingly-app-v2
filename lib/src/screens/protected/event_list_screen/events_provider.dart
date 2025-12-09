@@ -309,14 +309,6 @@ class EventsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<Map<String, dynamic>> buyTableTicketEvent(
-    Map<String, dynamic> data,
-    id,
-  ) async {
-    print(data);
-    final response = await EventsRepo().buyTableEventTicket(data, id);
-    return response;
-  }
 
   PopularEventModel popularEventModel = PopularEventModel();
   RecomendedEventModel recomendedEventModel = RecomendedEventModel();

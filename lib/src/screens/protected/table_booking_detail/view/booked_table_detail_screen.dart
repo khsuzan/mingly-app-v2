@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:mingly/src/application/booking/ticket_booking.dart';
 
 import '../../../../application/booking/booking_list.dart';
 import '../../../../components/helpers.dart';
 import '../../../../constant/app_urls.dart';
 import '../../table_booking_screen/controller/table_booking_controller.dart';
+import '../controller/booked_table_detail_controller.dart';
 
-class TableBookingDetail extends StatelessWidget {
+class BookoedTableDetail extends StatelessWidget {
   final BookingOrder booking;
 
-  const TableBookingDetail({super.key, required this.booking});
+  const BookoedTableDetail({super.key, required this.booking});
 
   Widget _buildHeader(BuildContext context) {
     // Prefer explicit table image supplied by controller; otherwise use event image.
-    final image = (booking.event.images.isNotEmpty
-        ? booking.event.images.first.imageUrl
-        : null);
+    final image = booking.event.images.firstOrNull?.imageUrl;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -24,8 +24,12 @@ class TableBookingDetail extends StatelessWidget {
         SizedBox(
           height: 200,
           width: double.infinity,
-          child: image != null && image.startsWith('http')
-              ? Image.network(AppUrls.imageUrl + image, fit: BoxFit.cover)
+          child: image != null
+              ? Image.network(
+                  AppUrls.imageUrl + image,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => const NoImage(),
+                )
               : const NoImage(),
         ),
         Padding(
@@ -113,8 +117,8 @@ class TableBookingDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return GetBuilder<TableBookingController>(
-      init: TableBookingController(eventId: '${booking.event.id}'),
+    return GetBuilder<BookedTableDetailController>(
+      init: BookedTableDetailController(id: booking.event.id.toString()),
       builder: (controller) {
         return Scaffold(
           appBar: AppBar(

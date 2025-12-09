@@ -303,14 +303,11 @@ class ApiService {
       if (authToken != null && authToken.isNotEmpty) {
         headers['Authorization'] = 'Bearer $authToken';
       }
-
-      final response = await http.get(
-        Uri.parse('${AppUrls.baseUrl}$endpoint'),
-        headers: headers,
-      );
+      final url = '${AppUrls.baseUrl}$endpoint';
+      final response = await http.get(Uri.parse(url), headers: headers);
 
       if (kDebugMode) {
-        print("Get List Response: ${response.body}");
+        print("Get List from: $url\n Response: ${response.body}");
       }
 
       return _handleListResponse(response);

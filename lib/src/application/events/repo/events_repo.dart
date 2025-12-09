@@ -112,9 +112,7 @@ class EventsRepo {
     return response;
   }
 
-  Future<PromoCodeModel> verifyPromoCode(
-    Map<String, dynamic> data,
-  ) async {
+  Future<PromoCodeModel> verifyPromoCode(Map<String, dynamic> data) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final response = await ApiService().postDataOrThrow(
       AppUrls.verifyPromoCode,
@@ -152,30 +150,17 @@ class EventsRepo {
   Future<List<EventTicketModelResponse>> getTablesTickets({
     required String eventId,
     required String date,
-    required String time,
+    required String sessionId,
   }) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final response = await ApiService().getList(
       AppUrls.getTableTickets
           .replaceFirst(":id", eventId)
           .replaceFirst(":date", date)
-          .replaceFirst(":time", time),
+          .replaceFirst(":session_id", sessionId),
       authToken: preferences.getString("authToken"),
     );
     return response.map((e) => EventTicketModelResponse.fromJson(e)).toList();
-  }
-
-  Future<Map<String, dynamic>> buyTableEventTicket(
-    Map<String, dynamic> data,
-    String id,
-  ) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    final response = await ApiService().postData(
-      "${AppUrls.tableBook}$id/",
-      data,
-      authToken: preferences.getString("authToken"),
-    );
-    return response;
   }
 
   Future<Map<String, dynamic>> getPopularEvent() async {

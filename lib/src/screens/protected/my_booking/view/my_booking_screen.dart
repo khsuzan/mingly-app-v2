@@ -110,7 +110,7 @@ class MyBookingsScreen extends StatelessWidget {
                           );
                         },
                         continueBooking: () {
-                          controller.continueBooking(context, item.orderNumber);
+                          controller.continueBooking(context, item.orderNumber, item.event.venue.id);
                         },
                       ),
                     );

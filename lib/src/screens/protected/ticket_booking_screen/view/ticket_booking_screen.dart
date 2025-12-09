@@ -1,7 +1,4 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
@@ -58,32 +55,8 @@ class TicketBookingScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Icon(Icons.calendar_today, color: Colors.white),
-                      SizedBox(width: 8),
-                      Text(
-                        //TODO: keep the date
-                        "formatDayAndDate(eventDetail.firstSessionDate ?? "")",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: const [
-                      Icon(Icons.store, color: Colors.white),
-                      SizedBox(width: 8),
-                      Text('Outlet', style: TextStyle(color: Colors.white)),
-                    ],
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 32),
-                    child: Text(
-                      '${event.venue?.name}\nCity - ${event.venue?.city}',
-                      style: TextStyle(color: Colors.white54, fontSize: 12),
-                    ),
-                  ),
+                  // Session Details Card
+                  _buildSessionDetailsCard(info),
                   const SizedBox(height: 24),
                   Obx(() {
                     return Column(
@@ -137,6 +110,8 @@ class TicketBookingScreen extends StatelessWidget {
                                   .where((t) => t.quantity > 0)
                                   .toList(),
                               promoCode: '',
+                              session: info.session,
+                              selectedDate: info.selectedDate,
                             ),
                           );
                         },
@@ -152,6 +127,113 @@ class TicketBookingScreen extends StatelessWidget {
       },
     );
   }
+
+  Widget _buildSessionDetailsCard(TicketBookInfoArg info) {
+    final session = info.session;
+    final selectedDate = info.selectedDate ?? 'Select Date';
+    final sessionType = (session?.sessionType ?? 'single')
+        .toString()
+        .toLowerCase();
+
+    String dateDisplay = selectedDate;
+    String timeDisplay = '';
+    String daysDisplay = '';
+
+    if (session != null) {
+      try {
+        final startTime = session.sessionStartTime;
+        final endTime = session.sessionEndTime;
+        if (startTime != null && endTime != null) {
+          timeDisplay =
+              '${formatTimeToAmPm(startTime)} – ${formatTimeToAmPm(endTime)}';
+        }
+
+        if (sessionType == 'weekly' &&
+            session.daysOfWeek is List &&
+            session.daysOfWeek.isNotEmpty) {
+          daysDisplay = session.daysOfWeek
+              .map((d) => _capitalize(d))
+              .join(', ');
+        }
+      } catch (_) {}
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Color(0xFF2E2D2C),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Color(0xFFD1B26F).withOpacity(0.3), width: 1),
+      ),
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Session Type Badge
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: Color(0xFFD1B26F).withOpacity(0.2),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(
+              sessionType.toUpperCase(),
+              style: TextStyle(
+                color: Color(0xFFD1B26F),
+                fontWeight: FontWeight.w600,
+                fontSize: 11,
+              ),
+            ),
+          ),
+          SizedBox(height: 8),
+          // Date
+          Row(
+            children: [
+              Icon(Icons.calendar_today, color: Color(0xFFD1B26F), size: 16),
+              SizedBox(width: 8),
+              Text(
+                dateDisplay,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+          if (timeDisplay.isNotEmpty) ...[
+            SizedBox(height: 8),
+            Row(
+              children: [
+                Icon(Icons.schedule, color: Color(0xFFD1B26F), size: 16),
+                SizedBox(width: 8),
+                Text(
+                  timeDisplay,
+                  style: TextStyle(color: Colors.white70, fontSize: 13),
+                ),
+              ],
+            ),
+          ],
+          if (daysDisplay.isNotEmpty) ...[
+            SizedBox(height: 8),
+            Row(
+              children: [
+                Icon(Icons.repeat, color: Color(0xFFD1B26F), size: 16),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    daysDisplay,
+                    style: TextStyle(color: Colors.white70, fontSize: 12),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  String _capitalize(String s) =>
+      s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
 }
 
 class _TicketOption extends StatelessWidget {
@@ -160,7 +242,6 @@ class _TicketOption extends StatelessWidget {
   final int? qty;
   final int selectedQty;
   final bool soldOut;
-  final bool showFire;
   final String id;
   final Function(int) onSelectTicket;
   const _TicketOption({
@@ -170,61 +251,131 @@ class _TicketOption extends StatelessWidget {
     this.qty,
     this.selectedQty = 0,
     this.soldOut = false,
-    this.showFire = false,
     required this.onSelectTicket,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Card(
-        color: Color(0xFF2E2D2C),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: ListTile(
-          title: Row(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Color(0xFF2E2D2C),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: selectedQty > 0 ? Color(0xFFD1B26F) : Colors.transparent,
+            width: 1.5,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(
             children: [
-              Text(title, style: const TextStyle(color: Colors.white)),
-              if (showFire) ...[
-                const SizedBox(width: 4),
-                Text('26#128293', style: TextStyle(fontSize: 16)),
-              ],
+              // Ticket Info Section
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                      ),
+                    ),
+                    SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Text(
+                          '\$$price',
+                          style: TextStyle(
+                            color: Color(0xFFD1B26F),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        SizedBox(width: 12),
+                        if (qty != null)
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.white10,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              '$qty left',
+                              style: TextStyle(
+                                color: Colors.white60,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              // Quantity Selector
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildQuantityButton(
+                      icon: Icons.remove,
+                      onTap: selectedQty > 0 ? () => onSelectTicket(-1) : null,
+                    ),
+                    Container(
+                      width: 40,
+                      child: Center(
+                        child: Text(
+                          selectedQty.toString(),
+                          style: TextStyle(
+                            color: Color(0xFFD1B26F),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    _buildQuantityButton(
+                      icon: Icons.add,
+                      onTap: (qty == null || selectedQty < qty!) ? () => onSelectTicket(1) : null,
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
-          subtitle: qty != null
-              ? Text(
-                  '\$$price\nTotal Tickets: $qty',
-                  style: const TextStyle(color: Colors.white54),
-                )
-              : Text('\$$price', style: const TextStyle(color: Colors.white54)),
-          trailing: SizedBox(
-            width: 100,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                SizedBox(
-                  width: 36.h,
-                  height: 36.h,
-                  child: InkWell(
-                    onTap: () {
-                      onSelectTicket(-1);
-                    },
-                    child: const Icon(Icons.chevron_left, color: Colors.white),
-                  ),
-                ),
-                Text(selectedQty.toString(), style: TextStyle(fontSize: 18.sp)),
-                SizedBox(
-                  width: 36.h,
-                  height: 36.h,
-                  child: InkWell(
-                    onTap: () {
-                      onSelectTicket(1);
-                    },
-                    child: const Icon(Icons.chevron_right, color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuantityButton({
+    required IconData icon,
+    required VoidCallback? onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(6),
+        child: Container(
+          width: 28,
+          height: 28,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Icon(
+            icon,
+            color: onTap != null ? Color(0xFFD1B26F) : Colors.white30,
+            size: 16,
           ),
         ),
       ),

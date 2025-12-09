@@ -3,7 +3,7 @@ class AppUrls {
   // static String imageUrl = "https://backendapi.mingly.org";
   // static String imageUrlApp = "https://admin.mingly.org";
 
-  static String baseUrl = "http://192.168.0.147:8900/app/api/v1";
+  static String baseUrl = "http://10.10.13.11:8900/app/api/v1";
   static String imageUrl = "https://backendapi.mingly.org";
   static String imageUrlApp = "https://admin.mingly.org";
   
@@ -42,7 +42,7 @@ class AppUrls {
   static String tableBook = "/book-table/";
 
   static String getTableTickets =
-      "/event_tickets/:id/table/?slot_start=:time&date=:date";
+      "/event_tickets/:id/table/?booking_date=:date&session_id=:session_id";
   //top leader board
   static String featuredSection = "/featured-images/";
   //top leader board

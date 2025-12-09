@@ -86,8 +86,8 @@ class MyReservationsScreen extends StatelessWidget {
                         onVenueMenuClick: () {},
                         onPaymentsClick: () {
                           controller.payForReservation(context, {
-                            "order_id": item.orderNumber
-                          });
+                            "order_id": item.orderNumber,
+                          }, item.venue?.id);
                         },
                       ),
                     );

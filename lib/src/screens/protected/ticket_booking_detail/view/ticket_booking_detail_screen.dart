@@ -3,28 +3,30 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../application/booking/booking_list.dart';
 import '../../../../components/helpers.dart';
+import '../../../../constant/app_urls.dart';
 
-class TicketBookingDetail extends StatelessWidget {
+class BookedTicketDetailScreen extends StatelessWidget {
   final BookingOrder booking;
-  const TicketBookingDetail({super.key, required this.booking});
+  const BookedTicketDetailScreen({super.key, required this.booking});
 
   Widget _buildHeader(BuildContext context) {
-    final image = booking.event.images.isNotEmpty
-        ? booking.event.images.first.imageUrl
-        : null;
-
+    final image = booking.event.images.firstOrNull?.imageUrl;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
           height: 200,
           width: double.infinity,
-          child: image != null && image.startsWith('http')
-              ? Image.network(image, fit: BoxFit.cover)
+          child: image != null
+              ? Image.network(
+                  AppUrls.imageUrl + image,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => const NoImage(),
+                )
               : const NoImage(),
         ),
         Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.symmetric(vertical: 12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

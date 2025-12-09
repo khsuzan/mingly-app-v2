@@ -36,6 +36,7 @@ class MyReservationsController extends GetxController {
   Future<void> payForReservation(
     BuildContext context,
     Map<String, dynamic> data,
+    int? venueId,
   ) async {
     LoadingDialog.show(context);
     try {
@@ -45,7 +46,7 @@ class MyReservationsController extends GetxController {
           "/payment-screen",
           extra: PaymentFromArg(
             url: response.checkoutUrl,
-            venueId: null,
+            venueId: venueId,
             fromScreen: FromScreen.reservationPayment,
           ),
         );
