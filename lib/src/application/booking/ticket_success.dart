@@ -70,7 +70,7 @@ class AvailableTicket {
     } else if (raw is num) {
       soldOut = raw.toInt() == 1;
     } else {
-      soldOut = '${raw}' == '1' || '${raw}' == 'true';
+      soldOut = '$raw' == '1' || '$raw' == 'true';
     }
 
     return AvailableTicket(

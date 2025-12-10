@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:mingly/src/application/booking/ticket_booking.dart';
 
 import '../../../../application/booking/booking_list.dart';
 import '../../../../components/helpers.dart';
 import '../../../../constant/app_urls.dart';
-import '../../table_booking_screen/controller/table_booking_controller.dart';
 import '../controller/booked_table_detail_controller.dart';
 
 class BookoedTableDetail extends StatelessWidget {

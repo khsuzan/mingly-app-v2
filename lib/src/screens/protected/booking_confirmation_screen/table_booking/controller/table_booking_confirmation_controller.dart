@@ -27,6 +27,7 @@ class TableBookingConfirmationController extends GetxController {
     required String bookingDate,
     required String promoCode,
     required EventsModel event,
+    required int sessionId,
   }) async {
     try {
       int eventId = event.id!;
@@ -39,6 +40,7 @@ class TableBookingConfirmationController extends GetxController {
           items: items,
           promoCode: promoCode,
           bookingDate: bookingDate,
+          sessionId: sessionId,
         ).toJson(),
         eventId,
       );

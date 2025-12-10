@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mingly/src/components/helpers.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 import 'package:mingly/src/screens/protected/event_list_screen/controller/event_list_controller.dart';
 
@@ -69,14 +70,6 @@ class EventListScreen extends StatelessWidget {
                             if (picked != null) {
                               controller.setDate(picked);
                             }
-
-                            // if (picked != null) {
-                            //   setState(() => _selectedDate = picked);
-                            // }
-                            // await eventProvider.getEventListSearch(
-                            //   _selectedDate.toString(),
-                            //   _searchQuery,
-                            // );
                           },
                           child: Container(
                             height: 48,
@@ -100,14 +93,20 @@ class EventListScreen extends StatelessWidget {
                                   height: 20,
                                 ),
                                 const SizedBox(width: 4),
-                                Obx(
-                                  () => Text(
-                                    controller.filters.value.date == null
-                                        ? "Date"
-                                        : "${controller.filters.value.date}",
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      height: 1.2,
+                                Expanded(
+                                  child: Obx(
+                                    () => Text(
+                                      controller.filters.value.date == null
+                                          ? "Date"
+                                          : formatAmericaToAsiaDate(
+                                              controller.filters.value.date!,
+                                            ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        height: 1.2,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -324,7 +323,9 @@ class _EventCard extends StatelessWidget {
                         return Container(
                           height: 160,
                           width: double.infinity,
-                          color: Colors.grey.shade300.withOpacity(0.4),
+                          color: Colors.grey.shade300.withAlpha(
+                            (255 * 0.4).toInt(),
+                          ),
                           child: const Center(
                             child: CircularProgressIndicator(
                               color: Colors.white,

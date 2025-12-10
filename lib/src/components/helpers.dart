@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 import 'package:mingly/src/components/buttons.dart';
 import 'package:intl/intl.dart';
 import 'inputs.dart';
@@ -194,6 +193,16 @@ String formatDayAndDate(String dateString) {
     String day = DateFormat('EEE').format(dateTime); // Mon, Tue, etc.
     String date = DateFormat('dd MMM yyyy').format(dateTime); // 14 Nov 2025
     return "$day, $date";
+  } catch (e) {
+    return dateString;
+  }
+}
+
+String formatAmericaToAsiaDate(String dateString, [frmt = 'dd MMM yyyy']) {
+  try {
+    DateTime dateTime = DateTime.parse(dateString).toLocal();
+    String date = DateFormat(frmt).format(dateTime); // 14 Nov 2025
+    return date;
   } catch (e) {
     return dateString;
   }

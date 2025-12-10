@@ -73,7 +73,7 @@ class VenueDetailScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-        
+
                 DecoratedBox(
                   decoration: BoxDecoration(
                     border: Border(
@@ -127,7 +127,7 @@ class VenueDetailScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-        
+
                 const SizedBox(height: 16),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -190,10 +190,12 @@ class VenueDetailScreen extends StatelessWidget {
                         Map<String, dynamic>? openMap;
                         Map<String, dynamic>? closeMap;
                         try {
-                          if (openStr.trim().startsWith('{') && openStr.trim().endsWith('}')) {
+                          if (openStr.trim().startsWith('{') &&
+                              openStr.trim().endsWith('}')) {
                             openMap = jsonDecode(openStr);
                           }
-                          if (closeStr.trim().startsWith('{') && closeStr.trim().endsWith('}')) {
+                          if (closeStr.trim().startsWith('{') &&
+                              closeStr.trim().endsWith('}')) {
                             closeMap = jsonDecode(closeStr);
                           }
                         } catch (_) {}
@@ -203,9 +205,15 @@ class VenueDetailScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: openMap.keys.map((day) {
                               final openValue = openMap![day]?.toString() ?? '';
-                              final closeValue = closeMap != null ? closeMap[day]?.toString() ?? '' : '';
-                              final openFormatted = openValue.isNotEmpty ? formatHourMinuteToAmPm(openValue) : '';
-                              final closeFormatted = closeValue.isNotEmpty ? formatHourMinuteToAmPm(closeValue) : '';
+                              final closeValue = closeMap != null
+                                  ? closeMap[day]?.toString() ?? ''
+                                  : '';
+                              final openFormatted = openValue.isNotEmpty
+                                  ? formatHourMinuteToAmPm(openValue)
+                                  : '';
+                              final closeFormatted = closeValue.isNotEmpty
+                                  ? formatHourMinuteToAmPm(closeValue)
+                                  : '';
                               return Text(
                                 '${day[0].toUpperCase()}${day.substring(1)}: $openFormatted - $closeFormatted',
                                 style: TextStyle(color: Colors.white70),
@@ -313,168 +321,6 @@ class VenueDetailScreen extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _PopularEventCard extends StatelessWidget {
-  String name;
-  String image;
-
-  _PopularEventCard({Key? key, required this.image, required this.name})
-    : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: Theme.of(context).colorScheme.surface,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
-            ),
-            child: Stack(
-              children: [
-                Container(
-                  height: 200,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade900, // fallback background color
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey.shade800, width: 1),
-                  ),
-                  clipBehavior:
-                      Clip.antiAlias, // ensures image respects borderRadius
-                  child: image != null && image.isNotEmpty
-                      ? Image.network(
-                          image,
-                          height: 200,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => Center(
-                            child: Icon(
-                              Icons.broken_image,
-                              color: Colors.grey.shade600,
-                              size: 40,
-                            ),
-                          ),
-                        )
-                      : Center(
-                          child: Icon(
-                            Icons.image_not_supported,
-                            color: Colors.grey.shade600,
-                            size: 40,
-                          ),
-                        ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Text(
-                          'Dance',
-                          style: TextStyle(color: Colors.white, fontSize: 12),
-                        ),
-                      ),
-                      const Spacer(),
-                      DecoratedBox(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
-                          color: Colors.white,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(3.0),
-                          child: Icon(
-                            Icons.favorite_border,
-                            color: Color(0xFFFFE7B9),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 8),
-                Text(
-                  name!,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                const Text(
-                  'THU 26 May, 09:00 - 10:00',
-                  style: TextStyle(color: Colors.white70),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    ...List.generate(
-                      3,
-                      (index) => Padding(
-                        padding: const EdgeInsets.only(right: 4),
-                        child: CircleAvatar(
-                          radius: 12,
-                          backgroundColor: Colors.grey.shade800,
-                          child: Icon(
-                            Icons.person,
-                            size: 14,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Text(
-                        '+15',
-                        style: TextStyle(color: Colors.black, fontSize: 10),
-                      ),
-                    ),
-                    const Spacer(),
-                    Text(
-                      '\$30.00',
-                      style: TextStyle(
-                        color: const Color(0xFFE6B863),
-                        fontSize: 14,
-                        fontFamily: 'Gotham',
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }

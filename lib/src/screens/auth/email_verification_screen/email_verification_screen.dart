@@ -73,21 +73,23 @@ class EmailVerificationScreen extends StatelessWidget {
               onPressed: () async {
                 LoadingDialog.show(context);
                 final status = await provider.sendOtp();
-                if (status["message"] != null) {
-                  LoadingDialog.hide(context);
-                  CustomSnackbar.show(
-                    context,
-                    message: status["message"],
-                    backgroundColor: Colors.green,
-                  );
-                  context.push("/otp-verification-forgot-password");
-                } else if (status["errors"] != null) {
-                  LoadingDialog.hide(context);
-                  CustomSnackbar.show(
-                    context,
-                    message: status["errors"],
-                    backgroundColor: Colors.red,
-                  );
+                if (context.mounted) {
+                  if (status["message"] != null) {
+                    LoadingDialog.hide(context);
+                    CustomSnackbar.show(
+                      context,
+                      message: status["message"],
+                      backgroundColor: Colors.green,
+                    );
+                    context.push("/otp-verification-forgot-password");
+                  } else if (status["errors"] != null) {
+                    LoadingDialog.hide(context);
+                    CustomSnackbar.show(
+                      context,
+                      message: status["errors"],
+                      backgroundColor: Colors.red,
+                    );
+                  }
                 }
               },
             ),

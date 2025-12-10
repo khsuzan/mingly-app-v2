@@ -251,7 +251,7 @@ class EventDetailScreen extends StatelessWidget {
                     color: theme.colorScheme.surface,
                     border: Border(
                       top: BorderSide(
-                        color: Color(0xFFD1B26F).withOpacity(0.2),
+                        color: Color(0xFFD1B26F).withAlpha((255 * 0.2).toInt()),
                         width: 1,
                       ),
                     ),
@@ -560,7 +560,7 @@ class _EventSessionsWidgetState extends State<EventSessionsWidget> {
           color: Color(0xFF2E2D2C),
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: Color(0xFFD1B26F).withOpacity(0.3),
+            color: Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt()),
             width: 1,
           ),
         ),
@@ -749,7 +749,7 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
                 ],
               ),
             ),
-            Divider(color: Color(0xFFD1B26F).withOpacity(0.2)),
+            Divider(color: Color(0xFFD1B26F).withAlpha((255 * 0.2).toInt())),
 
             // Sessions List
             Expanded(
@@ -788,7 +788,7 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
             border: Border.all(
               color: selectedSession == session
                   ? Color(0xFFD1B26F)
-                  : Color(0xFFD1B26F).withOpacity(0.3),
+                  : Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt()),
               width: selectedSession == session ? 2 : 1,
             ),
           ),
@@ -802,7 +802,7 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: Color(0xFFD1B26F).withOpacity(0.2),
+                      color: Color(0xFFD1B26F).withAlpha((255 * 0.2).toInt()),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
@@ -886,7 +886,7 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
     return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Color(0xFFD1B26F).withOpacity(0.1),
+        color: Color(0xFFD1B26F).withAlpha((255 * 0.1).toInt()),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -931,9 +931,9 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
-              color: Color(0xFFD1B26F).withOpacity(0.1),
+              color: Color(0xFFD1B26F).withAlpha((255 * 0.1).toInt()),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Color(0xFFD1B26F).withOpacity(0.3)),
+              border: Border.all(color: Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt())),
             ),
             child: Row(
               children: [
@@ -1001,9 +1001,9 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
-              color: Color(0xFFD1B26F).withOpacity(0.1),
+              color: Color(0xFFD1B26F).withAlpha((255 * 0.1).toInt()),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Color(0xFFD1B26F).withOpacity(0.3)),
+              border: Border.all(color: Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt())),
             ),
             child: Row(
               children: [
@@ -1059,9 +1059,9 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
-              color: Color(0xFFD1B26F).withOpacity(0.1),
+              color: Color(0xFFD1B26F).withAlpha((255 * 0.1).toInt()),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Color(0xFFD1B26F).withOpacity(0.3)),
+              border: Border.all(color: Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt())),
             ),
             child: Row(
               children: [
@@ -1107,7 +1107,7 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
     return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Color(0xFFD1B26F).withOpacity(0.1),
+        color: Color(0xFFD1B26F).withAlpha((255 * 0.1).toInt()),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(

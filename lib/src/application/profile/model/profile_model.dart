@@ -6,12 +6,12 @@ class ProfileModel {
 
   ProfileModel.fromJson(Map<String, dynamic> json) {
     message = json['message'];
-    data = json['data'] != null ? new PersonalInformation.fromJson(json['data']) : null;
+    data = json['data'] != null ? PersonalInformation.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['message'] = this.message;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['message'] = message;
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }
@@ -26,6 +26,7 @@ class PersonalInformation {
   String? lastName;
   String? address;
   String? avatar;
+  String? gender;
   String? membershipStatus;
   int? points;
   int? currentPoints;
@@ -41,6 +42,7 @@ class PersonalInformation {
       this.lastName,
       this.address,
       this.avatar,
+      this.gender,
       this.membershipStatus,
       this.points,
       this.currentPoints,
@@ -54,6 +56,7 @@ class PersonalInformation {
     lastName = json['last_name'];
     address = json['address'];
     avatar = json['avatar'];
+    gender = json['gender'];
     membershipStatus = json['membership_status'];
     points = json['points'];
     currentPoints = json['current_points'];
@@ -63,18 +66,19 @@ class PersonalInformation {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['full_name'] = this.fullName;
-    data['mobile'] = this.mobile;
-    data['first_name'] = this.firstName;
-    data['last_name'] = this.lastName;
-    data['address'] = this.address;
-    data['avatar'] = this.avatar;
-    data['membership_status'] = this.membershipStatus;
-    data['points'] = this.points;
-    data['current_points'] = this.currentPoints;
-    data['target_points'] = this.targetPoints;
-    data['progress'] = this.progress;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['full_name'] = fullName;
+    data['mobile'] = mobile;
+    data['first_name'] = firstName;
+    data['last_name'] = lastName;
+    data['address'] = address;
+    data['avatar'] = avatar;
+    data['gender'] = gender;
+    data['membership_status'] = membershipStatus;
+    data['points'] = points;
+    data['current_points'] = currentPoints;
+    data['target_points'] = targetPoints;
+    data['progress'] = progress;
     return data;
   }
 }

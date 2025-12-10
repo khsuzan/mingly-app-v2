@@ -59,7 +59,9 @@ Future<void> showLogoutDialog(BuildContext context) {
                   } else {
                     preferences.remove("authToken");
                   }
-                  context.go("/login");
+                  if (context.mounted) {
+                    context.go("/login");
+                  }
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -91,7 +93,6 @@ Future<void> showAccountDeleteDialog(BuildContext context) {
     context: context,
     barrierDismissible: false, // user must tap button or close
     builder: (BuildContext context) {
-      final theme = Theme.of(context);
       return Dialog(
         backgroundColor: Color(0xFF121C24),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

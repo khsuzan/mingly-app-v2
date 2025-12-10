@@ -8,7 +8,7 @@ class BookedTableDetailController extends GetxController {
   final detail = EventDetailsModel().obs;
   final EventsRepo eventsRepo = EventsRepo();
 
-  final String id;
+  final String id; // event id
   BookedTableDetailController({required this.id});
   @override
   void onInit() {

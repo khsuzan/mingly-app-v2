@@ -10,6 +10,7 @@ import '../../../../components/custom_snackbar.dart';
 import '../../../../components/helpers.dart';
 import '../../../../constant/app_urls.dart';
 import '../controller/table_booking_controller.dart';
+import '../model/ticket_info.dart';
 
 class TableBookingScreen extends StatelessWidget {
   final TableBookingInfoArg info;
@@ -91,11 +92,14 @@ class TableBookingScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Obx(() {
-                    if (controller.filteredList.isEmpty) {
-                      return Center(
-                        child: Text(
-                          'No tables available',
-                          style: TextStyle(color: Colors.white70),
+                    if (controller.tables.isEmpty) {
+                      return SizedBox(
+                        height: 200.h,
+                        child: Center(
+                          child: Text(
+                            'No tables available',
+                            style: TextStyle(color: Colors.white70),
+                          ),
                         ),
                       );
                     }
@@ -104,26 +108,21 @@ class TableBookingScreen extends StatelessWidget {
                       spacing: 8,
                       runSpacing: 8,
                       children: [
-                        ...List.generate(controller.filteredList.length, (
-                          index,
-                        ) {
-                          final table =
-                              controller.filteredList[index].ticketInfo;
-                          final isAvailable =
-                              controller.filteredList[index].status ==
-                              "available";
+                        ...List.generate(controller.tables.length, (index) {
+                          final table = controller.tables[index].ticketInfo;
+                          final info = TableTicketInfo.fromTicketInfo(table);
 
                           return _TableSlotButton(
                             id: table.id,
                             label: table.title ?? '',
-                            available: isAvailable,
+                            available: info.isAvailable,
                             price: table.price ?? '',
                             priceUnit: "\$",
                             selected: selectedTables.any(
-                              (t) => t.id == controller.filteredList[index].id,
+                              (t) => t.id == controller.tables[index].id,
                             ),
                             onClicked: () {
-                              if (isAvailable) {
+                              if (info.isAvailable) {
                                 controller.toggleTableSelection(table);
                               }
                             },
@@ -236,7 +235,7 @@ class TableBookingScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Color(0xFF2E2D2C),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Color(0xFFD1B26F).withOpacity(0.3), width: 1),
+        border: Border.all(color: Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt()), width: 1),
       ),
       padding: const EdgeInsets.all(14),
       child: Column(
@@ -256,7 +255,7 @@ class TableBookingScreen extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
-                  color: Color(0xFFD1B26F).withOpacity(0.2),
+                  color: Color(0xFFD1B26F).withAlpha((255 * 0.2).toInt()),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
@@ -311,9 +310,9 @@ class TableBookingScreen extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Color(0xFFD1B26F).withOpacity(0.1),
+        color: Color(0xFFD1B26F).withAlpha((255 * 0.1).toInt()),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Color(0xFFD1B26F).withOpacity(0.3), width: 1),
+        border: Border.all(color: Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt()), width: 1),
       ),
       child: Material(
         color: Colors.transparent,
@@ -408,14 +407,14 @@ class TableBookingScreen extends StatelessWidget {
                 height: 150,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Colors.black.withOpacity(0.3),
+                  color: Colors.black.withAlpha((255 * 0.3).toInt()),
                 ),
               );
             }
             return Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: Colors.black.withOpacity(0.3),
+                color: Colors.black.withAlpha((255 * 0.3).toInt()),
               ),
               child: SizedBox(
                 width: double.infinity,
@@ -445,7 +444,7 @@ class TableBookingScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Color(0xFF2E2D2C),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Color(0xFFD1B26F).withOpacity(0.3), width: 1),
+        border: Border.all(color: Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt()), width: 1),
       ),
       padding: const EdgeInsets.all(14),
       child: Column(
@@ -463,7 +462,7 @@ class TableBookingScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.05),
+              color: Colors.white.withAlpha((255 * 0.05).toInt()),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Column(
@@ -650,7 +649,7 @@ class _SessionSelectionSheetForTableBookingState
                 ],
               ),
             ),
-            Divider(color: Color(0xFFD1B26F).withOpacity(0.2)),
+            Divider(color: Color(0xFFD1B26F).withAlpha((255 * 0.2).toInt())),
 
             // Sessions List
             Expanded(
@@ -689,7 +688,7 @@ class _SessionSelectionSheetForTableBookingState
             border: Border.all(
               color: selectedSession == session
                   ? Color(0xFFD1B26F)
-                  : Color(0xFFD1B26F).withOpacity(0.3),
+                  : Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt()),
               width: selectedSession == session ? 2 : 1,
             ),
           ),
@@ -703,7 +702,7 @@ class _SessionSelectionSheetForTableBookingState
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: Color(0xFFD1B26F).withOpacity(0.2),
+                      color: Color(0xFFD1B26F).withAlpha((255 * 0.2).toInt()),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
@@ -786,7 +785,7 @@ class _SessionSelectionSheetForTableBookingState
     return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Color(0xFFD1B26F).withOpacity(0.1),
+        color: Color(0xFFD1B26F).withAlpha((255 * 0.1).toInt()),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -829,9 +828,9 @@ class _SessionSelectionSheetForTableBookingState
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
-              color: Color(0xFFD1B26F).withOpacity(0.1),
+              color: Color(0xFFD1B26F).withAlpha((255 * 0.1).toInt()),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Color(0xFFD1B26F).withOpacity(0.3)),
+              border: Border.all(color: Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt())),
             ),
             child: Row(
               children: [
@@ -897,9 +896,9 @@ class _SessionSelectionSheetForTableBookingState
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
-              color: Color(0xFFD1B26F).withOpacity(0.1),
+              color: Color(0xFFD1B26F).withAlpha((255 * 0.1).toInt()),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Color(0xFFD1B26F).withOpacity(0.3)),
+              border: Border.all(color: Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt())),
             ),
             child: Row(
               children: [
@@ -953,9 +952,9 @@ class _SessionSelectionSheetForTableBookingState
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
-              color: Color(0xFFD1B26F).withOpacity(0.1),
+              color: Color(0xFFD1B26F).withAlpha((255 * 0.1).toInt()),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Color(0xFFD1B26F).withOpacity(0.3)),
+              border: Border.all(color: Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt())),
             ),
             child: Row(
               children: [
@@ -999,7 +998,7 @@ class _SessionSelectionSheetForTableBookingState
     return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Color(0xFFD1B26F).withOpacity(0.1),
+        color: Color(0xFFD1B26F).withAlpha((255 * 0.1).toInt()),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(

@@ -1,7 +1,6 @@
 import 'package:avatar_stack/animated_avatar_stack.dart'
     show AnimatedAvatarStack;
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

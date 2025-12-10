@@ -33,13 +33,15 @@ class TableBookingController extends GetxController {
   // selected for booking
   RxList<EventsTicketModel> selectedTables = <EventsTicketModel>[].obs;
 
-  RxList<EventTicketModelResponse> get filteredList => tables;
-
   @override
   void onInit() {
     super.onInit();
     fetchDetail();
     fetchTablesTickets();
+
+    ever(selectedSessionIndex, (_) {
+      fetchTablesTickets();
+    });
   }
 
   void selectTimeSlot(EventSessionModel session) {

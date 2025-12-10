@@ -28,14 +28,14 @@ class VenueMenuModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['venue_id'] = this.venueId;
-    data['image'] = this.image;
-    data['name'] = this.name;
-    data['description'] = this.description;
-    data['price'] = this.price;
-    data['quantity'] = this.quantity;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['venue_id'] = venueId;
+    data['image'] = image;
+    data['name'] = name;
+    data['description'] = description;
+    data['price'] = price;
+    data['quantity'] = quantity;
     return data;
   }
 }

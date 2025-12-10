@@ -65,23 +65,29 @@ class NotificationScreen extends StatelessWidget {
                     ],
                   );
                 }
-                return SingleChildScrollView(
-                  child: SafeArea(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: List.generate(
-                        controller.notifications.length,
-                        (index) => _NotificationItem(
-                          icon: Icons.calendar_today,
-                          title: controller.notifications[index].title
-                              .toString(),
-                          subtitle: controller.notifications[index].message
-                              .toString(),
-                          date: controller.notifications[index].createdAt
-                              .toString(),
+                return SafeArea(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.only(top: 0, bottom: 32),
+                    itemCount: controller.notifications.length,
+                    itemBuilder: (context, index) {
+                      final notification = controller.notifications[index];
+                      return Padding(
+                        padding: EdgeInsets.only(
+                          bottom: index == controller.notifications.length - 1
+                              ? 32.0
+                              : 8.0,
+                          top: 8.0,
+                          left: 0,
+                          right: 0,
                         ),
-                      ),
-                    ),
+                        child: _NotificationItem(
+                          icon: Icons.calendar_today,
+                          title: notification.title.toString(),
+                          subtitle: notification.message.toString(),
+                          date: notification.createdAt.toString(),
+                        ),
+                      );
+                    },
                   ),
                 );
               }),

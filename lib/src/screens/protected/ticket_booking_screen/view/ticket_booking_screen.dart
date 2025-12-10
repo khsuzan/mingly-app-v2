@@ -162,7 +162,7 @@ class TicketBookingScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Color(0xFF2E2D2C),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Color(0xFFD1B26F).withOpacity(0.3), width: 1),
+        border: Border.all(color: Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt()), width: 1),
       ),
       padding: const EdgeInsets.all(12),
       child: Column(
@@ -172,7 +172,7 @@ class TicketBookingScreen extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: Color(0xFFD1B26F).withOpacity(0.2),
+              color: Color(0xFFD1B26F).withAlpha((255 * 0.2).toInt()),
               borderRadius: BorderRadius.circular(6),
             ),
             child: Text(
@@ -319,7 +319,7 @@ class _TicketOption extends StatelessWidget {
               // Quantity Selector
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.08),
+                  color: Colors.white.withAlpha((255 * 0.08).toInt()),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -330,7 +330,7 @@ class _TicketOption extends StatelessWidget {
                       icon: Icons.remove,
                       onTap: selectedQty > 0 ? () => onSelectTicket(-1) : null,
                     ),
-                    Container(
+                    SizedBox(
                       width: 40,
                       child: Center(
                         child: Text(

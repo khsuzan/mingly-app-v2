@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mingly/src/components/custom_loading_dialog.dart';
 import 'package:mingly/src/components/custom_snackbar.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -8,9 +9,8 @@ import '../../../../application/payment/model/payment_from.dart';
 
 class StripePaymentWebView extends StatefulWidget {
   final PaymentFromArg arg;
-  final void Function()? onSuccess;
 
-  const StripePaymentWebView({super.key, required this.arg, this.onSuccess});
+  const StripePaymentWebView({super.key, required this.arg});
 
   @override
   State<StripePaymentWebView> createState() => _StripePaymentWebViewState();
@@ -80,28 +80,33 @@ class _StripePaymentWebViewState extends State<StripePaymentWebView> {
             // ✅ Detect PayFast success
             if (request.url.contains(successUrlPattern)) {
               _showSuccessSnackBar();
-              widget.onSuccess?.call();
-              // Remove all previous routes and push the target route as the new root
-              if (widget.arg.fromScreen == FromScreen.ticketBooking ||
-                  widget.arg.fromScreen == FromScreen.tableBooking) {
-                context.go('/home');
-                context.push('/venue-menu', extra: widget.arg.venueId);
-              } else if (widget.arg.fromScreen == FromScreen.menuBooking) {
-                context.go('/home');
-                context.push('/my-menu');
-              } else if (widget.arg.fromScreen ==
-                  FromScreen.reservationPayment) {
-                context.go('/home');
-                context.push('/my-reservation');
-              } else if (widget.arg.fromScreen ==
-                  FromScreen.membershipPayment) {
-                context.go('/home');
-                context.push('/membership');
+              if (mounted) {
+                LoadingDialog.show(context);
               }
+              Future.delayed(Duration(seconds: 5), () {
+                if (mounted) {
+                  LoadingDialog.hide(context);
+                  if (widget.arg.fromScreen == FromScreen.ticketBooking ||
+                      widget.arg.fromScreen == FromScreen.tableBooking) {
+                    context.go('/home');
+                    context.push('/venue-menu', extra: widget.arg.venueId);
+                  } else if (widget.arg.fromScreen == FromScreen.menuBooking) {
+                    context.go('/home');
+                    context.push('/my-menu');
+                  } else if (widget.arg.fromScreen ==
+                      FromScreen.reservationPayment) {
+                    context.go('/home');
+                    context.push('/my-reservation');
+                  } else if (widget.arg.fromScreen ==
+                      FromScreen.membershipPayment) {
+                    context.pop();
+                    context.push('/membership');
+                  }
+                }
+              });
               // All previous routes including /payment are removed from the stack
               return NavigationDecision.prevent;
             }
-
             // ✅ Detect PayFast cancel
             if (request.url.contains(cancelUrlPattern)) {
               _showCancelledSnackBar();
@@ -137,7 +142,7 @@ class _StripePaymentWebViewState extends State<StripePaymentWebView> {
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 2,
-        shadowColor: Colors.black.withOpacity(0.1),
+        shadowColor: Colors.black.withAlpha((255 * 0.1).toInt()),
         leading: IconButton(
           icon: Icon(Icons.close, color: Colors.black54),
           onPressed: () {
@@ -171,7 +176,7 @@ class _StripePaymentWebViewState extends State<StripePaymentWebView> {
                       Container(
                         padding: EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: Colors.green.withOpacity(0.1),
+                          color: Colors.green.withAlpha((255 * 0.1).toInt()),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: CircularProgressIndicator(

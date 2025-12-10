@@ -5,10 +5,12 @@ class TicketBooking {
   List<TicketBuyingInfo> items;
   String promoCode;
   String bookingDate;
+  int sessionId;
   TicketBooking({
     required this.items,
     required this.promoCode,
     required this.bookingDate,
+    required this.sessionId,
   });
 
   Map<String, dynamic> toJson() {
@@ -16,6 +18,7 @@ class TicketBooking {
       'items': items.map((e) => e.toJson()).toList(),
       'promo_code': promoCode,
       'booking_date': bookingDate,
+      'session': sessionId,
     };
   }
 }

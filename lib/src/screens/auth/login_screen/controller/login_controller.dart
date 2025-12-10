@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mingly/src/screens/auth/auth_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../api_service/api_service.dart';

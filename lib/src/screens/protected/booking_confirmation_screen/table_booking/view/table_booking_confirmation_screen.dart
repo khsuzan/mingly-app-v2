@@ -183,6 +183,7 @@ class TableBookingConfirmationScreen extends StatelessWidget {
                           ),
                           promoCode: controller.promo.value.code ?? "",
                           event: event,
+                          sessionId: session.id!,
                         );
                       },
                     ),
@@ -219,7 +220,10 @@ class TableBookingConfirmationScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Color(0xFF2E2D2C),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Color(0xFFD1B26F).withOpacity(0.3), width: 1),
+        border: Border.all(
+          color: Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt()),
+          width: 1,
+        ),
       ),
       padding: const EdgeInsets.all(14),
       child: Column(
@@ -239,7 +243,7 @@ class TableBookingConfirmationScreen extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
-                  color: Color(0xFFD1B26F).withOpacity(0.2),
+                  color: Color(0xFFD1B26F).withAlpha((255 * 0.2).toInt()),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
@@ -312,7 +316,7 @@ class TableBookingConfirmationScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  '${event.venue?.city ?? 'City'}',
+                  event.venue?.city ?? 'City',
                   style: TextStyle(color: Colors.white70, fontSize: 12),
                 ),
               ],

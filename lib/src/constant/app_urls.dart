@@ -38,7 +38,6 @@ class AppUrls {
   static String createOrder = "/venue-menu-orders/create/";
 
   //tables and sofa ticket list
-  static String getTableTicket = "/table-availability/";
   static String tableBook = "/book-table/";
 
   static String getTableTickets =

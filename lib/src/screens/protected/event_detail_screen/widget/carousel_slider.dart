@@ -132,7 +132,7 @@ class _EventCarouselSliderState extends State<EventCarouselSlider> {
                 shape: BoxShape.circle,
                 color: _currentIndex == index
                     ? theme.colorScheme.primary
-                    : theme.colorScheme.primary.withOpacity(0.4),
+                    : theme.colorScheme.primary.withAlpha((255 * 0.4).toInt()),
               ),
             ),
           ),

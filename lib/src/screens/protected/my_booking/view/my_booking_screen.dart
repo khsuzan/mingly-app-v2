@@ -110,7 +110,11 @@ class MyBookingsScreen extends StatelessWidget {
                           );
                         },
                         continueBooking: () {
-                          controller.continueBooking(context, item.orderNumber, item.event.venue.id);
+                          controller.continueBooking(
+                            context,
+                            item.orderNumber,
+                            item.event.venue.id,
+                          );
                         },
                       ),
                     );
@@ -226,15 +230,16 @@ class _BookingOrderCard extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                   style: theme.textTheme.bodySmall?.copyWith(
                                     color: theme.colorScheme.onSurface
-                                        .withOpacity(0.7),
+                                        .withAlpha((255 * 0.7).toInt()),
                                   ),
                                 ),
                               ),
                               Text(
                                 date,
                                 style: theme.textTheme.bodySmall?.copyWith(
-                                  color: theme.colorScheme.onSurface
-                                      .withOpacity(0.6),
+                                  color: theme.colorScheme.onSurface.withAlpha(
+                                    (255 * 0.6).toInt(),
+                                  ),
                                 ),
                               ),
                             ],
@@ -255,8 +260,8 @@ class _BookingOrderCard extends StatelessWidget {
                           Text(
                             location,
                             style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.colorScheme.onSurface.withOpacity(
-                                0.7,
+                              color: theme.colorScheme.onSurface.withAlpha(
+                                (255 * 0.7).toInt(),
                               ),
                             ),
                           ),
@@ -290,10 +295,11 @@ class _BookingOrderCard extends StatelessWidget {
                   // Favorite icon
                 ],
               ),
-              if(status.toLowerCase() != 'cancelled')
-              const Divider(height: 1, color: Colors.white24),
+              if (status.toLowerCase() != 'cancelled')
+                const Divider(height: 1, color: Colors.white24),
 
-              if (paymentStatus.toLowerCase() != 'paid' && status.toLowerCase() != 'cancelled')
+              if (paymentStatus.toLowerCase() != 'paid' &&
+                  status.toLowerCase() != 'cancelled')
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Row(
@@ -305,7 +311,9 @@ class _BookingOrderCard extends StatelessWidget {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: theme.colorScheme.primary.withOpacity(0.1),
+                          color: theme.colorScheme.primary.withAlpha(
+                            (255 * 0.1).toInt(),
+                          ),
                         ),
                         child: Text('Unpaid'),
                       ),
@@ -337,7 +345,9 @@ class _BookingOrderCard extends StatelessWidget {
                           style: TextButton.styleFrom(
                             foregroundColor: ticketsCount > 0
                                 ? theme.colorScheme.onSurface
-                                : theme.colorScheme.onSurface.withOpacity(0.5),
+                                : theme.colorScheme.onSurface.withAlpha(
+                                    (255 * 0.5).toInt(),
+                                  ),
                           ),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
@@ -346,8 +356,8 @@ class _BookingOrderCard extends StatelessWidget {
                                 Icons.confirmation_num_outlined,
                                 color: ticketsCount > 0
                                     ? theme.colorScheme.primary
-                                    : theme.colorScheme.onSurface.withOpacity(
-                                        0.5,
+                                    : theme.colorScheme.onSurface.withAlpha(
+                                        (255 * (255 * 0.5).toInt()),
                                       ),
                               ),
                               const SizedBox(height: 4),
@@ -358,8 +368,8 @@ class _BookingOrderCard extends StatelessWidget {
                                 style: theme.textTheme.bodySmall?.copyWith(
                                   color: ticketsCount > 0
                                       ? theme.colorScheme.onSurface
-                                      : theme.colorScheme.onSurface.withOpacity(
-                                          0.5,
+                                      : theme.colorScheme.onSurface.withAlpha(
+                                          (255 * (255 * 0.5).toInt()),
                                         ),
                                 ),
                               ),
@@ -385,7 +395,9 @@ class _BookingOrderCard extends StatelessWidget {
                           style: TextButton.styleFrom(
                             foregroundColor: tablesCount > 0
                                 ? theme.colorScheme.onSurface
-                                : theme.colorScheme.onSurface.withOpacity(0.5),
+                                : theme.colorScheme.onSurface.withAlpha(
+                                    (255 * 0.5).toInt(),
+                                  ),
                           ),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
@@ -394,8 +406,8 @@ class _BookingOrderCard extends StatelessWidget {
                                 Icons.table_restaurant,
                                 color: tablesCount > 0
                                     ? theme.colorScheme.primary
-                                    : theme.colorScheme.onSurface.withOpacity(
-                                        0.5,
+                                    : theme.colorScheme.onSurface.withAlpha(
+                                        (255 * 0.5).toInt(),
                                       ),
                               ),
                               const SizedBox(height: 4),
@@ -404,8 +416,8 @@ class _BookingOrderCard extends StatelessWidget {
                                 style: theme.textTheme.bodySmall?.copyWith(
                                   color: tablesCount > 0
                                       ? theme.colorScheme.primary
-                                      : theme.colorScheme.onSurface.withOpacity(
-                                          0.5,
+                                      : theme.colorScheme.onSurface.withAlpha(
+                                          (255 * (255 * 0.5).toInt()),
                                         ),
                                 ),
                               ),

@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:mingly/src/application/events/repo/events_repo.dart';
-import 'package:mingly/src/application/venues/repo/venues_repo.dart';
 
 import '../../../../application/events/model/events_model.dart';
 import '../../../../application/venues/model/venues_model.dart';

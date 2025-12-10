@@ -24,7 +24,7 @@ class ReservationModelResponse {
   });
 
   factory ReservationModelResponse.fromJson(Map<String, dynamic> json) {
-    double? _toDouble(dynamic v) {
+    double? toDouble(dynamic v) {
       if (v == null) return null;
       if (v is double) return v;
       if (v is int) return v.toDouble();
@@ -38,8 +38,8 @@ class ReservationModelResponse {
       venue: json['venue'] != null ? VenuesModel.fromJson(json['venue']) : null,
       status: json['status'] as String?,
       paymentStatus: json['payment_status'] as String?,
-      subtotal: _toDouble(json['subtotal']),
-      totalAmount: _toDouble(json['total_amount']),
+      subtotal: toDouble(json['subtotal']),
+      totalAmount: toDouble(json['total_amount']),
       currency: json['currency'] as String?,
       createdAt: json['created_at'] as String?,
       orderType: json['order_type'] as String?,

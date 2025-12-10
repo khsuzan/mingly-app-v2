@@ -20,7 +20,7 @@ class BookingConfirmationScreen extends StatelessWidget {
     final selectedDate = info.selectedDate ?? 'TBD';
 
     return GetBuilder<TicketBookingConfirmationController>(
-      init: TicketBookingConfirmationController(event: event, tickets: tickets),
+      init: TicketBookingConfirmationController(tickets: tickets),
       builder: (controller) {
         return Scaffold(
           backgroundColor: theme.colorScheme.surface,
@@ -37,129 +37,144 @@ class BookingConfirmationScreen extends StatelessWidget {
             ),
             centerTitle: false,
           ),
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 16),
-                  // Event Header
-                  Text(
-                    event.eventName.toString(),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
+          body: SafeArea(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 16),
+                    // Event Header
+                    Text(
+                      event.eventName.toString(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  // Session & Order Details Card
-                  _buildSessionDetailsCard(session, selectedDate),
-                  const SizedBox(height: 16),
-                  // Venue Information
-                  _buildVenueCard(event),
-                  const SizedBox(height: 16),
-                  // Tickets Section
-                  Text(
-                    'Tickets',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
+                    const SizedBox(height: 16),
+                    // Session & Order Details Card
+                    _buildSessionDetailsCard(session, selectedDate),
+                    const SizedBox(height: 16),
+                    // Venue Information
+                    _buildVenueCard(event),
+                    const SizedBox(height: 16),
+                    // Tickets Section
+                    Text(
+                      'Tickets',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  _buildTicketsCard(tickets, controller),
-                  const SizedBox(height: 16),
-                  // Promo Code Section
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Promo Code',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(width: 12),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: controller.promoCodeController,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.grey.shade900,
-                            prefixIcon: const Icon(
-                              Icons.card_giftcard,
-                              color: Colors.white54,
-                            ),
-                            hintText: 'Enter promo code',
-                            hintStyle: const TextStyle(color: Colors.white54),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide.none,
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                              vertical: 0,
-                              horizontal: 8,
-                            ),
-                          ),
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey.shade900,
-                          foregroundColor: theme.colorScheme.primary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 14,
+                    const SizedBox(height: 10),
+                    _buildTicketsCard(tickets, controller),
+                    const SizedBox(height: 16),
+                    // Promo Code Section
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Promo Code',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        onPressed: () {
-                          controller.applyPromoCode();
-                        },
-                        child: const Text('Apply'),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  // Price Breakdown Card
-                  _buildPriceBreakdownCard(controller, theme),
-                  SizedBox(
-                    width: double.infinity,
-                    child: PrimaryButton(
-                      text: 'Proceed to Payment',
-                      onPressed: () {
-                        if (event.id == null) {
-                          CustomSnackbar.show(
-                            context,
-                            message: 'Event ID is missing.',
+                        SizedBox(width: 12),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            focusNode: controller.promoFocusNode,
+                            controller: controller.promoCodeController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.grey.shade900,
+                              prefixIcon: const Icon(
+                                Icons.card_giftcard,
+                                color: Colors.white54,
+                              ),
+                              hintText: 'Enter promo code',
+                              hintStyle: const TextStyle(color: Colors.white54),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide.none,
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 0,
+                                horizontal: 8,
+                              ),
+                            ),
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Obx(() {
+                          final label = controller.promoCodeApplied.value
+                              ? 'Applied'
+                              : 'Apply';
+                          return ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.grey.shade900,
+                              foregroundColor: theme.colorScheme.primary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 14,
+                              ),
+                            ),
+                            onPressed: () {
+                              if (controller.promoCodeApplied.value) {
+                                return;
+                              }
+                              controller.promoFocusNode.unfocus();
+                              controller.applyPromoCode(context);
+                            },
+                            child: Text(label),
                           );
-                          return;
-                        }
-                        controller.buyTicketEvent(
-                          context,
-                          items: tickets,
-                          bookingDate: formatBookingDateForBackend(selectedDate),
-                          promoCode: controller.promo.value.code ?? "",
-                          event: event,
-                        );
-                      },
+                        }),
+                      ],
                     ),
-                  ),
-                  SizedBox(height: 10),
-                ],
+                    const SizedBox(height: 16),
+                    // Price Breakdown Card
+                    _buildPriceBreakdownCard(controller, theme),
+                    SizedBox(
+                      width: double.infinity,
+                      child: PrimaryButton(
+                        text: 'Proceed to Payment',
+                        onPressed: () {
+                          if (event.id == null) {
+                            CustomSnackbar.show(
+                              context,
+                              message: 'Event ID is missing.',
+                            );
+                            return;
+                          }
+                          controller.buyTicketEvent(
+                            context,
+                            items: tickets,
+                            bookingDate: formatBookingDateForBackend(
+                              selectedDate,
+                            ),
+                            promoCode: controller.promo.value.code ?? "",
+                            event: event,
+                            sessionId: session.id!,
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                  ],
+                ),
               ),
             ),
           ),
@@ -190,7 +205,10 @@ class BookingConfirmationScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Color(0xFF2E2D2C),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Color(0xFFD1B26F).withOpacity(0.3), width: 1),
+        border: Border.all(
+          color: Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt()),
+          width: 1,
+        ),
       ),
       padding: const EdgeInsets.all(14),
       child: Column(
@@ -210,7 +228,7 @@ class BookingConfirmationScreen extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
-                  color: Color(0xFFD1B26F).withOpacity(0.2),
+                  color: Color(0xFFD1B26F).withAlpha((255 * 0.2).toInt()),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
@@ -283,7 +301,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  '${event.venue?.city ?? 'City'}',
+                  event.venue?.city ?? 'City',
                   style: TextStyle(color: Colors.white70, fontSize: 12),
                 ),
               ],

@@ -157,7 +157,7 @@ class ApiService {
       if (queryParams != null) {
         uri = uri.replace(queryParameters: queryParams);
       }
-      var request;
+      dynamic request;
       if (image == null) {
         request = http.Request('POST', uri);
 
@@ -186,7 +186,7 @@ class ApiService {
       final response = await request.send();
 
       final responseBody = await http.Response.fromStream(response);
-      print("Data reposen : ${responseBody.body}");
+      debugPrint("Data reposen : ${responseBody.body}");
       // Return the parsed response
       return _handleResponse(responseBody);
     } on http.ClientException catch (e) {
@@ -208,7 +208,7 @@ class ApiService {
       if (queryParams != null) {
         uri = uri.replace(queryParameters: queryParams);
       }
-      var request;
+      dynamic request;
       if (image == null) {
         request = http.Request('PATCH', uri);
 
@@ -358,7 +358,7 @@ class ApiService {
 
   List<dynamic> _handleErrorList(String error) {
     // Handle error, you could throw an exception or return an empty list, depending on your use case
-    print(error);
+    debugPrint(error);
     return [];
   }
 

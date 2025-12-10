@@ -12,7 +12,7 @@ class StatusChip extends StatelessWidget {
     Color bg;
     final s = status?.toLowerCase() ?? '';
     if (s.isEmpty) {
-      bg = theme.colorScheme.surfaceVariant;
+      bg = theme.colorScheme.surfaceContainerHighest;
     } else if (s.contains('completed') || s.contains('delivered')) {
       bg = Colors.green.shade100;
     } else if (s.contains('pending') || s.contains('processing')) {
@@ -20,7 +20,7 @@ class StatusChip extends StatelessWidget {
     } else if (s.contains('cancel') || s.contains('failed')) {
       bg = Colors.red.shade100;
     } else {
-      bg = theme.colorScheme.surfaceVariant;
+      bg = theme.colorScheme.surfaceContainerHighest;
     }
 
     return Container(

@@ -32,7 +32,6 @@ class VoucherListScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               itemCount: provider.voucherList.length,
               itemBuilder: (context, index) {
-                final voucher = provider.voucherList[index];
 
                 bool isUsed = provider.voucherList[index].used ?? false;
                 Color cardColor = isUsed

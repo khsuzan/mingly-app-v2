@@ -36,18 +36,18 @@ class EventSessionModel {
   });
 
   factory EventSessionModel.fromJson(Map<String, dynamic> map) {
-    int _toInt(dynamic v) {
+    int toInt(dynamic v) {
       if (v is int) return v;
       if (v is num) return v.toInt();
       return int.tryParse(v?.toString() ?? '') ?? 0;
     }
 
-    DateTime _toDate(dynamic v) {
+    DateTime toDate(dynamic v) {
       if (v is DateTime) return v;
       return DateTime.parse(v.toString());
     }
 
-    List<String> _toDays(dynamic raw) {
+    List<String> toDays(dynamic raw) {
       if (raw == null) return <String>[];
       String str;
       if (raw is String) {
@@ -65,26 +65,26 @@ class EventSessionModel {
     }
 
     return EventSessionModel(
-      id: _toInt(map['id']),
-      event: _toInt(map['event']),
+      id: toInt(map['id']),
+      event: toInt(map['event']),
       sessionType: map['session_type']?.toString() ?? '',
       occurrence: map['occurrence']?.toString() ?? '',
-      daysOfWeek: _toDays(map['days_of_week']),
-      firstSessionDate: _toDate(map['first_session_date']),
-      lastSessionDate: _toDate(map['last_session_date']),
+      daysOfWeek: toDays(map['days_of_week']),
+      firstSessionDate: toDate(map['first_session_date']),
+      lastSessionDate: toDate(map['last_session_date']),
       sessionStartTime: map['session_start_time']?.toString() ?? '',
       sessionEndTime: map['session_end_time']?.toString() ?? '',
-      bookingStartDate: _toDate(map['booking_start_date']),
+      bookingStartDate: toDate(map['booking_start_date']),
       bookingStartTime: map['booking_start_time']?.toString() ?? '',
-      bookingEndDate: _toDate(map['booking_end_date']),
+      bookingEndDate: toDate(map['booking_end_date']),
       bookingEndTime: map['booking_end_time']?.toString() ?? '',
-      createdAt: _toDate(map['created_at']),
-      updatedAt: _toDate(map['updated_at']),
+      createdAt: toDate(map['created_at']),
+      updatedAt: toDate(map['updated_at']),
     );
   }
 
   Map<String, dynamic> toMap() {
-    String _dateOnly(DateTime d) => d.toIso8601String().split('T').first;
+    String dateOnly(DateTime d) => d.toIso8601String().split('T').first;
 
     return {
       'id': id,
@@ -92,13 +92,13 @@ class EventSessionModel {
       'session_type': sessionType,
       'occurrence': occurrence,
       'days_of_week': jsonEncode(daysOfWeek),
-      'first_session_date': _dateOnly(firstSessionDate),
-      'last_session_date': _dateOnly(lastSessionDate),
+      'first_session_date': dateOnly(firstSessionDate),
+      'last_session_date': dateOnly(lastSessionDate),
       'session_start_time': sessionStartTime,
       'session_end_time': sessionEndTime,
-      'booking_start_date': _dateOnly(bookingStartDate),
+      'booking_start_date': dateOnly(bookingStartDate),
       'booking_start_time': bookingStartTime,
-      'booking_end_date': _dateOnly(bookingEndDate),
+      'booking_end_date': dateOnly(bookingEndDate),
       'booking_end_time': bookingEndTime,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
