@@ -28,14 +28,14 @@ class EventsTicketModel {
   int? isHasAllowKids;
   String? description;
   int? isOffer;
-  Null? startOfferDateTime;
-  Null? endOfferDateTime;
+  Null startOfferDateTime;
+  Null endOfferDateTime;
   String? offerValue;
   int? availableSales;
   int? isSoldOut;
   String? createdAt;
   String? updatedAt;
-  Null? ticketType;
+  Null ticketType;
   int? event;
   int? commission;
   int? tax;
@@ -92,28 +92,28 @@ class EventsTicketModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['title'] = this.title;
-    data['price'] = this.price;
-    data['total_ticket_qty'] = this.totalTicketQty;
-    data['is_has_booking_limit'] = this.isHasBookingLimit;
-    data['ticket_limit'] = this.ticketLimit;
-    data['is_has_allow_kids'] = this.isHasAllowKids;
-    data['description'] = this.description;
-    data['is_offer'] = this.isOffer;
-    data['start_offer_date_time'] = this.startOfferDateTime;
-    data['end_offer_date_time'] = this.endOfferDateTime;
-    data['offer_value'] = this.offerValue;
-    data['available_sales'] = this.availableSales;
-    data['is_sold_out'] = this.isSoldOut;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    data['ticket_type'] = this.ticketType;
-    data['event'] = this.event;
-    data['commission'] = this.commission;
-    data['tax'] = this.tax;
-    data['promocode'] = this.promocode;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['title'] = title;
+    data['price'] = price;
+    data['total_ticket_qty'] = totalTicketQty;
+    data['is_has_booking_limit'] = isHasBookingLimit;
+    data['ticket_limit'] = ticketLimit;
+    data['is_has_allow_kids'] = isHasAllowKids;
+    data['description'] = description;
+    data['is_offer'] = isOffer;
+    data['start_offer_date_time'] = startOfferDateTime;
+    data['end_offer_date_time'] = endOfferDateTime;
+    data['offer_value'] = offerValue;
+    data['available_sales'] = availableSales;
+    data['is_sold_out'] = isSoldOut;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    data['ticket_type'] = ticketType;
+    data['event'] = event;
+    data['commission'] = commission;
+    data['tax'] = tax;
+    data['promocode'] = promocode;
     return data;
   }
 }

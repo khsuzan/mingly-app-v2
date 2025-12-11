@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -18,15 +19,45 @@ class MembershipController extends GetxController {
 
   final isLoading = true.obs;
 
+
   @override
-  void onInit() {
-    super.onInit();
+  void onReady() {
+    super.onReady();
     fetchData();
   }
+
 
   void fetchData() {
     fetchMembershipList();
     fetchUserMembershipU();
+    // When both lists are populated, sync selectedIndex to currentPackage
+    ever(currentPackage, (data) {
+      if (membershipList.isNotEmpty && currentPackage.value != null) {
+        _syncSelectedIndexToCurrentPackage();
+      }
+    });
+
+    // Also listen to membershipList changes
+    ever(membershipList, (data) {
+      if (membershipList.isNotEmpty && currentPackage.value != null) {
+        _syncSelectedIndexToCurrentPackage();
+      }
+    });
+  }
+
+  /// Syncs selectedIndex to the index of currentPackage in membershipList
+  void _syncSelectedIndexToCurrentPackage() {
+    if (currentPackage.value == null) return;
+
+    final index = membershipList.indexWhere(
+      (package) => package.id == currentPackage.value!.id,
+    );
+
+    if (index != -1) {
+      selectedIndex.value = index;
+      // carouselController.animateToPage(index);
+      debugPrint("Selected index synced to: $index");
+    }
   }
 
   Future<void> fetchMembershipList() async {
@@ -87,14 +118,19 @@ class MembershipController extends GetxController {
       }
     }
   }
+
   Future<void> cancelMembership(BuildContext context) async {
     try {
       LoadingDialog.show(context);
       await repo.cancelMembership();
       if (context.mounted) {
-        LoadingDialog.hide(context);
-        context.push('/home');
-        context.go('/membership');
+        Future.delayed(Duration(seconds: 5), () {
+          if (context.mounted) {
+            LoadingDialog.hide(context);
+            context.push('/home');
+            context.go('/membership');
+          }
+        });
       }
     } catch (e, stack) {
       isLoading.value = false;

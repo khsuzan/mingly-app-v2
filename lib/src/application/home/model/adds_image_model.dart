@@ -33,16 +33,16 @@ class AdsImage {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['title'] = this.title;
-    data['image_url'] = this.imageUrl;
-    data['alt_text'] = this.altText;
-    data['caption'] = this.caption;
-    data['created_by'] = this.createdBy;
-    data['created_by_name'] = this.createdByName;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['title'] = title;
+    data['image_url'] = imageUrl;
+    data['alt_text'] = altText;
+    data['caption'] = caption;
+    data['created_by'] = createdBy;
+    data['created_by_name'] = createdByName;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
     return data;
   }
 }

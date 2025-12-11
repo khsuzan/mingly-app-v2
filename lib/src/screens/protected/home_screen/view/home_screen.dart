@@ -428,27 +428,6 @@ class HomeScreen extends StatelessWidget {
                             return SizedBox();
                           }),
                           SizedBox(height: 12.h),
-                          // Popular Events
-                          Obx(() {
-                            if (controller.popularEvents.isEmpty) {
-                              return SizedBox();
-                            }
-                            return _SectionHeader(title: 'Popular Events');
-                          }),
-                          Obx(() {
-                            if (controller.popularEvents.isEmpty) {
-                              return SizedBox();
-                            }
-                            return PopularEvents(
-                              events: controller.popularEvents,
-                            );
-                          }),
-                          Obx(() {
-                            if (controller.popularEvents.isNotEmpty) {
-                              return const SizedBox(height: 24);
-                            }
-                            return SizedBox();
-                          }),
                           // Top 10 spenders
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),

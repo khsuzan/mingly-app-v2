@@ -83,7 +83,7 @@ class ViewProfileScreen extends StatelessWidget {
                                     vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: primary.withOpacity(0.12),
+                                    color: primary.withAlpha((255 * 0.12).toInt()),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text(

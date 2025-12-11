@@ -86,8 +86,8 @@ class MyReservationsScreen extends StatelessWidget {
                         onVenueMenuClick: () {},
                         onPaymentsClick: () {
                           controller.payForReservation(context, {
-                            "order_id": item.orderNumber
-                          });
+                            "order_id": item.orderNumber,
+                          }, item.venue?.id);
                         },
                       ),
                     );
@@ -185,13 +185,17 @@ class _ReservationOrderCard extends StatelessWidget {
                         Text(
                           "Order: ${orderNumber ?? '-'}",
                           style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurface.withOpacity(0.7),
+                            color: theme.colorScheme.onSurface.withAlpha(
+                              (255 * 0.7).toInt(),
+                            ),
                           ),
                         ),
                         Text(
                           formatDate(date ?? ''),
                           style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurface.withOpacity(0.6),
+                            color: theme.colorScheme.onSurface.withAlpha(
+                              (255 * 0.6).toInt(),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 6),
@@ -210,7 +214,9 @@ class _ReservationOrderCard extends StatelessWidget {
                         Text(
                           location ?? '',
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onSurface.withOpacity(0.7),
+                            color: theme.colorScheme.onSurface.withAlpha(
+                              (255 * 0.7).toInt(),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -235,7 +241,7 @@ class _ReservationOrderCard extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.yellow.withOpacity(0.1),
+                      color: Colors.yellow.withAlpha((255 * 0.1).toInt()),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -254,7 +260,7 @@ class _ReservationOrderCard extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.orange.withOpacity(0.1),
+                      color: Colors.orange.withAlpha((255 * 0.1).toInt()),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -273,7 +279,7 @@ class _ReservationOrderCard extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.1),
+                      color: Colors.green.withAlpha((255 * 0.1).toInt()),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -342,7 +348,9 @@ class _ReservationOrderCard extends StatelessWidget {
                         foregroundColor:
                             status == 'confirmed' && paymentStatus == 'pending'
                             ? theme.colorScheme.onSurface
-                            : theme.colorScheme.onSurface.withOpacity(0.5),
+                            : theme.colorScheme.onSurface.withAlpha(
+                                (255 * 0.5).toInt(),
+                              ),
                       ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -353,7 +361,9 @@ class _ReservationOrderCard extends StatelessWidget {
                                 status == 'confirmed' &&
                                     paymentStatus == 'pending'
                                 ? theme.colorScheme.primary
-                                : theme.colorScheme.onSurface.withOpacity(0.5),
+                                : theme.colorScheme.onSurface.withAlpha(
+                                    (255 * 0.5).toInt(),
+                                  ),
                           ),
                           const SizedBox(height: 4),
                           Text(
@@ -363,8 +373,8 @@ class _ReservationOrderCard extends StatelessWidget {
                                   status == 'confirmed' &&
                                       paymentStatus == 'pending'
                                   ? theme.colorScheme.primary
-                                  : theme.colorScheme.onSurface.withOpacity(
-                                      0.5,
+                                  : theme.colorScheme.onSurface.withAlpha(
+                                      (255 * 0.5).toInt(),
                                     ),
                             ),
                           ),

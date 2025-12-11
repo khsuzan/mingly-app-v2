@@ -145,7 +145,7 @@ class AuthProvider extends ChangeNotifier {
               "avatar": status.photoURL!,
             },
     );
-    print(response);
+    debugPrint(response.toString());
     if (response["message"] != null) {
       prefs.setString('authToken', response["access_token"]);
       prefs.setString('refreshToken', response["refresh_token"].toString());

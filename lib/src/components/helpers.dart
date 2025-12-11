@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 import 'package:mingly/src/components/buttons.dart';
 import 'package:intl/intl.dart';
 import 'inputs.dart';
@@ -165,6 +164,7 @@ String formatTimeToAmPm(String time24) {
     return time24;
   }
 }
+
 String formatHourMinuteToAmPm(String time24) {
   try {
     // Parse input time (24-hour format)
@@ -193,6 +193,16 @@ String formatDayAndDate(String dateString) {
     String day = DateFormat('EEE').format(dateTime); // Mon, Tue, etc.
     String date = DateFormat('dd MMM yyyy').format(dateTime); // 14 Nov 2025
     return "$day, $date";
+  } catch (e) {
+    return dateString;
+  }
+}
+
+String formatAmericaToAsiaDate(String dateString, [frmt = 'dd MMM yyyy']) {
+  try {
+    DateTime dateTime = DateTime.parse(dateString).toLocal();
+    String date = DateFormat(frmt).format(dateTime); // 14 Nov 2025
+    return date;
   } catch (e) {
     return dateString;
   }
@@ -266,30 +276,45 @@ class NoImage extends StatelessWidget {
   }
 }
 
-abstract class GetxScreen<T extends GetxController> extends StatefulWidget {
-  final T Function() controller;
-  const GetxScreen({required this.controller, super.key});
+/// Convert booking date from format "Dec 31, 2025" to "2025-12-31"
+String formatBookingDateForBackend(String bookingDate) {
+  try {
+    // Parse "Dec 31, 2025" format
+    final dateTime = DateTime.parse(bookingDate);
+    return "${dateTime.year.toString().padLeft(4, '0')}-"
+        "${dateTime.month.toString().padLeft(2, '0')}-"
+        "${dateTime.day.toString().padLeft(2, '0')}";
+  } catch (_) {
+    // If parsing fails, try manual parsing for "Dec 31, 2025" format
+    try {
+      final parts = bookingDate.split(' ');
+      if (parts.length == 3) {
+        final monthStr = parts[0]; // "Dec"
+        final dayStr = parts[1].replaceAll(',', ''); // "31"
+        final yearStr = parts[2]; // "2025"
 
-  Widget build(BuildContext context, T controller);
-}
+        const months = {
+          'Jan': 1,
+          'Feb': 2,
+          'Mar': 3,
+          'Apr': 4,
+          'May': 5,
+          'Jun': 6,
+          'Jul': 7,
+          'Aug': 8,
+          'Sep': 9,
+          'Oct': 10,
+          'Nov': 11,
+          'Dec': 12,
+        };
 
-class _GetxScreenState<T extends GetxController> extends State<GetxScreen<T>> {
-  late T controller;
+        final month = months[monthStr] ?? 1;
+        final day = int.tryParse(dayStr) ?? 1;
+        final year = int.tryParse(yearStr) ?? DateTime.now().year;
 
-  @override
-  void initState() {
-    super.initState();
-    controller = Get.put(widget.controller(), permanent: false);
-  }
-
-  @override
-  void dispose() {
-    Get.delete<T>();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return widget.build(context, controller);
+        return "$year-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}";
+      }
+    } catch (_) {}
+    return bookingDate; // Return as-is if parsing fails
   }
 }

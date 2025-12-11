@@ -34,16 +34,16 @@ class FavouriteModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['event'] = this.event;
-    data['event_name'] = this.eventName;
-    data['event_picture'] = this.eventPicture;
-    data['address'] = this.address;
-    data['city'] = this.city;
-    data['state'] = this.state;
-    data['country'] = this.country;
-    data['added_at'] = this.addedAt;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['event'] = event;
+    data['event_name'] = eventName;
+    data['event_picture'] = eventPicture;
+    data['address'] = address;
+    data['city'] = city;
+    data['state'] = state;
+    data['country'] = country;
+    data['added_at'] = addedAt;
     return data;
   }
 }

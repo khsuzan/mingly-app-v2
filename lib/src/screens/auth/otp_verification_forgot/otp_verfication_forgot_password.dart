@@ -62,23 +62,25 @@ class OtpVerficationForgotPassword extends StatelessWidget {
               onPressed: () async {
                 LoadingDialog.show(context);
                 final status = await provider.signUpVerifyUserForgot();
-                if (status['message'].isNotEmpty) {
-                  LoadingDialog.hide(context);
-                  CustomSnackbar.show(
-                    context,
-                    message: status["message"],
-                    backgroundColor: Colors.green,
-                    textColor: Colors.white,
-                  );
-                  context.push("/password-reset");
-                } else if (status["error"].isNotEmpty) {
-                  LoadingDialog.hide(context);
-                  CustomSnackbar.show(
-                    context,
-                    message: status["error"],
-                    backgroundColor: Colors.red,
-                    textColor: Colors.white,
-                  );
+                if (context.mounted) {
+                  if (status['message'].isNotEmpty) {
+                    LoadingDialog.hide(context);
+                    CustomSnackbar.show(
+                      context,
+                      message: status["message"],
+                      backgroundColor: Colors.green,
+                      textColor: Colors.white,
+                    );
+                    context.push("/password-reset");
+                  } else if (status["error"].isNotEmpty) {
+                    LoadingDialog.hide(context);
+                    CustomSnackbar.show(
+                      context,
+                      message: status["error"],
+                      backgroundColor: Colors.red,
+                      textColor: Colors.white,
+                    );
+                  }
                 }
               },
             ),

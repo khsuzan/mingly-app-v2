@@ -92,15 +92,15 @@ class BeverageItemCard extends StatelessWidget {
                   gradient: const LinearGradient(
                     begin: Alignment(0.50, -0.00),
                     end: Alignment(0.50, 1.00),
-                    colors: [
-                      Color(0xFFF7D99A),
-                      Color(0xFFC3A266),
-                    ],
+                    colors: [Color(0xFFF7D99A), Color(0xFFC3A266)],
                   ),
                   borderRadius: BorderRadius.circular(6.96),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 30.0,
+                    vertical: 8,
+                  ),
                   child: Text(
                     buttonText,
                     textAlign: TextAlign.center,

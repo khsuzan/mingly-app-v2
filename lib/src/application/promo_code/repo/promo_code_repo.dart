@@ -10,7 +10,7 @@ class PromoCodeRepo {
         .getList(  AppUrls.promoCodeUrl,authToken: prefs.getString('authToken') ?? '',);
 
     if (response.isNotEmpty) {
-      List<PromoCodeModel> data = (response as List)
+      List<PromoCodeModel> data = (response)
           .map((e) => PromoCodeModel.fromJson(e))
           .toList();
       return data;

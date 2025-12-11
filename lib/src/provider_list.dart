@@ -1,5 +1,4 @@
 import 'package:mingly/src/screens/auth/auth_provider.dart';
-import 'package:mingly/src/screens/protected/event_list_screen/events_provider.dart';
 import 'package:mingly/src/screens/protected/my_menu/bottle_provider.dart';
 import 'package:mingly/src/screens/protected/profile/profile_provider.dart';
 import 'package:mingly/src/screens/protected/venue_list_screen/venue_provider.dart';
@@ -11,9 +10,6 @@ class ProviderList {
     ChangeNotifierProvider(create: (_) => AuthProvider()),
     ChangeNotifierProvider(
       create: (_) => VenueProvider()
-    ),
-    ChangeNotifierProvider(
-      create: (_) => EventsProvider()
     ),
     ChangeNotifierProvider(create: (_) => BottleProvider()..getBottleList()),
     ChangeNotifierProvider(

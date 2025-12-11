@@ -55,6 +55,7 @@ class GlobalApp extends StatelessWidget {
               primaryContainer: lightBackground,
               error: Colors.red,
               onError: Colors.white,
+              // surfaceContainerHighest: 
             ),
             scaffoldBackgroundColor: backgroundPrimary,
             appBarTheme: const AppBarTheme(

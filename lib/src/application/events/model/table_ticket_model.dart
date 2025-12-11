@@ -15,25 +15,25 @@ class TableTicketModel {
     if (json['tables'] != null) {
       tables = <Tables>[];
       json['tables'].forEach((v) {
-        tables!.add(new Tables.fromJson(v));
+        tables!.add(Tables.fromJson(v));
       });
     }
     slotStart = json['slot_start'];
     slotEnd = json['slot_end'];
     sessionInfo = json['session_info'] != null
-        ? new SessionInfo.fromJson(json['session_info'])
+        ? SessionInfo.fromJson(json['session_info'])
         : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.tables != null) {
-      data['tables'] = this.tables!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (tables != null) {
+      data['tables'] = tables!.map((v) => v.toJson()).toList();
     }
-    data['slot_start'] = this.slotStart;
-    data['slot_end'] = this.slotEnd;
-    if (this.sessionInfo != null) {
-      data['session_info'] = this.sessionInfo!.toJson();
+    data['slot_start'] = slotStart;
+    data['slot_end'] = slotEnd;
+    if (sessionInfo != null) {
+      data['session_info'] = sessionInfo!.toJson();
     }
     return data;
   }
@@ -87,19 +87,19 @@ class Tables {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['seat_status'] = this.seatStatus;
-    data['availability_status'] = this.availabilityStatus;
-    data['tcket_number'] = this.tcketNumber;
-    data['x'] = this.x;
-    data['y'] = this.y;
-    data['w'] = this.w;
-    data['h'] = this.h;
-    data['shape'] = this.shape;
-    data['chairs'] = this.chairs;
-    data['set_image'] = this.image;
-    data["table_id"] = this.tableId;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['seat_status'] = seatStatus;
+    data['availability_status'] = availabilityStatus;
+    data['tcket_number'] = tcketNumber;
+    data['x'] = x;
+    data['y'] = y;
+    data['w'] = w;
+    data['h'] = h;
+    data['shape'] = shape;
+    data['chairs'] = chairs;
+    data['set_image'] = image;
+    data["table_id"] = tableId;
     return data;
   }
 }
@@ -118,10 +118,10 @@ class SessionInfo {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['session_start'] = this.sessionStart;
-    data['session_end'] = this.sessionEnd;
-    data['selected_date'] = this.selectedDate;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['session_start'] = sessionStart;
+    data['session_end'] = sessionEnd;
+    data['selected_date'] = selectedDate;
     return data;
   }
 }

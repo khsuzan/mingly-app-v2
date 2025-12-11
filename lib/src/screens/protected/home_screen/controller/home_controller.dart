@@ -23,7 +23,6 @@ class HomeController extends GetxController {
   final Rx<ProfileModel> profile = ProfileModel().obs;
   final RxList<FeaturedModel> featuredItems = <FeaturedModel>[].obs;
   final RxList<VenuesModel> featuredVenues = <VenuesModel>[].obs;
-  final RxList<EventsModel> popularEvents = <EventsModel>[].obs;
   final RxList<LeaderBoardModel> topSpendersList = <LeaderBoardModel>[].obs;
   final RxList<EventsModel> recommendationEvents = <EventsModel>[].obs;
 
@@ -36,24 +35,10 @@ class HomeController extends GetxController {
     fetchHomeData();
     fetchUserLocationShared();
 
-    ever(userLocation, fetchRecommendationEvents.call);
-    ever(profile, checkProfileData.call);
-  }
-
-  void checkProfileData(ProfileModel data) {
-    isProfileComplete.value = _isProfileComplete(data);
-  }
-
-  bool _isProfileComplete(ProfileModel data) {
-    final fullName = data.data?.fullName;
-    final avatar = data.data?.avatar;
-    if (fullName == null || avatar == null) {
-      return false;
-    }
-    if (fullName.isEmpty || avatar.isEmpty) {
-      return false;
-    }
-    return true;
+    ever(userLocation, (callback) {
+      fetchRecommendationEvents(userLocation.value);
+      fetchFeaturedVenues(userLocation.value);
+    });
   }
 
   Future<void> fetchProfileInfo() async {
@@ -73,7 +58,7 @@ class HomeController extends GetxController {
     debugPrint('Home data fetch initiated');
     isRefreshing.value = true;
     await fetchFeaturedSection();
-    await fetchFeaturedVenues();
+    await fetchFeaturedVenues(userLocation.value);
     await fetchTopSpenders();
     await fetchRecommendationEvents(userLocation.value);
     isRefreshing.value = false;
@@ -91,24 +76,14 @@ class HomeController extends GetxController {
     }
   }
 
-  Future<void> fetchFeaturedVenues() async {
+  Future<void> fetchFeaturedVenues(String location) async {
     try {
-      final response = await homeRepo.getFeaturedVenues();
+      final response = await homeRepo.getFeaturedVenues(location);
       debugPrint('Featured Venues Response: $response');
       featuredVenues.value = response;
     } catch (e, stack) {
       debugPrint('Error fetching featured venues: $e');
       debugPrintStack(stackTrace: stack);
-    }
-  }
-
-  Future<void> fetchPopularEvents() async {
-    try {
-      final response = await homeRepo.getPopularEvents();
-      debugPrint('Popular Events Response: $response');
-      popularEvents.value = response;
-    } catch (e) {
-      debugPrint('Error fetching popular events: $e');
     }
   }
 

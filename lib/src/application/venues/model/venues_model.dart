@@ -65,11 +65,15 @@ class VenuesModel {
     country = json['country'];
     postalCode = json['postal_code'];
     latitude = json['latitude'] is String
-      ? double.tryParse(json['latitude'])
-      : (json['latitude'] != null ? (json['latitude'] as num).toDouble() : null);
+        ? double.tryParse(json['latitude'])
+        : (json['latitude'] != null
+              ? (json['latitude'] as num).toDouble()
+              : null);
     longitude = json['longitude'] is String
-      ? double.tryParse(json['longitude'])
-      : (json['longitude'] != null ? (json['longitude'] as num).toDouble() : null);
+        ? double.tryParse(json['longitude'])
+        : (json['longitude'] != null
+              ? (json['longitude'] as num).toDouble()
+              : null);
     capacity = json['capacity'];
     contactEmail = json['contact_email'];
     contactPhone = json['contact_phone'];
@@ -86,11 +90,11 @@ class VenuesModel {
     if (json['meta'] != null) {
       openingHours = OpeningHours.fromJson(json['meta']);
     }
-    
-    @override
-    String toString() {
-      return 'VenuesModel{id: $id, name: $name, description: $description}';
-    }
+  }
+
+  @override
+  String toString() {
+    return 'VenuesModel{id: $id, name: $name, description: $description}';
   }
 
   Map<String, dynamic> toJson() {
@@ -174,5 +178,4 @@ class OpeningHours {
     data['opening_days'] = openingDays;
     return data;
   }
-
 }

@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:mingly/src/application/point_history/model/point_history_model.dart';
-import 'package:mingly/src/application/point_history/repo/point_history_repo.dart';
 import 'package:mingly/src/application/profile/model/order_history_model.dart';
 import 'package:mingly/src/application/profile/model/profile_model.dart';
 import 'package:mingly/src/application/profile/model/voucher_model.dart';

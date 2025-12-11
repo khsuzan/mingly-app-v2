@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:flutter/widgets.dart';
 import 'package:mingly/src/api_service/api_service.dart';
 import 'package:mingly/src/application/events/model/event_details_model.dart';
@@ -112,9 +110,7 @@ class EventsRepo {
     return response;
   }
 
-  Future<PromoCodeModel> verifyPromoCode(
-    Map<String, dynamic> data,
-  ) async {
+  Future<PromoCodeModel> verifyPromoCode(Map<String, dynamic> data) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final response = await ApiService().postDataOrThrow(
       AppUrls.verifyPromoCode,
@@ -136,46 +132,20 @@ class EventsRepo {
     return TicketBookingSuccess.fromJson(response);
   }
 
-  Future<Map<String, dynamic>> getTableTicket(
-    String eventId,
-    String date,
-    String selectedTime,
-  ) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    final response = await ApiService().getData(
-      "${AppUrls.getTableTicket}$eventId/?date=$date&selected_time=$selectedTime",
-      authToken: preferences.getString("authToken"),
-    );
-    return response;
-  }
-
   Future<List<EventTicketModelResponse>> getTablesTickets({
     required String eventId,
     required String date,
-    required String time,
+    required String sessionId,
   }) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final response = await ApiService().getList(
       AppUrls.getTableTickets
           .replaceFirst(":id", eventId)
           .replaceFirst(":date", date)
-          .replaceFirst(":time", time),
+          .replaceFirst(":session_id", sessionId),
       authToken: preferences.getString("authToken"),
     );
     return response.map((e) => EventTicketModelResponse.fromJson(e)).toList();
-  }
-
-  Future<Map<String, dynamic>> buyTableEventTicket(
-    Map<String, dynamic> data,
-    String id,
-  ) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    final response = await ApiService().postData(
-      "${AppUrls.tableBook}$id/",
-      data,
-      authToken: preferences.getString("authToken"),
-    );
-    return response;
   }
 
   Future<Map<String, dynamic>> getPopularEvent() async {
@@ -199,7 +169,7 @@ class EventsRepo {
   Future<Map<String, dynamic>> getEventCategories(int id) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final reseponse = await ApiService().postData(
-      "/reserve/${id}/event/",
+      "/reserve/$id/event/",
       {},
       authToken: preferences.getString("authToken"),
     );

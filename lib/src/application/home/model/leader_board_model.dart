@@ -36,17 +36,17 @@ class LeaderBoardModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['email'] = this.email;
-    data['is_active'] = this.isActive;
-    data['full_name'] = this.fullName;
-    data['avatar'] = this.avatar;
-    data['google_image'] = this.googleImage;
-    data['membership_status'] = this.membershipStatus;
-    data['points'] = this.points;
-    data['current_points'] = this.currentPoints;
-    data['target_points'] = this.targetPoints;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['email'] = email;
+    data['is_active'] = isActive;
+    data['full_name'] = fullName;
+    data['avatar'] = avatar;
+    data['google_image'] = googleImage;
+    data['membership_status'] = membershipStatus;
+    data['points'] = points;
+    data['current_points'] = currentPoints;
+    data['target_points'] = targetPoints;
     return data;
   }
 

@@ -1,0 +1,8 @@
+{
+    "[kotlin]": {
+        "editor.defaultFormatter": "rnoro.vscode-ktlint-formatter"
+    },
+    "[kotlin-script]": {
+        "editor.defaultFormatter": "rnoro.vscode-ktlint-formatter"
+    }
+}

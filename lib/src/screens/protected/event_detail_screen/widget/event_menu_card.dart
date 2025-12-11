@@ -2,7 +2,6 @@
 // Contains: MenuItem model, sample data, MenuCard widget and MenuListScreen
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:mingly/src/application/venue_menu/model/venue_menu_model.dart';
 import 'package:mingly/src/constant/app_urls.dart'; // add `intl: ^0.18.0` (or latest) to pubspec.yaml
 
@@ -13,11 +12,11 @@ class MenuCardVenue extends StatelessWidget {
   final VoidCallback? additionalOnTap;
 
   const MenuCardVenue({
-    Key? key,
+    super.key,
     required this.item,
     this.onTap,
     this.additionalOnTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +126,6 @@ class MenuCardVenue extends StatelessWidget {
                                 additionalOnTap!();
                               }
                             },
-                            child: const Text('Add'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFFD1B26F),
                               foregroundColor: Colors.black,
@@ -136,6 +134,7 @@ class MenuCardVenue extends StatelessWidget {
                               ),
                               padding: const EdgeInsets.symmetric(vertical: 8),
                             ),
+                            child: const Text('Add'),
                           ),
                         ],
                       ),

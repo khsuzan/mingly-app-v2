@@ -1,5 +1,5 @@
-import java.util.Properties
 import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     id("com.android.application")
@@ -12,13 +12,13 @@ plugins {
 }
 
 val keystoreProperties = Properties()
-var keystorePropertiesFile : File;
+var keystorePropertiesFile: File
 if (System.getProperty("os.name").toLowerCase().contains("win")) {
-    keystorePropertiesFile = rootProject.file("key.properties.windows")  // Windows specific key.properties
+    keystorePropertiesFile = rootProject.file("key.properties.windows") // Windows specific key.properties
 } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-    keystorePropertiesFile = rootProject.file("key.properties")  // macOS specific key.properties
+    keystorePropertiesFile = rootProject.file("key.properties") // macOS specific key.properties
 } else {
-    keystorePropertiesFile = rootProject.file("key.properties")  // Default Linux key.properties
+    keystorePropertiesFile = rootProject.file("key.properties") // Default Linux key.properties
 }
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
@@ -90,8 +90,8 @@ android {
     }
 }
 dependencies {
-  implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
-  implementation("com.google.firebase:firebase-analytics")
+    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
+    implementation("com.google.firebase:firebase-analytics")
 }
 
 flutter {

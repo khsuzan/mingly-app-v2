@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mingly/src/application/venue_menu/model/venue_menu_model.dart';
-import 'package:mingly/src/application/venues/model/venues_model.dart';
-import 'package:mingly/src/application/venues/repo/venues_repo.dart';
 
 class VenueProvider extends ChangeNotifier {
   // List<VenuesModel> venuesList = [];

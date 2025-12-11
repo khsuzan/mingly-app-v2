@@ -31,15 +31,15 @@ class BottleModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['brand'] = this.brand;
-    data['keeping_date'] = this.keepingDate;
-    data['expired_date'] = this.expiredDate;
-    data['quantity'] = this.quantity;
-    data['image_url'] = this.imageUrl;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['brand'] = brand;
+    data['keeping_date'] = keepingDate;
+    data['expired_date'] = expiredDate;
+    data['quantity'] = quantity;
+    data['image_url'] = imageUrl;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
     return data;
   }
 }

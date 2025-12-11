@@ -84,7 +84,7 @@ class _Leaderboard extends StatelessWidget {
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: theme.shadowColor.withOpacity(0.12),
+                color: theme.shadowColor.withAlpha((255 * 0.12).toInt()),
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),

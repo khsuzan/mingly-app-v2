@@ -11,8 +11,7 @@ void showCustomDialog(BuildContext context) {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),
-        child: Container(
-         
+        child: SizedBox(
           height: 400,
           child: Stack(
             children: [
@@ -24,7 +23,7 @@ void showCustomDialog(BuildContext context) {
                   // width: 330,
                   // height: 355,
                   decoration: BoxDecoration(
-                    // color: Colors.white.withOpacity(0.17),
+                    // color: Colors.white.withAlpha((255 * 0.17).toInt()),
                     borderRadius: BorderRadius.circular(5.23),
                   ),
                   child: ClipRRect(
@@ -32,7 +31,7 @@ void showCustomDialog(BuildContext context) {
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
                       child: Container(
-                        color: Colors.white.withOpacity(0.1), // To ensure the blur is applied
+                        color: Colors.white.withAlpha((255 * 0.1).toInt()), // To ensure the blur is applied
                       ),
                     ),
                   ),

@@ -12,6 +12,7 @@ import 'package:mingly/src/components/custom_snackbar.dart';
 import '../../../../../components/custom_loading_dialog.dart';
 
 class EditProfileController extends GetxController {
+  final selectedGender = ''.obs;
   final nameController = TextEditingController();
   final phoneController = TextEditingController();
   final addressController = TextEditingController();
@@ -41,6 +42,7 @@ class EditProfileController extends GetxController {
       nameController.text = response.data?.fullName ?? '';
       phoneController.text = response.data?.mobile ?? '';
       addressController.text = response.data?.address ?? '';
+      selectedGender.value = response.data?.gender ?? '';
     } catch (e) {
       // Get.snackbar('Error', 'Failed to load profile: $e',
       //     snackPosition: SnackPosition.BOTTOM);
@@ -77,6 +79,7 @@ class EditProfileController extends GetxController {
     final name = nameController.text.trim();
     final phone = phoneController.text.trim();
     final address = addressController.text.trim();
+    final gender = selectedGender.value.trim();
     if (name.isEmpty && phone.isEmpty && address.isEmpty) {
       CustomSnackbar.show(
         context,
@@ -90,7 +93,8 @@ class EditProfileController extends GetxController {
       if (name.isNotEmpty) data["full_name"] = name;
       if (address.isNotEmpty) data["address"] = address;
       if (phone.isNotEmpty) data["mobile"] = phone;
-      final status = await profileRepo.updateProfile(data, imageFile.value);
+      if (gender.isNotEmpty) data["gender"] = gender;
+      await profileRepo.updateProfile(data, imageFile.value);
       if (context.mounted) {
         LoadingDialog.hide(context);
         CustomSnackbar.show(context, message: 'Profile updated successfully');

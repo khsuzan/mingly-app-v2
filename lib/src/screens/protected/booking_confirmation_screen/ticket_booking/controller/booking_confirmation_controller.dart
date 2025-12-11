@@ -9,30 +9,40 @@ import 'package:mingly/src/components/custom_loading_dialog.dart';
 import '../../../../../application/booking/ticket_success.dart';
 import '../../../../../application/events/repo/events_repo.dart';
 import '../../../../../application/payment/model/payment_from.dart';
+import '../../../../../components/custom_snackbar.dart';
 
 class TicketBookingConfirmationController extends GetxController {
-  final EventsModel event;
-  List<TicketBuyingInfo> tickets;
-  TicketBookingConfirmationController({
-    required this.event,
-    required this.tickets,
-  });
+  final promoCodeApplied = false.obs;
 
   final eventRepo = EventsRepo();
 
   final promo = PromoCodeModel().obs;
 
-  TextEditingController? promoCodeController = TextEditingController();
-
+  final List<TicketBuyingInfo> tickets;
+  TicketBookingConfirmationController({required this.tickets});
   Future<void> buyTicketEvent(
-    BuildContext context,
-    Map<String, dynamic> data,
-    int eventId,
-    int venueId,
-  ) async {
-    LoadingDialog.show(context);
+    BuildContext context, {
+    required List<TicketBuyingInfo> items,
+    required String bookingDate,
+    required String promoCode,
+    required EventsModel event,
+    required int sessionId,
+  }) async {
     try {
-      final response = await eventRepo.buyEventTicket(data, eventId);
+      int eventId = event.id!;
+      int venueId = event.venue!.id!;
+
+      LoadingDialog.show(context);
+
+      final response = await eventRepo.buyEventTicket(
+        TicketBooking(
+          items: items,
+          promoCode: promoCode,
+          bookingDate: bookingDate,
+          sessionId: sessionId,
+        ).toJson(),
+        eventId,
+      );
       TicketBookingSuccess ticketBookingSuccess = TicketBookingSuccess.fromJson(
         response,
       );
@@ -42,7 +52,7 @@ class TicketBookingConfirmationController extends GetxController {
           extra: PaymentFromArg(
             url: ticketBookingSuccess.checkoutUrl,
             venueId: venueId,
-            fromScreen: FromScreen.ticketBooking,
+            fromScreen: FromScreen.tableBooking,
           ),
         );
       }
@@ -75,6 +85,9 @@ class TicketBookingConfirmationController extends GetxController {
 
   RxDouble promoValue = 0.0.obs;
 
+  TextEditingController promoCodeController = TextEditingController();
+  FocusNode promoFocusNode = FocusNode();
+
   RxString get getTotalPrice {
     return (getTicketPriceInTotal.value +
             getServiceFee.value -
@@ -87,13 +100,67 @@ class TicketBookingConfirmationController extends GetxController {
     promo.value = code;
   }
 
-  void applyPromoCode() {
-    promoValue.value = double.tryParse(promo.value.discountValue ?? '0') ?? 0.0;
+  /// Calculate discount based on discount type
+  double _calculateDiscount(PromoCodeModel promo) {
+    final discountValue = double.tryParse(promo.discountValue ?? "0") ?? 0.0;
+    final discountType = (promo.discountType ?? "").toLowerCase();
+
+    if (discountType == "percent") {
+      // Calculate percentage discount
+      return (getTicketPriceInTotal.value * discountValue) / 100;
+    } else if (discountType == "fixed") {
+      // Direct fixed amount discount
+      return discountValue;
+    }
+    return 0.0;
   }
 
-  @override
-  void onClose() {
-    promoCodeController?.dispose();
-    super.onClose();
+  void applyPromoCode(BuildContext context) async {
+    LoadingDialog.show(context);
+    try {
+      final response = await eventRepo.verifyPromoCode({
+        'promo_code': promoCodeController.text,
+      });
+      promoCodeApplied.value = true;
+      promo.value = response;
+
+      // Calculate discount based on type
+      promoValue.value = _calculateDiscount(response);
+
+      if (context.mounted) {
+        LoadingDialog.hide(context);
+        CustomSnackbar.show(
+          context,
+          message: "Promocode applied successfully",
+          backgroundColor: Colors.green,
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        LoadingDialog.hide(context);
+
+        String errorMessage = "Promocode not found";
+
+        // Try to extract a useful message from different error shapes
+        if (e is Map && e['error'] != null) {
+          errorMessage = e['error'].toString();
+        } else {
+          final errStr = e.toString();
+          if (errStr.contains("already used")) {
+            errorMessage = "You have already used this promo code.";
+          } else if (errStr.contains("invalid") || errStr.contains("expired")) {
+            errorMessage = "Promo code is invalid or expired.";
+          } else if (errStr.isNotEmpty) {
+            errorMessage = errStr;
+          }
+        }
+
+        CustomSnackbar.show(
+          context,
+          message: errorMessage,
+          backgroundColor: Colors.red,
+        );
+      }
+    }
   }
 }

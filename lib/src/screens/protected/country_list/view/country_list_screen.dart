@@ -47,7 +47,7 @@ class CountryListScreen extends StatelessWidget {
         );
       },
     );
-    if (city != null) {
+    if (city != null && context.mounted) {
       Navigator.of(context).pop(city);
     }
   }
@@ -86,7 +86,7 @@ class CountryListScreen extends StatelessWidget {
                         color: theme.colorScheme.primary,
                       ),
                       filled: true,
-                      fillColor: theme.colorScheme.surfaceVariant,
+                      fillColor: theme.colorScheme.surfaceContainerHighest,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide.none,

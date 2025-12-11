@@ -7,15 +7,15 @@ class OrderHistoryModel {
     if (json['orders'] != null) {
       orders = <Orders>[];
       json['orders'].forEach((v) {
-        orders!.add(new Orders.fromJson(v));
+        orders!.add(Orders.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.orders != null) {
-      data['orders'] = this.orders!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (orders != null) {
+      data['orders'] = orders!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -59,24 +59,24 @@ class Orders {
     if (json['items'] != null) {
       items = <Items>[];
       json['items'].forEach((v) {
-        items!.add(new Items.fromJson(v));
+        items!.add(Items.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['order_number'] = this.orderNumber;
-    data['event_id'] = this.eventId;
-    data['event_name'] = this.eventName;
-    data['status'] = this.status;
-    data['payment_status'] = this.paymentStatus;
-    data['subtotal'] = this.subtotal;
-    data['total_amount'] = this.totalAmount;
-    data['currency'] = this.currency;
-    data['created_at'] = this.createdAt;
-    if (this.items != null) {
-      data['items'] = this.items!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['order_number'] = orderNumber;
+    data['event_id'] = eventId;
+    data['event_name'] = eventName;
+    data['status'] = status;
+    data['payment_status'] = paymentStatus;
+    data['subtotal'] = subtotal;
+    data['total_amount'] = totalAmount;
+    data['currency'] = currency;
+    data['created_at'] = createdAt;
+    if (items != null) {
+      data['items'] = items!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -109,13 +109,13 @@ class Items {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['ticket_id'] = this.ticketId;
-    data['seat_number'] = this.seatNumber;
-    data['unit_price'] = this.unitPrice;
-    data['subtotal'] = this.subtotal;
-    data['total_amount'] = this.totalAmount;
-    data['status'] = this.status;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['ticket_id'] = ticketId;
+    data['seat_number'] = seatNumber;
+    data['unit_price'] = unitPrice;
+    data['subtotal'] = subtotal;
+    data['total_amount'] = totalAmount;
+    data['status'] = status;
     return data;
   }
 }

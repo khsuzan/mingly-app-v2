@@ -103,6 +103,48 @@ class EditProfileScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
 
+                // Gender Input
+                Container(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Color(0xFFFFFAE5), width: 0.5),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Obx(() {
+                    final gender = controller.selectedGender.value;
+                    return DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12.w,
+                          vertical: 6.h,
+                        ),
+                        menuWidth: 0.8.sw,
+                        dropdownColor: Colors.grey.shade900,
+                        value: gender.isNotEmpty ? gender : null,
+                        hint: const Text(
+                          "Gender",
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        isExpanded: true,
+                        items: ["Male", "Female", "Other"].map((g) {
+                          return DropdownMenuItem<String>(
+                            value: g,
+                            child: Text(
+                              g,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          controller.selectedGender.value = value ?? "";
+                        },
+                      ),
+                    );
+                  }),
+                ),
+
                 // Phone Input
                 TextFormField(
                   controller: controller.phoneController,

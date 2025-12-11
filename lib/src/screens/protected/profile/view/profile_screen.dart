@@ -334,6 +334,7 @@ class _ProfileMenuItem extends StatelessWidget {
   const _ProfileMenuItem({
     required this.icon,
     required this.title,
+    // ignore: unused_element_parameter
     this.trailing,
     this.onTap,
   });

@@ -199,12 +199,12 @@ class Images {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['thumbnail_image'] = this.thumbnailImage;
-    data['bg_image'] = this.bgImage;
-    data['image_gl'] = this.imageGl;
-    data['seating_plan'] = this.seatingPlan;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['thumbnail_image'] = thumbnailImage;
+    data['bg_image'] = bgImage;
+    data['image_gl'] = imageGl;
+    data['seating_plan'] = seatingPlan;
     return data;
   }
 }

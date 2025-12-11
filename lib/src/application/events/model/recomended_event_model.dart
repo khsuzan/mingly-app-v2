@@ -7,15 +7,15 @@ class RecomendedEventModel {
     if (json['recommended_events'] != null) {
       recommended = <Recommendations>[];
       json['recommended_events'].forEach((v) {
-        recommended!.add(new Recommendations.fromJson(v));
+        recommended!.add(Recommendations.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.recommended != null) {
-      data['recommended_events'] = this.recommended!
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (recommended != null) {
+      data['recommended_events'] = recommended!
           .map((v) => v.toJson())
           .toList();
     }
@@ -61,7 +61,7 @@ class Recommendations {
     if (json['images'] != null) {
       images = <Images>[];
       json['images'].forEach((v) {
-        images!.add(new Images.fromJson(v));
+        images!.add(Images.fromJson(v));
       });
     }
     venueName = json['venue_name'];
@@ -70,20 +70,20 @@ class Recommendations {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['event_name'] = this.eventName;
-    data['about'] = this.about;
-    data['description'] = this.description;
-    data['currency'] = this.currency;
-    data['picture'] = this.picture;
-    data['total_bookings'] = this.totalBookings;
-    if (this.images != null) {
-      data['images'] = this.images!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['event_name'] = eventName;
+    data['about'] = about;
+    data['description'] = description;
+    data['currency'] = currency;
+    data['picture'] = picture;
+    data['total_bookings'] = totalBookings;
+    if (images != null) {
+      data['images'] = images!.map((v) => v.toJson()).toList();
     }
-    data['venue_name'] = this.venueName;
-    data['venue_city'] = this.venueCity;
-    data['venue_capacity'] = this.venueCapacity;
+    data['venue_name'] = venueName;
+    data['venue_city'] = venueCity;
+    data['venue_capacity'] = venueCapacity;
     return data;
   }
 }
@@ -112,12 +112,12 @@ class Images {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['thumbnail_image'] = this.thumbnailImage;
-    data['bg_image'] = this.bgImage;
-    data['image_gl'] = this.imageGl;
-    data['seating_plan'] = this.seatingPlan;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['thumbnail_image'] = thumbnailImage;
+    data['bg_image'] = bgImage;
+    data['image_gl'] = imageGl;
+    data['seating_plan'] = seatingPlan;
     return data;
   }
 }

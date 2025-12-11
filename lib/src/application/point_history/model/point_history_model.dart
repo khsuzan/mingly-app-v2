@@ -11,17 +11,17 @@ class PointHistory {
     if (json['history'] != null) {
       history = <History>[];
       json['history'].forEach((v) {
-        history!.add(new History.fromJson(v));
+        history!.add(History.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['user'] = this.user;
-    data['total_points'] = this.totalPoints;
-    if (this.history != null) {
-      data['history'] = this.history!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['user'] = user;
+    data['total_points'] = totalPoints;
+    if (history != null) {
+      data['history'] = history!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -50,12 +50,12 @@ class History {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['points'] = this.points;
-    data['transaction_type'] = this.transactionType;
-    data['description'] = this.description;
-    data['created_at'] = this.createdAt;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['points'] = points;
+    data['transaction_type'] = transactionType;
+    data['description'] = description;
+    data['created_at'] = createdAt;
     return data;
   }
 }

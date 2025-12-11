@@ -22,7 +22,7 @@ class AuthenticationRepo {
   }
 
   Future<Map<String, dynamic>> loginGoogle(Map<String, String> map) async {
-    print(map);
+    debugPrint(map.toString());
     final response = await _apiService.postDataRegular(
       AppUrls.loginGoogle,
       map,

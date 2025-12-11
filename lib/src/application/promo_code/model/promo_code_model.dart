@@ -27,14 +27,14 @@ class PromoCodeModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['code'] = this.code;
-    data['discount_type'] = this.discountType;
-    data['discount_value'] = this.discountValue;
-    data['start_date'] = this.startDate;
-    data['end_date'] = this.endDate;
-    data['status'] = this.status;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['code'] = code;
+    data['discount_type'] = discountType;
+    data['discount_value'] = discountValue;
+    data['start_date'] = startDate;
+    data['end_date'] = endDate;
+    data['status'] = status;
     return data;
   }
 }

@@ -9,6 +9,7 @@ import 'package:mingly/src/application/events/model/events_model.dart';
 import 'package:mingly/src/components/helpers.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../application/events/model/event_details_model.dart';
 import '../../../../components/home.dart';
 import '../controller/event_detail_controller.dart';
 import '../widget/carousel_slider.dart';
@@ -19,15 +20,15 @@ class EventDetailScreen extends StatelessWidget {
 
   void _showSessionSelectionDialog(
     BuildContext context,
-    List<dynamic>? sessions,
+    List<Session>? sessions,
     EventsModel event,
-    dynamic eventDetail,
-    {required bool isTableBooking,
+    EventDetailsModel eventDetail, {
+    required bool isTableBooking,
   }) {
     if (sessions == null || sessions.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No sessions available')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('No sessions available')));
       return;
     }
 
@@ -159,8 +160,7 @@ class EventDetailScreen extends StatelessWidget {
                                   SizedBox(width: 4),
                                   Obx(() {
                                     return Text(
-                                      controller.detail.value
-                                          .toString(),
+                                      controller.detail.value.toString(),
                                       style: TextStyle(color: Colors.white70),
                                     );
                                   }),
@@ -197,7 +197,8 @@ class EventDetailScreen extends StatelessWidget {
                                   return SizedBox();
                                 }
                                 return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     SizedBox(height: 24),
@@ -242,12 +243,15 @@ class EventDetailScreen extends StatelessWidget {
                 ),
                 // Sticky buttons at bottom
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                   decoration: BoxDecoration(
                     color: theme.colorScheme.surface,
                     border: Border(
                       top: BorderSide(
-                        color: Color(0xFFD1B26F).withOpacity(0.2),
+                        color: Color(0xFFD1B26F).withAlpha((255 * 0.2).toInt()),
                         width: 1,
                       ),
                     ),
@@ -400,8 +404,8 @@ class _ExpandableLinkifyState extends State<ExpandableLinkify> {
 
 // --- EventSessionsWidget ---
 class EventSessionsWidget extends StatefulWidget {
-  final List<dynamic>? sessions;
-  const EventSessionsWidget({Key? key, required this.sessions}) : super(key: key);
+  final List<Session>? sessions;
+  const EventSessionsWidget({super.key, required this.sessions});
 
   @override
   State<EventSessionsWidget> createState() => _EventSessionsWidgetState();
@@ -416,7 +420,10 @@ class _EventSessionsWidgetState extends State<EventSessionsWidget> {
         children: [
           Icon(Icons.access_time, color: Color(0xFFD1B26F), size: 18),
           SizedBox(width: 4),
-          Text('No sessions available', style: TextStyle(color: Colors.white70)),
+          Text(
+            'No sessions available',
+            style: TextStyle(color: Colors.white70),
+          ),
         ],
       );
     }
@@ -425,11 +432,19 @@ class _EventSessionsWidgetState extends State<EventSessionsWidget> {
     // Filter out past sessions
     final upcoming = widget.sessions!.where((s) {
       try {
-        final endDate = DateTime.parse(s.lastSessionDate ?? s.firstSessionDate ?? '');
+        final endDate = DateTime.parse(
+          s.lastSessionDate ?? s.firstSessionDate ?? '',
+        );
         final endTime = s.sessionEndTime;
         if (endTime != null && endTime.length == 8) {
           final parts = endTime.split(":");
-          return endDate.add(Duration(hours: int.parse(parts[0]), minutes: int.parse(parts[1])))
+          return endDate
+              .add(
+                Duration(
+                  hours: int.parse(parts[0]),
+                  minutes: int.parse(parts[1]),
+                ),
+              )
               .isAfter(now);
         }
         return endDate.isAfter(now);
@@ -443,17 +458,30 @@ class _EventSessionsWidgetState extends State<EventSessionsWidget> {
         children: [
           Icon(Icons.access_time, color: Color(0xFFD1B26F), size: 18),
           SizedBox(width: 4),
-          Text('All sessions completed', style: TextStyle(color: Colors.white70)),
+          Text(
+            'All sessions completed',
+            style: TextStyle(color: Colors.white70),
+          ),
         ],
       );
     }
 
     // Group sessions by type
-    final singleSessions = upcoming.where((s) => (s.sessionType ?? '').toLowerCase() == 'single').toList();
-    final dailySessions = upcoming.where((s) => (s.sessionType ?? '').toLowerCase() == 'daily').toList();
-    final weeklySessions = upcoming.where((s) => (s.sessionType ?? '').toLowerCase() == 'weekly').toList();
-    final monthlySessions = upcoming.where((s) => (s.sessionType ?? '').toLowerCase() == 'monthly').toList();
-    final timeSlotSessions = upcoming.where((s) => (s.sessionType ?? '').toLowerCase() == 'time_slot').toList();
+    final singleSessions = upcoming
+        .where((s) => (s.sessionType ?? '').toLowerCase() == 'single')
+        .toList();
+    final dailySessions = upcoming
+        .where((s) => (s.sessionType ?? '').toLowerCase() == 'daily')
+        .toList();
+    final weeklySessions = upcoming
+        .where((s) => (s.sessionType ?? '').toLowerCase() == 'weekly')
+        .toList();
+    final monthlySessions = upcoming
+        .where((s) => (s.sessionType ?? '').toLowerCase() == 'monthly')
+        .toList();
+    final timeSlotSessions = upcoming
+        .where((s) => (s.sessionType ?? '').toLowerCase() == 'time_slot')
+        .toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -461,31 +489,49 @@ class _EventSessionsWidgetState extends State<EventSessionsWidget> {
         // Time Slot Sessions
         if (timeSlotSessions.isNotEmpty) ...[
           _buildSessionTypeHeader('Available Time Slots', theme),
-          ...timeSlotSessions.map<Widget>((s) => _buildSessionCard(s, context, theme)),
+          ...timeSlotSessions.map<Widget>(
+            (s) => _buildSessionCard(s, context, theme),
+          ),
         ],
         // Single Sessions
         if (singleSessions.isNotEmpty) ...[
           if (timeSlotSessions.isNotEmpty) SizedBox(height: 16),
           _buildSessionTypeHeader('One-Time Sessions', theme),
-          ...singleSessions.map<Widget>((s) => _buildSessionCard(s, context, theme)),
+          ...singleSessions.map<Widget>(
+            (s) => _buildSessionCard(s, context, theme),
+          ),
         ],
         // Daily Sessions
         if (dailySessions.isNotEmpty) ...[
-          if (singleSessions.isNotEmpty || timeSlotSessions.isNotEmpty) SizedBox(height: 16),
+          if (singleSessions.isNotEmpty || timeSlotSessions.isNotEmpty)
+            SizedBox(height: 16),
           _buildSessionTypeHeader('Daily Sessions', theme),
-          ...dailySessions.map<Widget>((s) => _buildSessionCard(s, context, theme)),
+          ...dailySessions.map<Widget>(
+            (s) => _buildSessionCard(s, context, theme),
+          ),
         ],
         // Weekly Sessions
         if (weeklySessions.isNotEmpty) ...[
-          if (singleSessions.isNotEmpty || dailySessions.isNotEmpty || timeSlotSessions.isNotEmpty) SizedBox(height: 16),
+          if (singleSessions.isNotEmpty ||
+              dailySessions.isNotEmpty ||
+              timeSlotSessions.isNotEmpty)
+            SizedBox(height: 16),
           _buildSessionTypeHeader('Weekly Sessions', theme),
-          ...weeklySessions.map<Widget>((s) => _buildSessionCard(s, context, theme)),
+          ...weeklySessions.map<Widget>(
+            (s) => _buildSessionCard(s, context, theme),
+          ),
         ],
         // Monthly Sessions
         if (monthlySessions.isNotEmpty) ...[
-          if (singleSessions.isNotEmpty || dailySessions.isNotEmpty || weeklySessions.isNotEmpty || timeSlotSessions.isNotEmpty) SizedBox(height: 16),
+          if (singleSessions.isNotEmpty ||
+              dailySessions.isNotEmpty ||
+              weeklySessions.isNotEmpty ||
+              timeSlotSessions.isNotEmpty)
+            SizedBox(height: 16),
           _buildSessionTypeHeader('Monthly Sessions', theme),
-          ...monthlySessions.map<Widget>((s) => _buildSessionCard(s, context, theme)),
+          ...monthlySessions.map<Widget>(
+            (s) => _buildSessionCard(s, context, theme),
+          ),
         ],
       ],
     );
@@ -513,7 +559,10 @@ class _EventSessionsWidgetState extends State<EventSessionsWidget> {
         decoration: BoxDecoration(
           color: Color(0xFF2E2D2C),
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Color(0xFFD1B26F).withOpacity(0.3), width: 1),
+          border: Border.all(
+            color: Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt()),
+            width: 1,
+          ),
         ),
         padding: const EdgeInsets.all(12),
         child: Column(
@@ -527,7 +576,11 @@ class _EventSessionsWidgetState extends State<EventSessionsWidget> {
                 Expanded(
                   child: Text(
                     _getDateDisplay(s),
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 13),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 13,
+                    ),
                   ),
                 ),
               ],
@@ -547,22 +600,23 @@ class _EventSessionsWidgetState extends State<EventSessionsWidget> {
               ],
             ),
             // Days for weekly sessions
-            if ((s.sessionType ?? '').toLowerCase() == 'weekly' && s.daysOfWeek is List && s.daysOfWeek.isNotEmpty)
-              ...[
-                SizedBox(height: 8),
-                Row(
-                  children: [
-                    Icon(Icons.repeat, color: Color(0xFFD1B26F), size: 16),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        s.daysOfWeek.map((d) => _capitalize(d)).join(', '),
-                        style: TextStyle(color: Colors.white70, fontSize: 13),
-                      ),
+            if ((s.sessionType ?? '').toLowerCase() == 'weekly' &&
+                s.daysOfWeek is List &&
+                s.daysOfWeek.isNotEmpty) ...[
+              SizedBox(height: 8),
+              Row(
+                children: [
+                  Icon(Icons.repeat, color: Color(0xFFD1B26F), size: 16),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      s.daysOfWeek.map((d) => _capitalize(d)).join(', '),
+                      style: TextStyle(color: Colors.white70, fontSize: 13),
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),
@@ -604,29 +658,41 @@ class _EventSessionsWidgetState extends State<EventSessionsWidget> {
 
   String _monthShort(int month) {
     const months = [
-      '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      '',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return months[month];
   }
 
-  String _capitalize(String s) => s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
+  String _capitalize(String s) =>
+      s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
 }
 
 // --- SessionSelectionSheet ---
 class SessionSelectionSheet extends StatefulWidget {
-  final List<dynamic> sessions;
+  final List<Session> sessions;
   final EventsModel event;
-  final dynamic eventDetail;
+  final EventDetailsModel eventDetail;
   final bool isTableBooking;
 
   const SessionSelectionSheet({
-    Key? key,
+    super.key,
     required this.sessions,
     required this.event,
     required this.eventDetail,
     required this.isTableBooking,
-  }) : super(key: key);
+  });
 
   @override
   State<SessionSelectionSheet> createState() => _SessionSelectionSheetState();
@@ -641,11 +707,13 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final now = DateTime.now();
-    
+
     // Filter out past sessions
     final upcoming = widget.sessions.where((s) {
       try {
-        final endDate = DateTime.parse(s.lastSessionDate ?? s.firstSessionDate ?? '');
+        final endDate = DateTime.parse(
+          s.lastSessionDate ?? s.firstSessionDate ?? '',
+        );
         return endDate.isAfter(now);
       } catch (_) {
         return true;
@@ -681,18 +749,15 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
                 ],
               ),
             ),
-            Divider(color: Color(0xFFD1B26F).withOpacity(0.2)),
-            
+            Divider(color: Color(0xFFD1B26F).withAlpha((255 * 0.2).toInt())),
+
             // Sessions List
             Expanded(
               child: ListView.builder(
                 controller: scrollController,
                 itemCount: upcoming.length,
-                itemBuilder: (ctx, i) => _buildSessionItem(
-                  upcoming[i],
-                  theme,
-                  context,
-                ),
+                itemBuilder: (ctx, i) =>
+                    _buildSessionItem(upcoming[i], theme, context),
               ),
             ),
           ],
@@ -701,7 +766,11 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
     );
   }
 
-  Widget _buildSessionItem(dynamic session, ThemeData theme, BuildContext context) {
+  Widget _buildSessionItem(
+    dynamic session,
+    ThemeData theme,
+    BuildContext context,
+  ) {
     final type = (session.sessionType ?? '').toLowerCase();
     final startDate = session.firstSessionDate;
     final endDate = session.lastSessionDate;
@@ -719,7 +788,7 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
             border: Border.all(
               color: selectedSession == session
                   ? Color(0xFFD1B26F)
-                  : Color(0xFFD1B26F).withOpacity(0.3),
+                  : Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt()),
               width: selectedSession == session ? 2 : 1,
             ),
           ),
@@ -733,7 +802,7 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: Color(0xFFD1B26F).withOpacity(0.2),
+                      color: Color(0xFFD1B26F).withAlpha((255 * 0.2).toInt()),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
@@ -749,13 +818,16 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
                   Expanded(
                     child: Text(
                       '${formatTimeToAmPm(startTime)} – ${formatTimeToAmPm(endTime)}',
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ],
               ),
               SizedBox(height: 8),
-              
+
               // Date Range
               Text(
                 type == 'single'
@@ -765,7 +837,9 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
               ),
 
               // Days for weekly
-              if (type == 'weekly' && session.daysOfWeek is List && session.daysOfWeek.isNotEmpty)
+              if (type == 'weekly' &&
+                  session.daysOfWeek is List &&
+                  session.daysOfWeek.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: Text(
@@ -812,7 +886,7 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
     return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Color(0xFFD1B26F).withOpacity(0.1),
+        color: Color(0xFFD1B26F).withAlpha((255 * 0.1).toInt()),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -820,14 +894,22 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
         children: [
           Text(
             '✓ Date Selected: ${_formatDate(session.firstSessionDate)}',
-            style: TextStyle(color: Color(0xFFD1B26F), fontWeight: FontWeight.w500),
+            style: TextStyle(
+              color: Color(0xFFD1B26F),
+              fontWeight: FontWeight.w500,
+            ),
           ),
           SizedBox(height: 12),
           SizedBox(
             width: double.infinity,
             child: PrimaryButton(
-              text: widget.isTableBooking ? 'Book Sofa & Table' : 'Continue to Booking',
-              onPressed: () => _proceedToBooking(session, _formatDate(session.firstSessionDate)),
+              text: widget.isTableBooking
+                  ? 'Book Sofa & Table'
+                  : 'Continue to Booking',
+              onPressed: () => _proceedToBooking(
+                session,
+                _formatDate(session.firstSessionDate),
+              ),
             ),
           ),
         ],
@@ -849,9 +931,9 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
-              color: Color(0xFFD1B26F).withOpacity(0.1),
+              color: Color(0xFFD1B26F).withAlpha((255 * 0.1).toInt()),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Color(0xFFD1B26F).withOpacity(0.3)),
+              border: Border.all(color: Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt())),
             ),
             child: Row(
               children: [
@@ -859,9 +941,13 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
                 SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    selectedDate != null ? _formatDate(selectedDate.toString()) : 'Choose date',
+                    selectedDate != null
+                        ? _formatDate(selectedDate.toString())
+                        : 'Choose date',
                     style: TextStyle(
-                      color: selectedDate != null ? Colors.white : Colors.white54,
+                      color: selectedDate != null
+                          ? Colors.white
+                          : Colors.white54,
                       fontSize: 14,
                     ),
                   ),
@@ -875,8 +961,13 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
           SizedBox(
             width: double.infinity,
             child: PrimaryButton(
-              text: widget.isTableBooking ? 'Book Sofa & Table' : 'Continue to Booking',
-              onPressed: () => _proceedToBooking(session, _formatDate(selectedDate.toString())),
+              text: widget.isTableBooking
+                  ? 'Book Sofa & Table'
+                  : 'Continue to Booking',
+              onPressed: () => _proceedToBooking(
+                session,
+                _formatDate(selectedDate.toString()),
+              ),
             ),
           ),
         ],
@@ -887,7 +978,9 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
   Widget _buildWeeklySessionUI(dynamic session, BuildContext context) {
     final startDate = DateTime.parse(session.firstSessionDate);
     final endDate = DateTime.parse(session.lastSessionDate);
-    final allowedDays = (session.daysOfWeek as List).map((d) => d.toString().toLowerCase()).toList();
+    final allowedDays = (session.daysOfWeek as List)
+        .map((d) => d.toString().toLowerCase())
+        .toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -898,13 +991,19 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
         ),
         SizedBox(height: 8),
         GestureDetector(
-          onTap: () => _showWeeklyDatePicker(context, startDate, endDate, allowedDays, session),
+          onTap: () => _showWeeklyDatePicker(
+            context,
+            startDate,
+            endDate,
+            allowedDays,
+            session,
+          ),
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
-              color: Color(0xFFD1B26F).withOpacity(0.1),
+              color: Color(0xFFD1B26F).withAlpha((255 * 0.1).toInt()),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Color(0xFFD1B26F).withOpacity(0.3)),
+              border: Border.all(color: Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt())),
             ),
             child: Row(
               children: [
@@ -912,9 +1011,13 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
                 SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    selectedDate != null ? _formatDate(selectedDate.toString()) : 'Choose date',
+                    selectedDate != null
+                        ? _formatDate(selectedDate.toString())
+                        : 'Choose date',
                     style: TextStyle(
-                      color: selectedDate != null ? Colors.white : Colors.white54,
+                      color: selectedDate != null
+                          ? Colors.white
+                          : Colors.white54,
                       fontSize: 14,
                     ),
                   ),
@@ -928,8 +1031,13 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
           SizedBox(
             width: double.infinity,
             child: PrimaryButton(
-              text: widget.isTableBooking ? 'Book Sofa & Table' : 'Continue to Booking',
-              onPressed: () => _proceedToBooking(session, _formatDate(selectedDate.toString())),
+              text: widget.isTableBooking
+                  ? 'Book Sofa & Table'
+                  : 'Continue to Booking',
+              onPressed: () => _proceedToBooking(
+                session,
+                _formatDate(selectedDate.toString()),
+              ),
             ),
           ),
         ],
@@ -951,9 +1059,9 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
-              color: Color(0xFFD1B26F).withOpacity(0.1),
+              color: Color(0xFFD1B26F).withAlpha((255 * 0.1).toInt()),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Color(0xFFD1B26F).withOpacity(0.3)),
+              border: Border.all(color: Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt())),
             ),
             child: Row(
               children: [
@@ -961,9 +1069,13 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
                 SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    selectedDate != null ? _formatDate(selectedDate.toString()) : 'Choose date',
+                    selectedDate != null
+                        ? _formatDate(selectedDate.toString())
+                        : 'Choose date',
                     style: TextStyle(
-                      color: selectedDate != null ? Colors.white : Colors.white54,
+                      color: selectedDate != null
+                          ? Colors.white
+                          : Colors.white54,
                       fontSize: 14,
                     ),
                   ),
@@ -977,8 +1089,13 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
           SizedBox(
             width: double.infinity,
             child: PrimaryButton(
-              text: widget.isTableBooking ? 'Book Sofa & Table' : 'Continue to Booking',
-              onPressed: () => _proceedToBooking(session, _formatDate(selectedDate.toString())),
+              text: widget.isTableBooking
+                  ? 'Book Sofa & Table'
+                  : 'Continue to Booking',
+              onPressed: () => _proceedToBooking(
+                session,
+                _formatDate(selectedDate.toString()),
+              ),
             ),
           ),
         ],
@@ -990,7 +1107,7 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
     return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Color(0xFFD1B26F).withOpacity(0.1),
+        color: Color(0xFFD1B26F).withAlpha((255 * 0.1).toInt()),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -998,7 +1115,10 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
         children: [
           Text(
             '✓ Time Slot Selected',
-            style: TextStyle(color: Color(0xFFD1B26F), fontWeight: FontWeight.w500),
+            style: TextStyle(
+              color: Color(0xFFD1B26F),
+              fontWeight: FontWeight.w500,
+            ),
           ),
           Text(
             '${_formatDate(session.firstSessionDate)} • ${formatTimeToAmPm(session.sessionStartTime)} – ${formatTimeToAmPm(session.sessionEndTime)}',
@@ -1008,7 +1128,9 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
           SizedBox(
             width: double.infinity,
             child: PrimaryButton(
-              text: widget.isTableBooking ? 'Book Sofa & Table' : 'Continue to Booking',
+              text: widget.isTableBooking
+                  ? 'Book Sofa & Table'
+                  : 'Continue to Booking',
               onPressed: () => _proceedToBooking(
                 session,
                 _formatDate(session.firstSessionDate),
@@ -1033,7 +1155,11 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
     });
   }
 
-  void _showDatePicker(BuildContext context, dynamic session, String type) async {
+  void _showDatePicker(
+    BuildContext context,
+    dynamic session,
+    String type,
+  ) async {
     final startDate = DateTime.parse(session.firstSessionDate);
     final endDate = DateTime.parse(session.lastSessionDate);
 
@@ -1043,9 +1169,9 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
       firstDate: startDate,
       lastDate: endDate,
       builder: (context, child) => Theme(
-        data: Theme.of(context).copyWith(
-          colorScheme: ColorScheme.dark(primary: Color(0xFFD1B26F)),
-        ),
+        data: Theme.of(
+          context,
+        ).copyWith(colorScheme: ColorScheme.dark(primary: Color(0xFFD1B26F))),
         child: child!,
       ),
     );
@@ -1070,14 +1196,21 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
       firstDate: startDate,
       lastDate: endDate,
       selectableDayPredicate: (DateTime date) {
-        final dayName = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'][
-            (date.weekday - 1) % 7];
+        final dayName = [
+          'monday',
+          'tuesday',
+          'wednesday',
+          'thursday',
+          'friday',
+          'saturday',
+          'sunday',
+        ][(date.weekday - 1) % 7];
         return allowedDays.contains(dayName);
       },
       builder: (context, child) => Theme(
-        data: Theme.of(context).copyWith(
-          colorScheme: ColorScheme.dark(primary: Color(0xFFD1B26F)),
-        ),
+        data: Theme.of(
+          context,
+        ).copyWith(colorScheme: ColorScheme.dark(primary: Color(0xFFD1B26F))),
         child: child!,
       ),
     );
@@ -1094,11 +1227,15 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
       Navigator.pop(context);
       context.push(
         "/table-booking",
-        extra: {
-          'event': widget.event,
-          'session': session,
-          'selected_date': selectedDateStr,
-        },
+        extra: TableBookingInfoArg(
+          event: widget.event,
+          eventDetail: widget.eventDetail,
+          promoCode: '',
+          tables: [],
+          session: session,
+          selectedDate: selectedDateStr,
+          sessions: widget.eventDetail.sessions,
+        ),
       );
     } else {
       Navigator.pop(context);
@@ -1127,10 +1264,20 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
 
   String _monthShort(int month) {
     const months = [
-      '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      '',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return months[month];
   }
 }
-

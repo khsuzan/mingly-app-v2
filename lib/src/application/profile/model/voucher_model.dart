@@ -22,12 +22,12 @@ class VoucherModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['code'] = this.code;
-    data['discount_percent'] = this.discountPercent;
-    data['description'] = this.description;
-    data['expiry_date'] = this.expiryDate;
-    data['used'] = this.used;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['code'] = code;
+    data['discount_percent'] = discountPercent;
+    data['description'] = description;
+    data['expiry_date'] = expiryDate;
+    data['used'] = used;
     return data;
   }
 }

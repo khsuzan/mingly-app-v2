@@ -45,7 +45,7 @@ class PointsHistoryScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.blueAccent.withOpacity(0.3),
+                      color: Colors.blueAccent.withAlpha((255 * 0.3).toInt()),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
@@ -107,7 +107,7 @@ class PointsHistoryScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withOpacity(0.1),
+                              color: Colors.grey.withAlpha((255 * 0.1).toInt()),
                               blurRadius: 6,
                               offset: const Offset(0, 3),
                             ),
@@ -120,8 +120,8 @@ class PointsHistoryScreen extends StatelessWidget {
                               padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
                                 color: isEarn
-                                    ? Colors.green.withOpacity(0.1)
-                                    : Colors.red.withOpacity(0.1),
+                                    ? Colors.green.withAlpha((255 * 0.1).toInt())
+                                    : Colors.red.withAlpha((255 * 0.1).toInt()),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Icon(

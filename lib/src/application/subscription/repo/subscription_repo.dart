@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:mingly/src/api_service/api_service.dart';
 import 'package:mingly/src/application/subscription/model/pakage_model.dart';
@@ -28,7 +27,7 @@ class SubscriptionRepo {
   
   Future<BuyPlanResponse> buyPlan(BuyPlanForm data) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    final response = await ApiService().postData(
+    final response = await ApiService().postDataOrThrow(
       AppUrls.updagradePlan,
       data.toJson(),
       authToken: preferences.getString("authToken"),
