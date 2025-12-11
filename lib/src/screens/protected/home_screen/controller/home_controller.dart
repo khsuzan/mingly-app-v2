@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mingly/src/application/events/model/events_model.dart';
 import 'package:mingly/src/application/home/home_repo.dart';
 import 'package:mingly/src/application/home/model/featured_model.dart';
@@ -15,6 +15,7 @@ class HomeController extends GetxController {
   final RxBool isFeaturedSectionLoading = false.obs;
   final RxBool isProfileLoading = false.obs;
   final RxBool isRefreshing = false.obs;
+  final RxBool isProfileComplete = true.obs;
 
   final HomeRepo homeRepo = HomeRepo();
   final ProfileRepo profileRepo = ProfileRepo();
@@ -36,6 +37,23 @@ class HomeController extends GetxController {
     fetchUserLocationShared();
 
     ever(userLocation, fetchRecommendationEvents.call);
+    ever(profile, checkProfileData.call);
+  }
+
+  void checkProfileData(ProfileModel data) {
+    isProfileComplete.value = _isProfileComplete(data);
+  }
+
+  bool _isProfileComplete(ProfileModel data) {
+    final fullName = data.data?.fullName;
+    final avatar = data.data?.avatar;
+    if (fullName == null || avatar == null) {
+      return false;
+    }
+    if (fullName.isEmpty || avatar.isEmpty) {
+      return false;
+    }
+    return true;
   }
 
   Future<void> fetchProfileInfo() async {

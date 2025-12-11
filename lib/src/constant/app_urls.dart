@@ -1,11 +1,11 @@
 class AppUrls {
-  // static String baseUrl = "https://admin.mingly.org/app/api/v1";
-  // static String imageUrl = "https://backendapi.mingly.org";
-  // static String imageUrlApp = "https://admin.mingly.org";
-
-  static String baseUrl = "http://192.168.0.147:8900/app/api/v1";
+  static String baseUrl = "https://admin.mingly.org/app/api/v1";
   static String imageUrl = "https://backendapi.mingly.org";
   static String imageUrlApp = "https://admin.mingly.org";
+
+  // static String baseUrl = "http://192.168.0.147:8900/app/api/v1";
+  // static String imageUrl = "https://backendapi.mingly.org";
+  // static String imageUrlApp = "https://admin.mingly.org";
   
   //authentication
   static String login = "/auth/login/";
