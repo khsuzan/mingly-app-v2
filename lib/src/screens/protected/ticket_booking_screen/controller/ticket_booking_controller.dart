@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
-import '../../../../application/booking/ticket_booking.dart';
+import '../../../../application/booking/model/ticket_booking.dart';
 import '../../../../application/events/repo/events_repo.dart';
 
 class TicketBookingController extends GetxController {

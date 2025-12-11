@@ -4,7 +4,7 @@ import 'package:mingly/src/application/events/model/events_model.dart';
 import 'package:mingly/src/components/custom_snackbar.dart';
 import 'package:mingly/src/screens/protected/booking_confirmation_screen/ticket_booking/controller/booking_confirmation_controller.dart';
 
-import '../../../../../application/booking/ticket_booking.dart';
+import '../../../../../application/booking/model/ticket_booking.dart';
 import '../../../../../components/helpers.dart';
 
 class BookingConfirmationScreen extends StatelessWidget {
@@ -40,7 +40,10 @@ class BookingConfirmationScreen extends StatelessWidget {
           body: SafeArea(
             child: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -71,7 +74,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    _buildTicketsCard(tickets, controller),
+                    _buildTicketsCard(event, tickets, controller),
                     const SizedBox(height: 16),
                     // Promo Code Section
                     Row(
@@ -146,7 +149,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     // Price Breakdown Card
-                    _buildPriceBreakdownCard(controller, theme),
+                    _buildPriceBreakdownCard(event, controller, theme),
                     SizedBox(
                       width: double.infinity,
                       child: PrimaryButton(
@@ -313,6 +316,7 @@ class BookingConfirmationScreen extends StatelessWidget {
   }
 
   Widget _buildTicketsCard(
+    EventsModel event,
     List<TicketBuyingInfo> tickets,
     TicketBookingConfirmationController controller,
   ) {
@@ -348,7 +352,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                             ),
                             SizedBox(height: 4),
                             Text(
-                              '${ticket.quantity} x \$${ticket.unitPrice}',
+                              '${ticket.quantity} x ${formatCurrency(event.currency)}${ticket.unitPrice}',
                               style: TextStyle(
                                 color: Colors.white70,
                                 fontSize: 12,
@@ -358,7 +362,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '\$${totalPrice.toStringAsFixed(2)}',
+                        '${formatCurrency(event.currency)}${totalPrice.toStringAsFixed(2)}',
                         style: TextStyle(
                           color: Color(0xFFD1B26F),
                           fontWeight: FontWeight.bold,
@@ -391,7 +395,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                 ),
                 Obx(() {
                   return Text(
-                    '\$${controller.getTicketPriceInTotal.value.toStringAsFixed(2)}',
+                    '${formatCurrency(event.currency)}${controller.getTicketPriceInTotal.value.toStringAsFixed(2)}',
                     style: TextStyle(
                       color: Color(0xFFD1B26F),
                       fontWeight: FontWeight.bold,
@@ -408,6 +412,7 @@ class BookingConfirmationScreen extends StatelessWidget {
   }
 
   Widget _buildPriceBreakdownCard(
+    EventsModel event,
     TicketBookingConfirmationController controller,
     ThemeData theme,
   ) {
@@ -420,12 +425,14 @@ class BookingConfirmationScreen extends StatelessWidget {
           children: [
             _buildPriceRow(
               label: 'Subtotal',
+              currency: '',
               amount: controller.getTicketPriceInTotal.value.toStringAsFixed(2),
               isBold: false,
             ),
             const SizedBox(height: 8),
             _buildPriceRow(
               label: 'Service Fee (10%)',
+              currency: '',
               amount: controller.getServiceFee.value.toStringAsFixed(2),
               isBold: false,
             ),
@@ -434,6 +441,7 @@ class BookingConfirmationScreen extends StatelessWidget {
               return _buildPriceRow(
                 label: 'Promo Discount',
                 amount: '-${controller.promoValue.value}',
+                currency: '',
                 isBold: false,
                 isDiscount: controller.promoValue.value > 0 ? true : false,
               );
@@ -445,6 +453,7 @@ class BookingConfirmationScreen extends StatelessWidget {
               return _buildPriceRow(
                 label: 'Grand Total',
                 amount: controller.getTotalPrice.value,
+                currency: formatCurrency(event.currency),
                 isBold: true,
                 color: theme.colorScheme.primary,
               );
@@ -458,6 +467,7 @@ class BookingConfirmationScreen extends StatelessWidget {
   Widget _buildPriceRow({
     required String label,
     required String amount,
+    required String currency,
     bool isBold = false,
     bool isDiscount = false,
     Color? color,
@@ -474,7 +484,7 @@ class BookingConfirmationScreen extends StatelessWidget {
           ),
         ),
         Text(
-          amount,
+          "$currency$amount",
           style: TextStyle(
             color: isDiscount ? Color(0xFFD1B26F) : (color ?? Colors.white),
             fontWeight: isBold ? FontWeight.bold : FontWeight.normal,

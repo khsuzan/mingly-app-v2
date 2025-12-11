@@ -5,7 +5,7 @@ import 'package:mingly/src/application/events/model/events_model.dart';
 import 'package:mingly/src/components/helpers.dart';
 import 'package:mingly/src/screens/protected/berverages/widget/table_card.dart';
 
-import '../../../../../application/booking/ticket_booking.dart';
+import '../../../../../application/booking/model/ticket_booking.dart';
 import '../../../../../application/events/model/event_details_model.dart';
 import '../../../../../application/events/model/event_ticket_model.dart';
 import '../../../../../components/custom_snackbar.dart';
@@ -85,7 +85,7 @@ class TableBookingConfirmationScreen extends StatelessWidget {
                   TableCard(
                     no: tickets.map((e) => e.ticketTitle).toList(),
                     price:
-                        "\$${tickets.map((e) => e.unitPrice).reduce((value, element) => value + element)}",
+                        "${formatCurrency(event.currency)}${tickets.map((e) => e.unitPrice).reduce((value, element) => value + element)}",
                     tableCount: tickets.length.toString(),
                   ),
                   const SizedBox(height: 16),

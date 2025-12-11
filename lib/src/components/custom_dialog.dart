@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mingly/src/api_service/firebae_google_signup.dart';
+import 'package:mingly/src/components/helpers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> showLogoutDialog(BuildContext context) {
@@ -205,30 +206,12 @@ Future<void> showProfileUpdateDialog(BuildContext context) {
               const SizedBox(height: 20),
 
               // Update Button
-              InkWell(
-                onTap: () {
+              PrimaryButton(
+                text: "Update Profile",
+                onPressed: () {
                   Navigator.pop(context);
                   context.push('/edit-profile');
                 },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primary,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  width: double.infinity,
-                  child: const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(12.0),
-                      child: Text(
-                        "Update Profile",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
               ),
             ],
           ),

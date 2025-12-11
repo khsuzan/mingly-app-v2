@@ -4,7 +4,7 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mingly/src/application/booking/ticket_booking.dart';
+import 'package:mingly/src/application/booking/model/ticket_booking.dart';
 import 'package:mingly/src/application/events/model/events_model.dart';
 import 'package:mingly/src/components/helpers.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -933,7 +933,9 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
             decoration: BoxDecoration(
               color: Color(0xFFD1B26F).withAlpha((255 * 0.1).toInt()),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt())),
+              border: Border.all(
+                color: Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt()),
+              ),
             ),
             child: Row(
               children: [
@@ -1003,7 +1005,9 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
             decoration: BoxDecoration(
               color: Color(0xFFD1B26F).withAlpha((255 * 0.1).toInt()),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt())),
+              border: Border.all(
+                color: Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt()),
+              ),
             ),
             child: Row(
               children: [
@@ -1061,7 +1065,9 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
             decoration: BoxDecoration(
               color: Color(0xFFD1B26F).withAlpha((255 * 0.1).toInt()),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt())),
+              border: Border.all(
+                color: Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt()),
+              ),
             ),
             child: Row(
               children: [
@@ -1190,9 +1196,10 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
     List<String> allowedDays,
     dynamic session,
   ) async {
+    final initialDate = findFirstAllowedDate(startDate, endDate, allowedDays);
     final picked = await showDatePicker(
       context: context,
-      initialDate: startDate,
+      initialDate: initialDate,
       firstDate: startDate,
       lastDate: endDate,
       selectableDayPredicate: (DateTime date) {
@@ -1207,12 +1214,6 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
         ][(date.weekday - 1) % 7];
         return allowedDays.contains(dayName);
       },
-      builder: (context, child) => Theme(
-        data: Theme.of(
-          context,
-        ).copyWith(colorScheme: ColorScheme.dark(primary: Color(0xFFD1B26F))),
-        child: child!,
-      ),
     );
 
     if (picked != null) {
@@ -1220,6 +1221,26 @@ class _SessionSelectionSheetState extends State<SessionSelectionSheet> {
         selectedDate = picked;
       });
     }
+  }
+
+  DateTime findFirstAllowedDate(
+    DateTime start,
+    DateTime end,
+    List<String> allowedDays,
+  ) {
+    for (var d = start; !d.isAfter(end); d = d.add(Duration(days: 1))) {
+      final dayName = [
+        'monday',
+        'tuesday',
+        'wednesday',
+        'thursday',
+        'friday',
+        'saturday',
+        'sunday',
+      ][(d.weekday - 1) % 7];
+      if (allowedDays.contains(dayName)) return d;
+    }
+    return start; // fallback
   }
 
   void _proceedToBooking(dynamic session, String selectedDateStr) {

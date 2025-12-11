@@ -5,8 +5,8 @@ import 'package:mingly/src/application/events/model/events_model.dart';
 import 'package:mingly/src/application/payment/model/payment_from.dart';
 import 'package:mingly/src/components/custom_snackbar.dart';
 
-import '../../../../../application/booking/ticket_booking.dart';
-import '../../../../../application/booking/ticket_success.dart';
+import '../../../../../application/booking/model/ticket_booking.dart';
+import '../../../../../application/booking/model/ticket_success.dart';
 import '../../../../../application/events/repo/events_repo.dart';
 import '../../../../../application/promo_code/model/promo_code_model.dart';
 import '../../../../../components/custom_loading_dialog.dart';

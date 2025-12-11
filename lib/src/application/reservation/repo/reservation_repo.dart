@@ -7,7 +7,7 @@ import 'package:mingly/src/constant/app_urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-import '../../booking/reservation_success.dart';
+import '../../booking/model/reservation_success.dart';
 
 class ReservationRepo {
   Future<List<ReservationModelResponse>> getReservations() async {

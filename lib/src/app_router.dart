@@ -39,8 +39,8 @@ import 'package:mingly/src/screens/protected/venue_list_screen/view/venue_list_s
 import 'package:mingly/src/screens/protected/venue_menu/view/venue_menu_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'application/booking/booking_list.dart';
-import 'application/booking/ticket_booking.dart';
+import 'application/booking/model/booking_list.dart';
+import 'application/booking/model/ticket_booking.dart';
 import 'application/payment/model/payment_from.dart';
 import 'application/venues/model/venues_model.dart';
 import 'screens/protected/country_list/view/country_list_screen.dart';
@@ -49,7 +49,7 @@ import 'screens/protected/payment/view/payment_stripe_screen.dart';
 import 'screens/protected/promo_code/view/promo_code_screen.dart';
 import 'screens/protected/reserve_venue/view/venue_reserve_screen.dart';
 import 'screens/protected/table_booking_detail/view/booked_table_detail_screen.dart';
-import 'screens/protected/ticket_booking_detail/view/ticket_booking_detail_screen.dart';
+import 'screens/protected/table_booking_detail/view/booked_ticket_detail_screen.dart';
 
 class AppRouter {
   static Future<GoRouter> createRouter() async {

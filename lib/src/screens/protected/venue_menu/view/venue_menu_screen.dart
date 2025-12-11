@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mingly/src/components/helpers.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 
@@ -29,10 +30,7 @@ class VenueMenuScreen extends StatelessWidget {
               icon: const Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () => Navigator.of(context).pop(),
             ),
-            title: const Text(
-              'Menu',
-              style: TextStyle(color: Colors.white),
-            ),
+            title: const Text('Menu', style: TextStyle(color: Colors.white)),
           ),
           body: SafeArea(
             child: Padding(
@@ -54,10 +52,53 @@ class VenueMenuScreen extends StatelessWidget {
                   }
                   final list = controller.menuList;
                   if (list.isEmpty) {
-                    return const CustomScrollView(
+                    return CustomScrollView(
                       slivers: [
                         SliverFillRemaining(
-                          child: Center(child: Text('No menu items available')),
+                          hasScrollBody: false,
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.restaurant_menu,
+                                  size: 64,
+                                  color: theme.colorScheme.primary.withAlpha(
+                                    180,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                const Text(
+                                  'No menu items are available for this venue at the moment.',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const SizedBox(height: 24),
+                                ElevatedButton.icon(
+                                  icon: const Icon(Icons.home),
+                                  label: const Text('Back to Home'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: theme.colorScheme.primary
+                                        .withAlpha(30),
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 24,
+                                      vertical: 12,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    context.go("/home");
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
                     );

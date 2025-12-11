@@ -7,7 +7,7 @@ import 'package:mingly/src/application/promo_code/model/promo_code_model.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../booking/ticket_success.dart';
+import '../../booking/model/ticket_success.dart';
 import '../../venues/model/venues_model.dart';
 import '../model/event_session_model.dart';
 
@@ -91,6 +91,7 @@ class EventsRepo {
     );
     return EventDetailsModel.fromJson(response);
   }
+
 
   Future<List<EventsTicketModel>> getEventTicket(String id) async {
     final response = await ApiService().getList("${AppUrls.ticketList}$id/");

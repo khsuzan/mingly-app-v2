@@ -15,10 +15,14 @@ class HomeController extends GetxController {
   final RxBool isFeaturedSectionLoading = false.obs;
   final RxBool isProfileLoading = false.obs;
   final RxBool isRefreshing = false.obs;
-  final RxBool isProfileComplete = true.obs;
+  final RxBool _profileDialogShown = false.obs;
 
   final HomeRepo homeRepo = HomeRepo();
   final ProfileRepo profileRepo = ProfileRepo();
+
+  // Callback to receive context from UI
+  Function(BuildContext)? _onProfileCheckRequired;
+  BuildContext? _currentBuildContext;
 
   final Rx<ProfileModel> profile = ProfileModel().obs;
   final RxList<FeaturedModel> featuredItems = <FeaturedModel>[].obs;
@@ -31,14 +35,66 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchProfileInfo();
     fetchHomeData();
     fetchUserLocationShared();
+
+    // Listen to profile changes and trigger dialog if incomplete
+    ever(profile, (_) {
+      _checkAndTriggerProfileDialog();
+    });
 
     ever(userLocation, (callback) {
       fetchRecommendationEvents(userLocation.value);
       fetchFeaturedVenues(userLocation.value);
     });
+  }
+
+  /// Set the callback to show profile dialog - called from UI
+  void setProfileCheckCallback(Function(BuildContext) callback) {
+    _onProfileCheckRequired = callback;
+  }
+
+  /// Update the current build context - called from UI
+  void updateBuildContext(BuildContext context) {
+    _currentBuildContext = context;
+  }
+
+  /// Handle featured item tap - navigate based on type
+  void handleFeaturedItemTap(FeaturedModel item, GoRouter router) {
+    if (item.imageableType == "venues" &&
+        item.imageable?.runtimeType.toString() == "ImageableVenue") {
+      final extra = (item.imageable as ImageableVenue?)?.toVenuesModel();
+      router.push("/venue-detail", extra: extra);
+    } else if (item.imageableType == "eevents" &&
+        item.imageable?.runtimeType.toString() == "ImageableEvent") {
+      final extra = (item.imageable as ImageableEvent?)?.toEventsModel();
+      router.push("/event-detail", extra: extra);
+    }
+  }
+
+  /// Check profile completion and trigger dialog if needed
+  void _checkAndTriggerProfileDialog() {
+    if (_isProfileComplete()) {
+      // Profile is complete, reset the flag so dialog can show again if needed
+      _profileDialogShown.value = false;
+      return;
+    }
+
+    // Profile is incomplete - show dialog if not already shown
+    if (!_profileDialogShown.value) {
+      _profileDialogShown.value = true;
+      // Call the callback with context from the UI
+      _onProfileCheckRequired?.call(_currentBuildContext!);
+    }
+  }
+
+  /// Check if profile is complete
+  bool _isProfileComplete() {
+    final fullName = profile.value.data?.fullName;
+    final avatar = profile.value.data?.avatar;
+
+    return (fullName != null && fullName.isNotEmpty) &&
+        (avatar != null && avatar.isNotEmpty);
   }
 
   Future<void> fetchProfileInfo() async {
@@ -57,6 +113,7 @@ class HomeController extends GetxController {
   Future<void> fetchHomeData() async {
     debugPrint('Home data fetch initiated');
     isRefreshing.value = true;
+    fetchProfileInfo();
     await fetchFeaturedSection();
     await fetchFeaturedVenues(userLocation.value);
     await fetchTopSpenders();

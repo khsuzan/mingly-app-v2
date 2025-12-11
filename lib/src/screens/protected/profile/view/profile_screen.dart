@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mingly/src/components/custom_dialog.dart';
+import 'package:mingly/src/components/helpers.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 import 'package:mingly/src/screens/protected/profile/controller/profile_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -52,88 +53,85 @@ class ProfileScreen extends StatelessWidget {
                   children: [
                     // Profile Card
                     Obx(() {
-                      return controller.isProfileInfoLoading.value
-                          ? Center(child: CircularProgressIndicator())
-                          : Card(
-                              color: Color(0xFF2E2D2C),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                side: BorderSide(
-                                  color: Color(0xFFFFFAE5),
-                                  width: 0.5,
-                                ),
-                              ),
-                              child: Card(
-                                color: Color(0xFF2E2D2C),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
+                      if (controller.isProfileInfoLoading.value) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                      return Card(
+                        color: Color(0xFF2E2D2C),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          side: BorderSide(
+                            color: Color(0xFFFFFAE5),
+                            width: 0.5,
+                          ),
+                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            context.push('/view-profile');
+                          },
+                          child: Card(
+                            color: Color(0xFF2E2D2C),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Row(
                                     children: [
-                                      Row(
-                                        children: [
-                                          Obx(() {
-                                            final image =
-                                                controller.profile.value.avatar;
-                                            return CircleAvatar(
-                                              radius: 28,
-                                              backgroundImage: image == null
-                                                  ? const AssetImage(
-                                                      "lib/assets/images/noimage.png",
-                                                    )
-                                                  : NetworkImage(
-                                                          AppUrls.imageUrlApp +
-                                                              controller
-                                                                  .profile
-                                                                  .value
-                                                                  .avatar
-                                                                  .toString(),
-                                                        )
-                                                        as ImageProvider,
-                                            );
-                                          }),
-                                          SizedBox(width: 12),
-                                          Expanded(
-                                            child: Obx(() {
-                                              final name = controller
-                                                  .profile
-                                                  .value
-                                                  .fullName;
-                                              return Text(
-                                                name ?? "",
-                                                style: TextStyle(
-                                                  color: const Color(
-                                                    0xFFFFFAE5,
-                                                  ),
-                                                  fontSize: 16,
-                                                  fontFamily: 'Lato',
-                                                  fontWeight: FontWeight.w600,
-                                                  height: 1.75,
-                                                ),
-                                              );
-                                            }),
+                                      Obx(() {
+                                        final image =
+                                            controller.profile.value.avatar;
+                                        if (image == null) {
+                                          return CircleAvatar(
+                                            radius: 28,
+                                            child: NoImage(),
+                                          );
+                                        }
+                                        return CircleAvatar(
+                                          radius: 28,
+                                          backgroundImage: NetworkImage(
+                                            AppUrls.imageUrlApp + image,
                                           ),
-                                          SizedBox(width: 12),
-                                          IconButton(
-                                            onPressed: () {
-                                              context.push("/edit-profile");
-                                            },
-                                            icon: Icon(
-                                              Icons.edit_note,
-                                              color: theme.colorScheme.primary,
+                                        );
+                                      }),
+                                      SizedBox(width: 12),
+                                      Expanded(
+                                        child: Obx(() {
+                                          final name =
+                                              controller.profile.value.fullName;
+                                          return Text(
+                                            name ?? "",
+                                            style: TextStyle(
+                                              color: const Color(0xFFFFFAE5),
+                                              fontSize: 16,
+                                              fontFamily: 'Lato',
+                                              fontWeight: FontWeight.w600,
+                                              height: 1.75,
                                             ),
-                                          ),
-                                        ],
+                                          );
+                                        }),
+                                      ),
+                                      SizedBox(width: 12),
+                                      IconButton(
+                                        onPressed: () {
+                                          context.push("/edit-profile");
+                                        },
+                                        icon: Icon(
+                                          Icons.edit_note,
+                                          color: theme.colorScheme.primary,
+                                        ),
                                       ),
                                     ],
                                   ),
-                                ),
+                                ],
                               ),
-                            );
+                            ),
+                          ),
+                        ),
+                      );
                     }),
                     const SizedBox(height: 16),
                     // Membership Status Card

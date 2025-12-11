@@ -1,9 +1,10 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:mingly/src/api_service/api_service.dart';
-import 'package:mingly/src/application/booking/booking_list.dart';
+import 'package:mingly/src/application/booking/model/booking_list.dart';
 import 'package:mingly/src/constant/app_urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../model/order_detail.dart';
 
 class BookingOrdersRepo {
   Future<List<BookingOrder>> getOrdersBooking() async {
@@ -18,8 +19,8 @@ class BookingOrdersRepo {
         final map = e as Map<String, dynamic>;
         // helpful debug log to inspect incoming payload keys
         // also print nested event name if available
-        if (map['event'] is Map && (map['event'] as Map).containsKey('event_name')) {
-        }
+        if (map['event'] is Map &&
+            (map['event'] as Map).containsKey('event_name')) {}
         final order = BookingOrder.fromJson(map);
         results.add(order);
       } catch (err, st) {
@@ -30,5 +31,17 @@ class BookingOrdersRepo {
       }
     }
     return results;
+  }
+
+  Future<OrderDetailResponse> getOrderDetails(String orderNumber) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final response = await ApiService().getOrThrow(
+      AppUrls.bookingOrderDetailByOrderNumber.replaceFirst(
+        ":order_number",
+        orderNumber,
+      ),
+      authToken: preferences.getString("authToken"),
+    );
+    return OrderDetailResponse.fromJson(response);
   }
 }

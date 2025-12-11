@@ -1,5 +1,5 @@
-import '../events/model/event_details_model.dart';
-import '../events/model/events_model.dart';
+import '../../events/model/event_details_model.dart';
+import '../../events/model/events_model.dart';
 
 class TicketBooking {
   List<TicketBuyingInfo> items;

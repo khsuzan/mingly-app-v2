@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mingly/src/application/events/model/events_model.dart';
 
-import '../../../../application/booking/ticket_booking.dart';
+import '../../../../application/booking/model/ticket_booking.dart';
 import '../../../../application/events/model/event_details_model.dart';
 import '../../../../components/custom_snackbar.dart';
 import '../../../../components/helpers.dart';
@@ -117,7 +117,7 @@ class TableBookingScreen extends StatelessWidget {
                             label: table.title ?? '',
                             available: info.isAvailable,
                             price: table.price ?? '',
-                            priceUnit: "\$",
+                            priceUnit: formatCurrency(event.currency),
                             selected: selectedTables.any(
                               (t) => t.id == controller.tables[index].id,
                             ),
@@ -159,7 +159,7 @@ class TableBookingScreen extends StatelessWidget {
                     }
                     return Padding(
                       padding: const EdgeInsets.only(top: 24.0),
-                      child: _buildSelectedTablesSummary(controller),
+                      child: _buildSelectedTablesSummary(controller, event),
                     );
                   }),
 
@@ -439,7 +439,7 @@ class TableBookingScreen extends StatelessWidget {
     });
   }
 
-  Widget _buildSelectedTablesSummary(TableBookingController controller) {
+  Widget _buildSelectedTablesSummary(TableBookingController controller, EventsModel event){
     return Container(
       decoration: BoxDecoration(
         color: Color(0xFF2E2D2C),
@@ -486,7 +486,7 @@ class TableBookingScreen extends StatelessWidget {
                       style: TextStyle(color: Colors.white70, fontSize: 13),
                     ),
                     Text(
-                      "\$${controller.selectedTables.fold<double>(0, (sum, element) => sum + (double.tryParse(element.price ?? '') ?? 0.0)).toStringAsFixed(2)}",
+                      "${formatCurrency(event.currency)}${controller.selectedTables.fold<double>(0, (sum, element) => sum + (double.tryParse(element.price ?? '') ?? 0.0)).toStringAsFixed(2)}",
                       style: TextStyle(
                         color: Color(0xFFD1B26F),
                         fontWeight: FontWeight.bold,
@@ -516,7 +516,7 @@ class _TableSlotButton extends StatelessWidget {
     required this.id,
     required this.label,
     required this.price,
-    this.priceUnit = "\$",
+    this.priceUnit = "",
     required this.available,
     required this.selected,
     this.onClicked,

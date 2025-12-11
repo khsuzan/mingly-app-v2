@@ -3,14 +3,14 @@ class AppUrls {
   // static String imageUrl = "https://backendapi.mingly.org";
   // static String imageUrlApp = "https://admin.mingly.org";
 
-  static String baseUrl = "http://10.10.13.11:8900/app/api/v1";
+  // static String baseUrl = "http://10.10.13.11:8900/app/api/v1";
+  // static String imageUrl = "https://backendapi.mingly.org";
+  // static String imageUrlApp = "https://admin.mingly.org";
+
+  static String baseUrl = "http://192.168.0.147:8900/app/api/v1";
   static String imageUrl = "https://backendapi.mingly.org";
   static String imageUrlApp = "https://admin.mingly.org";
 
-  // static String baseUrl = "http://192.168.0.147:8900/app/api/v1";
-  // static String imageUrl = "https://backendapi.mingly.org";
-  // static String imageUrlApp = "https://admin.mingly.org";
-  
   //authentication
   static String login = "/auth/login/";
   static String loginGoogle = "/google/login/";
@@ -55,7 +55,7 @@ class AppUrls {
   static String myMembership = "/my_membership/";
 
   static String myMembershipCancel = "/my_membership/cancel/";
-  
+
   static String memberships = "/stripe/membership/packages/";
 
   static String updagradePlan = "/stripe/membership/upgrade/";
@@ -85,6 +85,8 @@ class AppUrls {
   static String bookReservation = "/reserve-venue/:venueId/";
 
   static String bookingOrders = "/my-bookings/";
+
+  static String bookingOrderDetailByOrderNumber = "/my-bookings/:order_number/";
 
   static String getOrderHistory = "/order-history/";
 

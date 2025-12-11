@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mingly/src/application/booking/ticket_booking.dart';
+import 'package:mingly/src/application/booking/model/ticket_booking.dart';
 import 'package:mingly/src/application/events/model/events_model.dart';
 import 'package:mingly/src/application/promo_code/model/promo_code_model.dart';
 import 'package:mingly/src/components/custom_loading_dialog.dart';
 
-import '../../../../../application/booking/ticket_success.dart';
+import '../../../../../application/booking/model/ticket_success.dart';
 import '../../../../../application/events/repo/events_repo.dart';
 import '../../../../../application/payment/model/payment_from.dart';
 import '../../../../../components/custom_snackbar.dart';

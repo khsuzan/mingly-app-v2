@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../application/booking/ticket_booking.dart';
+import '../../../../application/booking/model/ticket_booking.dart';
 import '../../../../components/helpers.dart';
 import '../controller/ticket_booking_controller.dart';
 
@@ -84,6 +84,7 @@ class TicketBookingScreen extends StatelessWidget {
                               price: ticket.unitPrice.toString(),
                               soldOut: ticket.totalTicketQty == 0,
                               qty: ticket.totalTicketQty,
+                              currency: event.currency,
                               selectedQty: ticket.quantity,
                               onSelectTicket: (changeBy) =>
                                   controller.onSelectTicket(ticket, changeBy),
@@ -99,7 +100,7 @@ class TicketBookingScreen extends StatelessWidget {
                       width: double.infinity,
                       child: PrimaryButton(
                         text:
-                            'Buy Tickets (\$${controller.totalPrice.value.toStringAsFixed(2)})',
+                            'Buy Tickets (${formatCurrency(event.currency)}${controller.totalPrice.value.toStringAsFixed(2)})',
                         onPressed: () {
                           context.push(
                             "/booking-confirmation",
@@ -162,7 +163,10 @@ class TicketBookingScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Color(0xFF2E2D2C),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt()), width: 1),
+        border: Border.all(
+          color: Color(0xFFD1B26F).withAlpha((255 * 0.3).toInt()),
+          width: 1,
+        ),
       ),
       padding: const EdgeInsets.all(12),
       child: Column(
@@ -243,12 +247,14 @@ class _TicketOption extends StatelessWidget {
   final int selectedQty;
   final bool soldOut;
   final String id;
+  final String? currency;
   final Function(int) onSelectTicket;
   const _TicketOption({
     required this.title,
     required this.price,
     required this.id,
     this.qty,
+    this.currency,
     this.selectedQty = 0,
     this.soldOut = false,
     required this.onSelectTicket,
@@ -288,7 +294,7 @@ class _TicketOption extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          '\$$price',
+                          '${formatCurrency(currency)}$price',
                           style: TextStyle(
                             color: Color(0xFFD1B26F),
                             fontWeight: FontWeight.bold,
@@ -298,7 +304,10 @@ class _TicketOption extends StatelessWidget {
                         SizedBox(width: 12),
                         if (qty != null)
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.white10,
                               borderRadius: BorderRadius.circular(6),
@@ -345,7 +354,9 @@ class _TicketOption extends StatelessWidget {
                     ),
                     _buildQuantityButton(
                       icon: Icons.add,
-                      onTap: (qty == null || selectedQty < qty!) ? () => onSelectTicket(1) : null,
+                      onTap: (qty == null || selectedQty < qty!)
+                          ? () => onSelectTicket(1)
+                          : null,
                     ),
                   ],
                 ),
@@ -369,9 +380,7 @@ class _TicketOption extends StatelessWidget {
         child: Container(
           width: 28,
           height: 28,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(6),
-          ),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
           child: Icon(
             icon,
             color: onTap != null ? Color(0xFFD1B26F) : Colors.white30,

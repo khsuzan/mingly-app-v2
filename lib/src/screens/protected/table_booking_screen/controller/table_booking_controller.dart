@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:mingly/src/application/events/model/event_ticket_model.dart';
 import 'package:mingly/src/application/events/repo/events_repo.dart';
 
-import '../../../../application/booking/ticket_booking.dart';
+import '../../../../application/booking/model/ticket_booking.dart';
 import '../../../../application/events/model/event_details_model.dart';
 import '../../../../application/events/model/event_session_model.dart';
 import '../../../../components/helpers.dart';

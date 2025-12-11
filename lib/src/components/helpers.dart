@@ -318,3 +318,8 @@ String formatBookingDateForBackend(String bookingDate) {
     return bookingDate; // Return as-is if parsing fails
   }
 }
+
+String formatCurrency(String? currency){
+  if(currency == null) return "";
+  return "$currency ";
+}

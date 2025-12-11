@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mingly/src/application/events/repo/events_repo.dart';
 
-import '../../../../application/booking/booking_list.dart';
+import '../../../../application/booking/model/booking_list.dart';
 import '../../../../application/booking/repo/booking_repo.dart';
 import '../../../../application/payment/model/payment_from.dart';
 import '../../../../components/custom_loading_dialog.dart';
