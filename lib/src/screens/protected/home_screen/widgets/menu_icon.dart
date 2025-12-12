@@ -7,7 +7,7 @@ class MenuIcon extends StatelessWidget {
   final String label;
   final VoidCallback? onTap;
 
-  const MenuIcon({
+  const MenuIcon({super.key, 
     required this.svgAsset,
     required this.label,
     this.onTap,

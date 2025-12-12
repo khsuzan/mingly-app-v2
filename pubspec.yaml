@@ -2,7 +2,7 @@ name: mingly
 description: "Elite Networking &  Exclusive Events"
 publish_to: "none"
 
-version: 0.5.0-beta+5
+version: 0.6.0-beta+6
 
 environment:
   sdk: ^3.8.1

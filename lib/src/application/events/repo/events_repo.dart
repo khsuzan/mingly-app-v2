@@ -12,15 +12,22 @@ import '../../venues/model/venues_model.dart';
 import '../model/event_session_model.dart';
 
 class EventsRepo {
-  Future<List<EventsModel>> getEvents(String queryParam) async {
+  
+  Future<List<EventsModel>> getEvents({
+    required Map<String, String> queryParams,
+  }) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    final params = queryParam.trim().isEmpty
-        ? ''
-        : "?${Uri.encodeFull(queryParam)}";
-    final url = AppUrls.eventsUrl + params;
-    debugPrint("Fetching events url: $url");
+
+    // Remove empty values
+    queryParams.removeWhere((key, value) => value.trim().isEmpty);
+
+    final uri = Uri.parse(
+      AppUrls.eventsUrl,
+    ).replace(queryParameters: queryParams);
+
+    debugPrint("Fetching events url: $uri");
     final response = await ApiService().getList(
-      url,
+      uri.toString(),
       authToken: preferences.getString("authToken"),
     );
     return response.map((e) => EventsModel.fromJson(e)).toList();
@@ -91,7 +98,6 @@ class EventsRepo {
     );
     return EventDetailsModel.fromJson(response);
   }
-
 
   Future<List<EventsTicketModel>> getEventTicket(String id) async {
     final response = await ApiService().getList("${AppUrls.ticketList}$id/");

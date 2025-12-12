@@ -8,6 +8,7 @@ import 'package:mingly/src/constant/app_urls.dart';
 
 import '../../../../application/venue_menu/model/venue_menu_model.dart';
 import '../controller/venue_menu_controller.dart';
+import 'sliver_category_header_delegate.dart';
 
 class VenueMenuScreen extends StatelessWidget {
   final int venueId;
@@ -20,6 +21,14 @@ class VenueMenuScreen extends StatelessWidget {
 
     return GetBuilder<VenueMenuController>(
       init: VenueMenuController(venueId: venueId),
+      initState: (state) {
+        if (!Get.isRegistered<_MenuCartController>()) {
+          Get.put(_MenuCartController());
+        }
+      },
+      dispose: (state) {
+        Get.delete<_MenuCartController>();
+      },
       builder: (controller) {
         return Scaffold(
           backgroundColor: theme.colorScheme.surface,
@@ -38,7 +47,7 @@ class VenueMenuScreen extends StatelessWidget {
               child: RefreshIndicator(
                 onRefresh: () {
                   controller.fetchData();
-                  return Future.delayed(Duration(seconds: 500));
+                  return Future.delayed(Duration(seconds: 1));
                 },
                 child: Obx(() {
                   if (controller.isVenueMenuLoading.value) {
@@ -50,104 +59,183 @@ class VenueMenuScreen extends StatelessWidget {
                       ],
                     );
                   }
-                  final list = controller.menuList;
-                  if (list.isEmpty) {
-                    return CustomScrollView(
-                      slivers: [
-                        SliverFillRemaining(
-                          hasScrollBody: false,
-                          child: Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.restaurant_menu,
-                                  size: 64,
-                                  color: theme.colorScheme.primary.withAlpha(
-                                    180,
+                  final list = controller.filteredList;
+                  return Stack(
+                    children: [
+                      // Main scrollable area
+                      CustomScrollView(
+                        slivers: [
+                          // Sticky header for categories
+                          SliverPersistentHeader(
+                            pinned: true,
+                            delegate: SliverCategoryHeaderDelegate(
+                              child: Obx(() {
+                                final categories = controller.categories;
+                                final selected =
+                                    controller.selectedCategory.value;
+                                if (categories.isEmpty) {
+                                  return SizedBox.shrink();
+                                }
+                                return SizedBox(
+                                  height: 44,
+                                  child: ListView.separated(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: categories.length,
+                                    separatorBuilder: (_, __) =>
+                                        SizedBox(width: 8),
+                                    itemBuilder: (context, index) {
+                                      final category = categories[index];
+                                      return GestureDetector(
+                                        onTap: () {
+                                          if (selected == category) return;
+                                          controller.selectCategory(category);
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                            vertical: 4,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: selected == category
+                                                ? theme.colorScheme.primary
+                                                : theme.colorScheme.primary
+                                                      .withAlpha(30),
+                                            borderRadius: BorderRadius.circular(
+                                              50,
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              category,
+                                              style: TextStyle(
+                                                color: selected == category
+                                                    ? Colors.black
+                                                    : Colors.white,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
-                                ),
-                                const SizedBox(height: 16),
-                                const Text(
-                                  'No menu items are available for this venue at the moment.',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                const SizedBox(height: 24),
-                                ElevatedButton.icon(
-                                  icon: const Icon(Icons.home),
-                                  label: const Text('Back to Home'),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: theme.colorScheme.primary
-                                        .withAlpha(30),
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 24,
-                                      vertical: 12,
+                                );
+                              }),
+                            ),
+                          ),
+
+                          if (list.isEmpty)
+                            SliverFillRemaining(
+                              hasScrollBody: false,
+                              child: Center(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.restaurant_menu,
+                                      size: 64,
+                                      color: theme.colorScheme.primary
+                                          .withAlpha(180),
                                     ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
+                                    const SizedBox(height: 16),
+                                    const Text(
+                                      'No menu items are available for this venue at the moment.',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.white70,
+                                        fontSize: 16,
+                                      ),
                                     ),
-                                  ),
-                                  onPressed: () {
-                                    context.go("/home");
-                                  },
+                                    const SizedBox(height: 24),
+                                    ElevatedButton.icon(
+                                      icon: const Icon(Icons.home),
+                                      label: const Text('Back to Home'),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: theme
+                                            .colorScheme
+                                            .primary
+                                            .withAlpha(30),
+                                        foregroundColor: Colors.white,
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 24,
+                                          vertical: 12,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        context.go("/home");
+                                      },
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
+                            ),
+
+                          // Menu items list
+                          if (list.isNotEmpty)
+                            SliverList(
+                              delegate: SliverChildBuilderDelegate((
+                                context,
+                                index,
+                              ) {
+                                final item = list[index];
+                                final id = item.id ?? index;
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 8),
+                                  child: _MenuItemRow(
+                                    menuItem: item,
+                                    id: id,
+                                    cart: cart,
+                                  ),
+                                );
+                              }, childCount: list.length),
+                            ),
+                          // Add some bottom space so last item is not hidden by checkout bar
+                          SliverToBoxAdapter(child: SizedBox(height: 80)),
+                        ],
+                      ),
+                      // Fixed checkout bar at bottom
+                      if (list.isNotEmpty)
+                        Positioned(
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          child: Container(
+                            color: theme.colorScheme.surface,
+                            padding: const EdgeInsets.only(
+                              bottom: 8,
+                              left: 0,
+                              right: 0,
+                            ),
+                            child: _CheckoutBar(
+                              cart: cart,
+                              theme: theme,
+                              onCheckout: () {
+                                if (cart.isEmpty) {
+                                  Get.snackbar(
+                                    'Cart empty',
+                                    'Please add items to cart',
+                                    snackPosition: SnackPosition.BOTTOM,
+                                  );
+                                  return;
+                                }
+                                final items = cart._items.entries.map((e) {
+                                  final qty = e.value.qty;
+                                  return {
+                                    'venue_menu_item': e.key,
+                                    'quantity': qty,
+                                  };
+                                }).toList();
+                                final payload = {'items': items};
+                                controller.checkoutToPayment(context, payload);
+                              },
                             ),
                           ),
                         ),
-                      ],
-                    );
-                  }
-
-                  return Column(
-                    children: [
-                      Expanded(
-                        child: ListView.separated(
-                          itemCount: list.length,
-                          separatorBuilder: (_, __) {
-                            return const SizedBox(height: 8);
-                          },
-                          itemBuilder: (context, index) {
-                            final item = list[index];
-                            final id = item.id ?? index;
-                            return _MenuItemRow(
-                              menuItem: item,
-                              id: id,
-                              cart: cart,
-                            );
-                          },
-                        ),
-                      ),
-
-                      const SizedBox(height: 8),
-                      _CheckoutBar(
-                        cart: cart,
-                        theme: theme,
-                        onCheckout: () {
-                          // build payload from cart and request customer info
-                          if (cart.isEmpty) {
-                            Get.snackbar(
-                              'Cart empty',
-                              'Please add items to cart',
-                              snackPosition: SnackPosition.BOTTOM,
-                            );
-                            return;
-                          }
-
-                          final items = cart._items.entries.map((e) {
-                            final qty = e.value.qty;
-                            return {'venue_menu_item': e.key, 'quantity': qty};
-                          }).toList();
-
-                          final payload = {'items': items};
-                          controller.checkoutToPayment(context, payload);
-                        },
-                      ),
                     ],
                   );
                 }),

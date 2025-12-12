@@ -3,6 +3,7 @@ class VenueMenuModel {
   int? venueId;
   String? image;
   String? name;
+  String? category;
   String? description;
   String? price;
   int? quantity;
@@ -12,6 +13,7 @@ class VenueMenuModel {
     this.venueId,
     this.image,
     this.name,
+    this.category,
     this.description,
     this.price,
     this.quantity,
@@ -22,6 +24,7 @@ class VenueMenuModel {
     venueId = json['venue_id'];
     image = json['image'];
     name = json['name'];
+    category = json['category'];
     description = json['description'];
     price = json['price'];
     quantity = json['quantity'];

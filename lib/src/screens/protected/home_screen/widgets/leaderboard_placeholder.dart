@@ -5,7 +5,7 @@ class LeaderboardPlaceholder extends StatelessWidget {
   final VoidCallback? onInvite;
   final VoidCallback? onHowToEarn;
 
-  const LeaderboardPlaceholder({
+  const LeaderboardPlaceholder({super.key, 
     this.count = 0,
     this.onInvite,
     this.onHowToEarn,

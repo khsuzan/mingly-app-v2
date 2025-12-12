@@ -158,12 +158,10 @@ class EventDetailScreen extends StatelessWidget {
                                     size: 18,
                                   ),
                                   SizedBox(width: 4),
-                                  Obx(() {
-                                    return Text(
-                                      controller.detail.value.toString(),
-                                      style: TextStyle(color: Colors.white70),
-                                    );
-                                  }),
+                                  Text(
+                                    "Available Dates:",
+                                    style: TextStyle(color: Colors.white70),
+                                  ),
                                 ],
                               ),
                               const SizedBox(height: 8),

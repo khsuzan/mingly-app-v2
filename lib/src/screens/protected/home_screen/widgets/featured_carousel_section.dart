@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mingly/src/screens/protected/home_screen/controller/home_controller.dart';
+import '../../../../application/home/model/featured_model.dart';
 import 'featured_carousel.dart';
 
 class FeaturedCarouselSection extends StatelessWidget {
-  final HomeController controller;
-  final BuildContext context;
+  final Function(FeaturedModel item, GoRouter router) handleFeaturedItemTap;
+  final List<FeaturedModel> featuredItems;
 
   const FeaturedCarouselSection({
-    required this.controller,
-    required this.context,
+    required this.featuredItems,
+    required this.handleFeaturedItemTap,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return FeaturedCarousel(
-      items: controller.featuredItems,
+      items: featuredItems,
       onItemTap: (item, index) {
-        controller.handleFeaturedItemTap(item, GoRouter.of(context));
+        handleFeaturedItemTap(item, GoRouter.of(context));
       },
     );
   }

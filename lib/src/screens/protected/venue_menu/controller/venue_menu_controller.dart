@@ -12,10 +12,21 @@ class VenueMenuController extends GetxController {
   VenueMenuController({required this.venueId});
 
   final categories = <String>['All'].obs;
+  final selectedCategory = 'All'.obs;
   final menuList = <VenueMenuModel>[].obs;
   final isVenueMenuLoading = false.obs;
 
   final VenuesRepo venueRepo = VenuesRepo();
+
+  RxList<VenueMenuModel> get filteredList => menuList
+      .where((item) {
+        if (selectedCategory.value == 'All') {
+          return true;
+        }
+        return item.category == selectedCategory.value;
+      })
+      .toList()
+      .obs;
 
   @override
   void onInit() {
@@ -33,7 +44,7 @@ class VenueMenuController extends GetxController {
   Future<void> fetchVenueMenuCategories() async {
     try {
       final response = await venueRepo.getVenueMenuCategories();
-      categories.value = response;
+      categories.value = ['All', ...response];
     } catch (e, stack) {
       debugPrint("Error fetching venue menu: $e");
       debugPrintStack(stackTrace: stack);
@@ -51,6 +62,10 @@ class VenueMenuController extends GetxController {
       debugPrint("Error fetching venue menu: $e");
       debugPrintStack(stackTrace: stack);
     }
+  }
+
+  Future<void> selectCategory(String category) async {
+    selectedCategory.value = category;
   }
 
   Future<void> checkoutToPayment(
@@ -75,11 +90,6 @@ class VenueMenuController extends GetxController {
     } catch (e, stack) {
       debugPrint('Error during checkout: $e');
       debugPrintStack(stackTrace: stack);
-      Get.snackbar(
-        'Checkout error',
-        e.toString(),
-        snackPosition: SnackPosition.BOTTOM,
-      );
     }
   }
 }

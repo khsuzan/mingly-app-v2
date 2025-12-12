@@ -21,6 +21,7 @@ class VenueListController extends GetxController {
   void onInit() {
     super.onInit();
     fetchVenues();
+    
   }
   @override
   void onClose() {
@@ -31,9 +32,9 @@ class VenueListController extends GetxController {
   Future<void> fetchVenues() async {
     isLoading.value = true;
     try {
+      // see user location
       final response = await venuesRepo.getVenues(
-        filters.value.toQueryParams(),
-      );
+        filters.value.toQueryParams());
       venuesList.value = response;
       isLoading.value = false;
     } catch (e, stack) {

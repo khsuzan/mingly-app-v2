@@ -11,7 +11,7 @@ class RecommendationCard extends StatelessWidget {
   final String? image;
   final Function()? onTap;
 
-  const RecommendationCard({
+  const RecommendationCard({super.key, 
     required this.title,
     required this.location,
     required this.tag,

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -81,46 +83,50 @@ class WelcomeScreen extends StatelessWidget {
                                   },
                                 ),
                               ),
-        
+
                               SizedBox(height: 12.h),
-        
+
                               // New "Sign in with Google" button
-                              SizedBox(
-                                width: double.infinity,
-                                child: OutlinedButton.icon(
-                                  style: OutlinedButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: 12.h,
-                                      horizontal: 16.w,
+                              if (Platform.isAndroid)
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: OutlinedButton.icon(
+                                    style: OutlinedButton.styleFrom(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 12.h,
+                                        horizontal: 16.w,
+                                      ),
+                                      side: BorderSide(
+                                        color: theme.colorScheme.primary,
+                                        width: 1,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          12.r,
+                                        ),
+                                      ),
                                     ),
-                                    side: BorderSide(
-                                      color: theme.colorScheme.primary,
-                                      width: 1,
+                                    icon: SvgPicture.asset(
+                                      'lib/assets/icons/google (1).svg', // make sure you add this image in your assets
+                                      height: 24.h,
                                     ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12.r),
+                                    label: Text(
+                                      'Sign in with Google',
+                                      style: theme.textTheme.bodyMedium
+                                          ?.copyWith(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16.sp,
+                                          ),
                                     ),
+                                    onPressed: () {
+                                      controller.signUpWithGoogle(context);
+                                    },
                                   ),
-                                  icon: SvgPicture.asset(
-                                    'lib/assets/icons/google (1).svg', // make sure you add this image in your assets
-                                    height: 24.h,
-                                  ),
-                                  label: Text(
-                                    'Sign in with Google',
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16.sp,
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    controller.signUpWithGoogle(context);
-                                  },
                                 ),
-                              ),
-        
+
                               SizedBox(height: 20.h),
-        
+
                               // Already have account? Login
                               Center(
                                 child: Row(
@@ -128,10 +134,11 @@ class WelcomeScreen extends StatelessWidget {
                                   children: [
                                     Text(
                                       'Already have an account?',
-                                      style: theme.textTheme.bodyMedium?.copyWith(
-                                        color: Colors.white70,
-                                        fontSize: 16,
-                                      ),
+                                      style: theme.textTheme.bodyMedium
+                                          ?.copyWith(
+                                            color: Colors.white70,
+                                            fontSize: 16,
+                                          ),
                                     ),
                                     const SizedBox(width: 8),
                                     TextButton(
@@ -140,11 +147,12 @@ class WelcomeScreen extends StatelessWidget {
                                       },
                                       child: Text(
                                         'Login',
-                                        style: theme.textTheme.bodyMedium?.copyWith(
-                                          color: theme.colorScheme.primary,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                        ),
+                                        style: theme.textTheme.bodyMedium
+                                            ?.copyWith(
+                                              color: theme.colorScheme.primary,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
                                       ),
                                     ),
                                   ],
@@ -161,7 +169,7 @@ class WelcomeScreen extends StatelessWidget {
             ),
           ),
         );
-      }
+      },
     );
   }
 }

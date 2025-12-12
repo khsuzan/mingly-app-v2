@@ -7,6 +7,7 @@ class SectionHeader extends StatelessWidget {
   final Function()? onSeeAll;
 
   const SectionHeader({
+    super.key,
     required this.title,
     this.isSeeAll = true,
     this.onSeeAll,

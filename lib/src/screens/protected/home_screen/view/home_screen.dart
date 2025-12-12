@@ -164,10 +164,12 @@ class HomeScreen extends StatelessWidget {
                   ),
                   // Featured Carousel Section
                   SliverToBoxAdapter(
-                    child: FeaturedCarouselSection(
-                      controller: controller,
-                      context: context,
-                    ),
+                    child: Obx(() {
+                      return FeaturedCarouselSection(
+                        featuredItems: controller.featuredItems.toList(),
+                        handleFeaturedItemTap: controller.handleFeaturedItemTap,
+                      );
+                    }),
                   ),
                   // Referral Code Section
                   SliverToBoxAdapter(

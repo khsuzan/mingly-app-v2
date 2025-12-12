@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:mingly/src/application/events/model/events_model.dart';
 import 'package:mingly/src/application/events/repo/events_repo.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EventListController extends GetxController {
   final events = <EventsModel>[].obs;
@@ -55,8 +57,14 @@ class EventListController extends GetxController {
   void fetchEvents() async {
     try {
       isEventsLoading.value = true;
+      final sp = await SharedPreferences.getInstance();
+      String? location = sp.getString('user_location');
+      final queryParams = filters.value.toQueryParams();
+      if (location != null && location.isNotEmpty) {
+        queryParams['location'] = location;
+      }
       final fetchedEvents = await eventsRepo.getEvents(
-        filters.value.toQueryParams(),
+        queryParams: queryParams,
       );
       events.assignAll(fetchedEvents);
       isEventsLoading.value = false;
@@ -73,17 +81,17 @@ class EventListFilters {
   String? query;
   EventListFilters({this.venueId, this.date, this.query});
 
-  String toQueryParams() {
-    final params = <String>[];
+  Map<String, String> toQueryParams() {
+    final params = <String, String>{};
     if (venueId != null) {
-      params.add('venue_id=$venueId');
+      params['venue_id'] = venueId.toString();
     }
     if (date != null && date!.isNotEmpty) {
-      params.add('date=$date');
+      params['date'] = date.toString();
     }
     if (query != null && query!.isNotEmpty) {
-      params.add('event_name=$query');
+      params['event_name'] = query.toString();
     }
-    return params.join('&');
+    return params;
   }
 }
