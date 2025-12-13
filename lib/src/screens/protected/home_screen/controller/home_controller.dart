@@ -62,12 +62,12 @@ class HomeController extends GetxController {
   /// Handle featured item tap - navigate based on type
   void handleFeaturedItemTap(FeaturedModel item, GoRouter router) {
     if (item.imageableType == "venues" &&
-        item.imageable?.runtimeType.toString() == "ImageableVenue") {
-      final extra = (item.imageable as ImageableVenue?)?.toVenuesModel();
+        item.imageable?.runtimeType.toString() == "VenuesModel") {
+      final extra = (item.imageable as VenuesModel?);
       router.push("/venue-detail", extra: extra);
     } else if (item.imageableType == "eevents" &&
-        item.imageable?.runtimeType.toString() == "ImageableEvent") {
-      final extra = (item.imageable as ImageableEvent?)?.toEventsModel();
+        item.imageable?.runtimeType.toString() == "EventsModel") {
+      final extra = (item.imageable as EventsModel?);
       router.push("/event-detail", extra: extra);
     }
   }

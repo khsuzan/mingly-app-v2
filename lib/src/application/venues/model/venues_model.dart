@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class VenuesModel {
   int id = 0;
   List<Images>? images;
@@ -177,5 +179,10 @@ class OpeningHours {
     data['closing_hour'] = close;
     data['opening_days'] = openingDays;
     return data;
+  }
+
+  @override
+  String toString(){
+    return jsonEncode(toJson());
   }
 }

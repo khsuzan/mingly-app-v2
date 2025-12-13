@@ -43,6 +43,7 @@ class EventDetailController extends GetxController {
     try {
       final response = await eventsRepo.getEventVenue(int.parse(id));
       venue.value = response;
+      debugPrint("Hours: ${response.openingHours}");
     } catch (e, stack) {
       debugPrint("Error: $e");
       debugPrintStack(stackTrace: stack);
